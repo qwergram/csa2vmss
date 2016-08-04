@@ -17,7 +17,9 @@ def parse(enum, content):
 def load_solution(params):
     parsed = pyscripts.csa_parse.VSCloudService(params['Location'])
     parsed.load_solution()
-    return parsed.solution_data
+    solution = parsed.solution_data
+    # import pdb; pdb.set_trace()
+    return solution
 
 
 def run_powershell(name, arguments):
