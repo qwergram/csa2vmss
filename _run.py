@@ -20,7 +20,6 @@ def load_solution(params):
 def run_powershell(name, arguments):
     arguments = " ".join(["-%s \"%s\"" % (key, value) for key, value in arguments.items()])
     execute_this = "powershell -ExecutionPolicy Unrestricted -File \"%s\" %s" % (os.path.join(CURRENT_PATH, 'psscripts', name), arguments)
-    print(execute_this)
     os.system(execute_this)
 
 def package_projects(solution):
