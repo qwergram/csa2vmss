@@ -32,7 +32,7 @@ def package_projects(solution):
     for project in solution['projects']:
         os.mkdir(os.path.join(CURRENT_PATH, '__save', project['guid']))
         with io.open(os.path.join(CURRENT_PATH, '__save', project['guid'], "meta.json"), 'w') as f:
-            f.write(json.dumps(project, indent=2))
+            f.write(json.dumps(solution, indent=2))
             run_powershell("save_roles.ps1", {"zipfilename": os.path.join(CURRENT_PATH, '__save', project['guid'], "package.zip"), "sourcedir": project['folder'] + "\\" if project['folder'].endswith("\\") else project['folder']})
 
 
