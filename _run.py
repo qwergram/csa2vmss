@@ -30,6 +30,8 @@ def run_powershell(name, arguments):
 
 def package_projects(solution):
     for project in solution['projects']:
+        project.setdefault("instances", 1)
+        project.setdefault("role_type", "WorkerRole")
         os.mkdir(os.path.join(CURRENT_PATH, '__save', project['guid']))
         with io.open(os.path.join(CURRENT_PATH, '__save', project['guid'], "meta.json"), 'w') as f:
             f.write(json.dumps(project, indent=2))
