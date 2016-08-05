@@ -60,6 +60,8 @@ VARIABLES = {
     "subnetRef": "[concat(variables('vnetID'), '/subnets/', variables('subnetName'))]"
 }
 
+CUSTOM_SCRIPT_PARAMS = []
+
 PARAM_TEMPLATE = {}
 
 def load_arm_vars():
@@ -98,6 +100,11 @@ def create_armt_from_meta():
             content['variables']['publicIPAddressName'] = project_id + VARIABLES['publicIPAddressName']
 
             PARAM_TEMPLATE['parameters']['dnsLabelPrefix']['value'] = 'd' + project_id + PARAM_TEMPLATE['parameters']['dnsLabelPrefix']['value']
+
+            with io.open(os.path.join(project_path, 'blob_location.txt')) as location:
+                blob_location = location.read().strip()
+
+            CUSTOM_SCRIPT_PARAMS = ["/".join(blob_location[:-1]), blob_location[-1]]
 
             with io.open(os.path.join(project_path, 'armtemplate.json'), 'w') as template:
                 template.write(json.dumps(content, indent=2))
