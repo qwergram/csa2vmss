@@ -1,11 +1,16 @@
 
 # These need to be params later...
+$SLNLocation = "C:\\Users\\v-nopeng\\Desktop\\C#\\"
 $SolutionName = "SysPrep23"
 $ResourcePrefix = "ResGroup"
 $StoragePrefix = "storage"
+$VMPrefix = "VM"
 $Location = "West US"
 $SkuName = "Standard_LRS"
 $containerPrefix = "container"
+
+# Visualizations for This App
+$singleWindow = $false
 
 # Have the User Login
 Write-Host "Hello! Please Login"
@@ -14,9 +19,14 @@ Try {
 } Catch {
     Login-AzureRmAccount
 }
+
 # This script parses the Visual Studio Solution and zips it
 Write-Host "Reading Cloud Service App and Packaging it"
-start-process python -argument '_run.py -Location="C:\\Users\\v-nopeng\\Desktop\\C#\\"'
+if ($singleWindow) {
+    python _run.py ('-Location="' + $SLNLocation + '"')
+} else {
+    start-process python -argument ('_run.py -Location="' + $SLNLocation + '"')
+}
 
 # Check to see if the specified ResourceGroup exists.
 Write-Host "Building Resource Group"
@@ -65,4 +75,12 @@ ForEach-Object {
         Set-AzureStorageBlobContent -File $_.FullName -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob $_.Name -Context $blobContext
         
     }
+}
+
+# Okay now build a VM for each Project
+Write-Host "Building an ARM template for each template"
+if ($singleWindow) {
+    python _run.py ('-Location="' + $SLNLocation + '"')
+} else {
+    start-process python -argument ('_run.py -Location="' + $SLNLocation + '"')
 }
