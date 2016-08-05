@@ -8,10 +8,14 @@ $VMPrefix = "VM"
 $Location = "West US"
 $SkuName = "Standard_LRS"
 $containerPrefix = "container"
+$DNSPrefx = "dns"
 
 # Virtual Machine Stats
 $VMVHDSize = 100
 $VMSize = "Standard_D1"
+$VMAdmin = "titan"
+$VMPassword = "Mar.Wed.17.2027"
+
 
 # Visualizations for This App
 $singleWindow = $false
@@ -91,8 +95,10 @@ osdiskname," + $VMPrefix + "os" + $SolutionName + "
 nicName," + $SolutionName + "nic
 vmName," + $VMPrefix + $SolutionName + "
 vmSize," + $VMSize)
-$Settings >> ($pwd.Path + "\__save\arm_vars.csv")
+$Settings | Out-File ($pwd.Path + "\__save\arm_vars.csv") -Encoding ascii
 
 # Call the python script to actually do the generating
 Write-Host "Buildling ARM Templates"
-python .../pyscripts/generate_armt.py
+
+# input order: 
+python ($pwd.Path + "\pyscripts\generate_armt.py")
