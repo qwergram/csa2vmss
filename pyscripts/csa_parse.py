@@ -63,15 +63,15 @@ class VSCloudService(object):
                     stats['vs_version'] = lower_line.split('=')[-1].strip()
                 elif lower_line.startswith("project("): # Parse these lines...
                     parse = line.split('\"')
-                    proj_type_guid = self.guid_dir.get(parse[1][1:-1], parse[1][1:-1])
-                    if proj_type_guid == "c#_project": # Standard csproj
+                    proj_type = self.guid_dir.get(parse[1][1:-1], parse[1][1:-1])
+                    if proj_type == "c#_project": # Standard csproj
                         stats['projects'].append({
-                            "proj_type_guid": proj_type_guid,
+                            "proj_type": {"guid": parse[1][1:-1], "type": proj_type},
                             "guid": parse[7][1:-1],
                             "folder": os.path.join(self.project_path, parse[3]),
                             "csproj": os.path.join(self.project_path, parse[5]),
                         })
-                    elif proj_type_guid == "sln_dir": # Appears to be a parent
+                    elif proj_type == "sln_dir": # Appears to be a parent
                         stats['parent'] = self._load_ccproj_dir(parse)
                     else:
                         debug("unknown file type: [%s]" % parse[5])
@@ -192,7 +192,8 @@ class VSCloudService(object):
             projectname = attributes['name']
             for i, project in enumerate(self.solution_data['projects']):
                 if project['name'] == projectname:
-                    self.solution_data['projects'][i]['role_type'] = attributes['name']
+                    self.solution_data['projects'][i]['role_type'] = clean(role.tag)
+                    break
 
 
         # web_stats = {
@@ -235,23 +236,29 @@ class VSCloudService(object):
 
         root = load_xml(self.solution_data['parent']['cscfg'])
 
+        # === Uncomment this and work on it ===
         for role in root.getchildren():
-            role_items = role.items()
-            if role_items[0][1] == self.solution_data['parent']['csdef']['data']['web']['name']:
-                type = "web"
-            elif role_items[0][1] == self.solution_data['parent']['csdef']['data']['worker']['name']:
-                type = "worker"
-            else:
-                debug("Unexpected configuration file (%s)" % (role_items))
-                sys.exit(1)
+            role_items = {key: value for key, value in role.items()}
+            for i, project in enumerate(self.solution_data['projects']):
+                if project['name'] == role_items['name']:
+                    instances = int(role.find(mess("Instances")).items()[0][1])
+                    self.solution_data['projects'][i]['instances'] = instances
 
-            self.solution_data['parent']['csdef']['data'][type]["instances"] = role.find(mess("Instances")).items()[0][1]
-            self.solution_data['parent']['csdef']['data'][type]["setting_values"] = {}
-            for setting in role.find(mess("ConfigurationSettings")).getchildren():
-                setting = {key: value for key, value in setting.items()}
-                self.solution_data['parent']['csdef']['data'][type]["setting_values"][setting["name"]] = setting["value"]
-
-        self.solution_data['parent']['cscfg']
+        #     if role_items[0][1] == self.solution_data['parent']['csdef']['data']['web']['name']:
+        #         type = "web"
+        #     elif role_items[0][1] == self.solution_data['parent']['csdef']['data']['worker']['name']:
+        #         type = "worker"
+        #     else:
+        #         debug("Unexpected configuration file (%s)" % (role_items))
+        #         sys.exit(1)
+        #
+        #     self.solution_data['parent']['csdef']['data'][type]["instances"] = role.find(mess("Instances")).items()[0][1]
+        #     self.solution_data['parent']['csdef']['data'][type]["setting_values"] = {}
+        #     for setting in role.find(mess("ConfigurationSettings")).getchildren():
+        #         setting = {key: value for key, value in setting.items()}
+        #         self.solution_data['parent']['csdef']['data'][type]["setting_values"][setting["name"]] = setting["value"]
+        #
+        # self.solution_data['parent']['cscfg']
 
     def load_projects(self):
         debug("loading projects")
