@@ -90,9 +90,10 @@ def create_armt_from_meta():
                 template.write(json.dumps(content, indent=2))
 
             with io.open(os.path.join(project_path, 'armtemplate.params.json'), 'w') as paramtemplate:
-                template.write(json.dumps(PARAM_TEMPLATE, indent=2))
+                paramtemplate.write(json.dumps(PARAM_TEMPLATE, indent=2))
 
 
 if __name__ == "__main__":
+    assert len(sys.argv) == 4, len(sys.argv)
     load_arm_vars()
     create_armt_from_meta()
