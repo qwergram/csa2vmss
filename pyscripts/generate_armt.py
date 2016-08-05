@@ -83,12 +83,13 @@ def create_armt_from_meta():
 
 
     for project in os.listdir(os.path.join(CURRENT_PATH, "__save")):
+        load_arm_vars()
         project_path = os.path.join(CURRENT_PATH, '__save', project)
         if os.path.isdir(project_path):
-            project_id = project[:5]
+            project_id = project[:3].lower()
             # Personalize each important variable to each project
-            content['variables']['vmName'] = project_id.lower() + content['variables']['vmName']
-            content['variables']['storageAccountName'] = project_id.lower() + content['variables']['storageAccountName']
+            content['variables']['vmName'] = project_id + VARIABLES['vmName']
+            content['variables']['storageAccountName'] = project_id + VARIABLES['storageAccountName']
 
 
             with io.open(os.path.join(project_path, 'armtemplate.json'), 'w') as template:
