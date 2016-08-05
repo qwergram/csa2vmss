@@ -66,8 +66,7 @@ def load_arm_vars():
         for line in content.readlines():
             if not line.strip().startswith('#'):
                 key, value = line.strip().split(',')
-                new_dict[key] = value
-        print(new_dict)
+                VARIABLES[key] = value
 
 
 def create_armt_from_meta():
@@ -75,7 +74,13 @@ def create_armt_from_meta():
         content = json.loads(content.read())
     content['variables'] = VARIABLES
 
+    for project in os.listdir(os.path.join(CURRENT_PATH, "__save")):
+        project_path = os.path.join(CURRENT_PATH, '__save', project)
+        if os.path.isdir(project_path):
 
+            with io.open(os.path.join(project_path, 'armtemplate.json'), 'w') as template:
+                template.write(json.dumps(content, indent=2))
 
 if __name__ == "__main__":
     load_arm_vars()
+    create_armt_from_meta()
