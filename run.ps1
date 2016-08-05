@@ -29,7 +29,7 @@ Try {
 }
 
 # This script parses the Visual Studio Solution and zips it
-Write-Host "Reading Cloud Service App and Packaging it"
+Write-Host "Reading Cloud Service App and Packaging it (Python Script)"
 if ($singleWindow) {
     python _run.py ('-Location="' + $SLNLocation + '"')
 } else {
@@ -98,7 +98,11 @@ vmSize," + $VMSize)
 $Settings | Out-File ($pwd.Path + "\__save\arm_vars.csv") -Encoding ascii
 
 # Call the python script to actually do the generating
-Write-Host "Buildling ARM Templates"
+Write-Host "Buildling ARM Templates (Python Script)"
 
 # Python Script input params: VMAdminn, VMPassword, DNSprefix
-python ($pwd.Path + "\pyscripts\generate_armt.py") $VMAdmin $VMPassword ($DNSPrefx + $SolutionName)
+if ($singleWindow) {
+    python ($pwd.Path + "\pyscripts\generate_armt.py") $VMAdmin $VMPassword ($DNSPrefx + $SolutionName)
+} else {
+    start-process python -argument (($pwd.Path + "\pyscripts\generate_armt.py") +' ' + $VMAdmin + ' ' + $VMPassword + ' ' + ($DNSPrefx + $SolutionName))
+}
