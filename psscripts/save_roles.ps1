@@ -1,3 +1,5 @@
+# Simple script that zips whatever directory is passed in
+# Really just a helper script for Python Script
 param(
  [Parameter(Mandatory=$True)]
  [string]
