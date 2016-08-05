@@ -60,8 +60,7 @@ VARIABLES = {
     "subnetRef": "[concat(variables('vnetID'), '/subnets/', variables('subnetName'))]"
 }
 
-with io.open(os.path.join(CURRENT_PATH, 'templates', 'iis-vm.params.json')) as content:
-    PARAM_TEMPLATE = json.loads(content.read())
+PARAM_TEMPLATE = {}
 
 def load_arm_vars():
     with io.open(os.path.join(CURRENT_PATH, '__save', 'arm_vars.csv')) as content:
@@ -71,19 +70,24 @@ def load_arm_vars():
                 key, value = line.strip().split(',')
                 VARIABLES[key] = value
 
-
-def create_armt_from_meta():
-    with io.open(os.path.join(CURRENT_PATH, "templates", "iis-vm.json")) as content:
-        content = json.loads(content.read())
-    content['variables'] = VARIABLES
+def load_arm_params():
+    global PARAM_TEMPLATE
+    with io.open(os.path.join(CURRENT_PATH, 'templates', 'iis-vm.params.json')) as content:
+        PARAM_TEMPLATE = json.loads(content.read())
 
     PARAM_TEMPLATE['parameters']['adminUsername']['value'] = sys.argv[1]
     PARAM_TEMPLATE['parameters']['adminPassword']['value'] = sys.argv[2]
     PARAM_TEMPLATE['parameters']['dnsLabelPrefix']['value'] = sys.argv[3]
 
 
+def create_armt_from_meta():
+    with io.open(os.path.join(CURRENT_PATH, "templates", "iis-vm.json")) as content:
+        content = json.loads(content.read())
+    content['variables'] = VARIABLES
+
     for project in os.listdir(os.path.join(CURRENT_PATH, "__save")):
         load_arm_vars()
+        load_arm_params()
         project_path = os.path.join(CURRENT_PATH, '__save', project)
         if os.path.isdir(project_path):
             project_id = project[:3].lower()
@@ -93,7 +97,7 @@ def create_armt_from_meta():
             content['variables']['nicName'] = project_id + VARIABLES['nicName']
             content['variables']['publicIPAddressName'] = project_id + VARIABLES['publicIPAddressName']
 
-            content['parameters']['dnsLabelPrefix']['value'] = project_id + PARAM_TEMPLATE['dnsLabelPrefix']['value']
+            PARAM_TEMPLATE['parameters']['dnsLabelPrefix'] = project_id + PARAM_TEMPLATE['parameters']['dnsLabelPrefix']['value']
 
             with io.open(os.path.join(project_path, 'armtemplate.json'), 'w') as template:
                 template.write(json.dumps(content, indent=2))
@@ -105,4 +109,5 @@ def create_armt_from_meta():
 if __name__ == "__main__":
     assert len(sys.argv) == 4, len(sys.argv)
     load_arm_vars()
+    load_arm_params()
     create_armt_from_meta()
