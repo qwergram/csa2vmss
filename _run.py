@@ -5,6 +5,7 @@ import json
 import pyscripts.csa_parse
 
 CURRENT_PATH = os.getcwd()
+LAZY = True
 
 
 def parse(enum, content):
@@ -43,13 +44,16 @@ def clean():
 
 
 def main():
-    clean()
-    params = {}
-    for i, param in enumerate(sys.argv):
-        param = parse(i, param)
-        params[param[0]] = param[1]
-    solution = load_solution(params)
-    zips = package_projects(solution)
+    if os.path.isdir(os.path.join(CURRENT_PATH, '__save')) and LAZY:
+        pass
+    else:
+        clean()
+        params = {}
+        for i, param in enumerate(sys.argv):
+            param = parse(i, param)
+            params[param[0]] = param[1]
+        solution = load_solution(params)
+        zips = package_projects(solution)
 
 
 if __name__ == "__main__":
