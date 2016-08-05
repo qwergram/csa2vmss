@@ -1,7 +1,7 @@
 
 # These need to be params later...
 $SLNLocation = "C:\\Users\\v-nopeng\\Desktop\\C#\\"
-$SolutionName = "SysPrep23"
+$SolutionName = "SysPrep24"
 $ResourcePrefix = "ResGroup"
 $StoragePrefix = "storage"
 $VMPrefix = "VM"
@@ -9,6 +9,7 @@ $Location = "West US"
 $SkuName = "Standard_LRS"
 $containerPrefix = "container"
 $DNSPrefx = "dns"
+$DeploymentPrefix = "deploy"
 
 # Virtual Machine Stats
 $VMVHDSize = 100
@@ -23,7 +24,7 @@ $singleWindow = $false
 # Have the User Login
 Write-Host "Hello! Please Login"
 Try {
-    Get-AzureSubscription -Current -ErrorAction Stop
+    Get-AzureRmSubscription -Current -ErrorAction Stop
 } Catch {
     Login-AzureRmAccount
 }
@@ -33,7 +34,7 @@ Write-Host "Reading Cloud Service App and Packaging it (Python Script)"
 if ($singleWindow) {
     python _run.py ('-Location="' + $SLNLocation + '"')
 } else {
-    start-process python -argument ('_run.py -Location="' + $SLNLocation + '"')
+    start-process python -argument ('_run.py -Location="' + $SLNLocation + '"') -Wait
 }
 
 # Check to see if the specified ResourceGroup exists.
@@ -80,7 +81,7 @@ ForEach-Object {
     # Look for the zip file
     Get-ChildItem ($_.FullName + "\") -Filter "*.zip" | 
     ForEach-Object {
-        Set-AzureStorageBlobContent -File $_.FullName -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob $_.Name -Context $blobContext
+        Set-AzureStorageBlobContent -File $_.FullName -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob $_.Name -Context $blobContext 
         
     }
 }
@@ -89,9 +90,9 @@ ForEach-Object {
 Write-Host "Generalizing Variables"
 $Settings = ("# This is a configuration file for building a ARM Template
 storageAccountName," + $StoragePrefix.ToLower() + $SolutionName.ToLower() + $VMPrefix.ToLower() +"
-size," + $VMVHDSize.ToString() + "
-vhdName," + $VMPrefix.ToLower() + "vhd" + $SolutionName.ToLower() + "
-osdiskname," + $VMPrefix + "os" + $SolutionName + "
+sizeOfDiskInGB," + $VMVHDSize.ToString() + "
+dataDisk1VhdName," + $VMPrefix.ToLower() + "vhd" + $SolutionName.ToLower() + "
+OSDiskName," + $VMPrefix + "os" + $SolutionName + "
 nicName," + $SolutionName + "nic
 vmName," + $VMPrefix + $SolutionName + "
 vmSize," + $VMSize)
@@ -99,10 +100,37 @@ $Settings | Out-File ($pwd.Path + "\__save\arm_vars.csv") -Encoding ascii
 
 # Call the python script to actually do the generating
 Write-Host "Buildling ARM Templates (Python Script)"
-
-# Python Script input params: VMAdminn, VMPassword, DNSprefix
 if ($singleWindow) {
-    python ($pwd.Path + "\pyscripts\generate_armt.py") $VMAdmin $VMPassword ($DNSPrefx + $SolutionName)
+    # Python Script input params: VMAdminn, VMPassword, DNSprefix
+    python ($pwd.Path + "\pyscripts\generate_armt.py") $VMAdmin $VMPassword ($DNSPrefx.ToLower() + $SolutionName.ToLower())
 } else {
-    start-process python -argument (($pwd.Path + "\pyscripts\generate_armt.py") +' ' + $VMAdmin + ' ' + $VMPassword + ' ' + ($DNSPrefx + $SolutionName))
+    # Python Script input params: VMAdminn, VMPassword, DNSprefix
+    start-process python -argument (($pwd.Path + "\pyscripts\generate_armt.py") +' ' + $VMAdmin + ' ' + $VMPassword + ' ' + ($DNSPrefx.ToLower() + $SolutionName.ToLower())) -ErrorAction Stop -Wait
+}
+
+# Build the VMs
+Write-Host "Building VMs"
+Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.csv' | 
+ForEach-Object {
+    # Get the Jon templates
+    
+    $armtemplate = $null
+    $paramtemplate = $null
+    $zipfile = $null
+    $projectid = $null
+
+    Get-ChildItem ($_.FullName + "\") | 
+    ForEach-Object {
+        if ($_.Name -eq "armtemplate.json") {
+            $armtemplate = $_.FullName
+        } elseif ($_.Name -eq "armtemplate.params.json") {
+            $paramtemplate = $_.FullName
+        } elseif ($_.Name.Endswith('.zip')) {
+            $projectid = $_.Name.Split('_')[1]
+            $zipfile = $_.FullName
+        }       
+    }
+    # There should be checking to see if $armtemplate and $paramtemplate is the right file
+    Write-Host ("Building " + $zipfile)
+    New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
 }
