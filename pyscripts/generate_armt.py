@@ -49,16 +49,21 @@ VARIABLES = {
     "addressPrefix": "10.0.0.0/16",
     "subnetName": "Subnet",
     "subnetPrefix": "10.0.0.0/24",
-    "storageAccountType": None,
-    "publicIPAddressName": None,
+    "storageAccountType": "Standard_LRS",
+    "publicIPAddressName": "myPublicIP",
     "publicIPAddressType": "Dynamic",
     "vmStorageAccountContainerName": "vhds",
     "vmName": None,
     "vmSize": None,
-    "virtualNetworkName": None,
+    "virtualNetworkName": "MyVNET",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
     "subnetRef": "[concat(variables('vnetID'), '/subnets/', variables('subnetName'))]"
 }
 
 def create_armt_from_meta():
     pass
+
+
+
+if __name__ == "__main__":
+    args = sys.argv

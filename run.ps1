@@ -9,6 +9,10 @@ $Location = "West US"
 $SkuName = "Standard_LRS"
 $containerPrefix = "container"
 
+# Virtual Machine Stats
+$VMVHDSize = 100
+$VMSize = "Standard_D1"
+
 # Visualizations for This App
 $singleWindow = $false
 
@@ -79,8 +83,13 @@ ForEach-Object {
 
 # Okay now build a VM for each Project
 Write-Host "Building an ARM template for each template"
-if ($singleWindow) {
-    python _run.py ('-Location="' + $SLNLocation + '"')
-} else {
-    start-process python -argument ('_run.py -Location="' + $SLNLocation + '"')
-}
+$Settings = "# This is a configuration file for building a ARM Template
+storageAccountName: " + $StoragePrefix.ToLower() + $SolutionName.ToLower() + $VMPrefix.ToLower() +"
+size: " + $VMVHDSize.ToString() + "
+vhdName: " + $VMPrefix.ToLower() + "vhd" + $SolutionName.ToLower() + "
+osdiskname: " + $VMPrefix + "os" + $SolutionName + "
+nicName: " + $SolutionName + "nic
+vmName: " + $VMPrefix + $SolutionName + "
+vmSize: " + $VMSize + "
+
+"
