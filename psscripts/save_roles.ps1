@@ -11,4 +11,4 @@ param(
 )
 
 
-Compress-Archive -Path $sourcedir -DestinationPath $zipfilename
+Compress-Archive -Path $sourcedir\* -DestinationPath $zipfilename
