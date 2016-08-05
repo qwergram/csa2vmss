@@ -1,7 +1,7 @@
 
 # These need to be params later...
 $SLNLocation = "C:\\Users\\v-nopeng\\Desktop\\C#\\"
-$SolutionName = "SysPrep24"
+$SolutionName = "SysPrep25"
 $ResourcePrefix = "ResGroup"
 $StoragePrefix = "storage"
 $VMPrefix = "VM"
@@ -24,7 +24,7 @@ $singleWindow = $false
 # Have the User Login
 Write-Host "Hello! Please Login"
 Try {
-    Get-AzureRmSubscription -Current -ErrorAction Stop
+    Get-AzureRmSubscription -ErrorAction Stop
 } Catch {
     Login-AzureRmAccount
 }
@@ -79,10 +79,14 @@ Try {
 Get-ChildItem ($pwd.Path + "\__save") | 
 ForEach-Object {
     # Look for the zip file
-    Get-ChildItem ($_.FullName + "\") -Filter "*.zip" | 
-    ForEach-Object {
-        Set-AzureStorageBlobContent -File $_.FullName -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob $_.Name -Context $blobContext 
+    if ($_.FullName.EndsWith('.csv')) {
         
+    } else {
+        Get-ChildItem ($_.FullName + "\") -Filter "*.zip" | 
+        ForEach-Object {
+            Set-AzureStorageBlobContent -File $_.FullName -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob $_.Name -Context $blobContext 
+        
+        }
     }
 }
 
