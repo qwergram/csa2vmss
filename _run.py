@@ -5,7 +5,7 @@ import json
 import pyscripts.csa_parse
 
 CURRENT_PATH = os.getcwd()
-LAZY = True
+LAZY = False
 
 
 def parse(enum, content):
