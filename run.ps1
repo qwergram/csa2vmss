@@ -82,14 +82,17 @@ ForEach-Object {
 }
 
 # Okay now build a VM for each Project
-Write-Host "Building an ARM template for each template"
-$Settings = "# This is a configuration file for building a ARM Template
-storageAccountName: " + $StoragePrefix.ToLower() + $SolutionName.ToLower() + $VMPrefix.ToLower() +"
-size: " + $VMVHDSize.ToString() + "
-vhdName: " + $VMPrefix.ToLower() + "vhd" + $SolutionName.ToLower() + "
-osdiskname: " + $VMPrefix + "os" + $SolutionName + "
-nicName: " + $SolutionName + "nic
-vmName: " + $VMPrefix + $SolutionName + "
-vmSize: " + $VMSize + "
+Write-Host "Generalizing Variables"
+$Settings = ("# This is a configuration file for building a ARM Template
+storageAccountName," + $StoragePrefix.ToLower() + $SolutionName.ToLower() + $VMPrefix.ToLower() +"
+size," + $VMVHDSize.ToString() + "
+vhdName," + $VMPrefix.ToLower() + "vhd" + $SolutionName.ToLower() + "
+osdiskname," + $VMPrefix + "os" + $SolutionName + "
+nicName," + $SolutionName + "nic
+vmName," + $VMPrefix + $SolutionName + "
+vmSize," + $VMSize)
+$Settings >> ($pwd.Path + "\__save\arm_vars.csv")
 
-"
+# Call the python script to actually do the generating
+Write-Host "Buildling ARM Templates"
+python .../pyscripts/generate_armt.py
