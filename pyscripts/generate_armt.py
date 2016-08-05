@@ -64,7 +64,7 @@ with io.open(os.path.join(CURRENT_PATH, 'templates', 'iis-vm.params.json')) as c
     PARAM_TEMPLATE = json.loads(content.read())
 
 def get_project_id(zip_file):
-    return project.split(zip_file.split('_')[1])
+    return zip_file.split('_')[1]
 
 def load_arm_vars():
     with io.open(os.path.join(CURRENT_PATH, '__save', 'arm_vars.csv')) as content:
