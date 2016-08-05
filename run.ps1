@@ -100,5 +100,5 @@ $Settings | Out-File ($pwd.Path + "\__save\arm_vars.csv") -Encoding ascii
 # Call the python script to actually do the generating
 Write-Host "Buildling ARM Templates"
 
-# input order: 
-python ($pwd.Path + "\pyscripts\generate_armt.py")
+# Python Script input params: VMAdminn, VMPassword, DNSprefix
+python ($pwd.Path + "\pyscripts\generate_armt.py") $VMAdmin $VMPassword ($DNSPrefx + $SolutionName)
