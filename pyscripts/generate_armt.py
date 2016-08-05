@@ -63,6 +63,9 @@ VARIABLES = {
 with io.open(os.path.join(CURRENT_PATH, 'templates', 'iis-vm.params.json')) as content:
     PARAM_TEMPLATE = json.loads(content.read())
 
+def get_project_id(zip_file):
+    return project.split(zip_file.split('_')[1])
+
 def load_arm_vars():
     with io.open(os.path.join(CURRENT_PATH, '__save', 'arm_vars.csv')) as content:
         new_dict = {}
@@ -85,6 +88,11 @@ def create_armt_from_meta():
     for project in os.listdir(os.path.join(CURRENT_PATH, "__save")):
         project_path = os.path.join(CURRENT_PATH, '__save', project)
         if os.path.isdir(project_path):
+            project_id = get_project_id(project)
+            # Personalize each important variable to each project
+            content['variables']['vmName'] = project_id.lower() + content['variables']['vmName']
+            content['variables']['storageAccountName'] = project_id.lower() + content['variables']['storageAccountName']
+
 
             with io.open(os.path.join(project_path, 'armtemplate.json'), 'w') as template:
                 template.write(json.dumps(content, indent=2))
