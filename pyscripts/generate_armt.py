@@ -50,7 +50,7 @@ VARIABLES = {
     "subnetName": "Subnet",
     "subnetPrefix": "10.0.0.0/24",
     "storageAccountType": "Standard_LRS",
-    "publicIPAddressName": "myPublicIP",
+    "publicIPAddressName": "publicIP",
     "publicIPAddressType": "Dynamic",
     "vmStorageAccountContainerName": "vhds",
     "vmName": None,
@@ -90,7 +90,8 @@ def create_armt_from_meta():
             # Personalize each important variable to each project
             content['variables']['vmName'] = project_id + VARIABLES['vmName']
             content['variables']['storageAccountName'] = project_id + VARIABLES['storageAccountName']
-
+            content['variables']['nicName'] = project_id + VARIABLES['nicName']
+            content['variables']['publicIPAddressName'] = project_id + VARIABLES['publicIPAddressName']
 
             with io.open(os.path.join(project_path, 'armtemplate.json'), 'w') as template:
                 template.write(json.dumps(content, indent=2))
