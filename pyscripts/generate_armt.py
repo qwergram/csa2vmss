@@ -60,10 +60,22 @@ VARIABLES = {
     "subnetRef": "[concat(variables('vnetID'), '/subnets/', variables('subnetName'))]"
 }
 
+def load_arm_vars():
+    with io.open(os.path.join(CURRENT_PATH, '__save', 'arm_vars.csv')) as content:
+        new_dict = {}
+        for line in content.readlines():
+            if not line.strip().startswith('#'):
+                key, value = line.strip().split(',')
+                new_dict[key] = value
+        print(new_dict)
+
+
 def create_armt_from_meta():
-    pass
+    with io.open(os.path.join(CURRENT_PATH, "templates", "iis-vm.json")) as content:
+        content = json.loads(content.read())
+    content['variables'] = VARIABLES
 
 
 
 if __name__ == "__main__":
-    args = sys.argv
+    load_arm_vars()
