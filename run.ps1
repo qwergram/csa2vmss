@@ -16,7 +16,7 @@ Try {
 }
 # This script parses the Visual Studio Solution and zips it
 Write-Host "Reading Cloud Service App and Packaging it"
-python _run.py -Location="C:\\Users\\v-nopeng\\Desktop\\C#\\"
+start-process python -argument '_run.py -Location="C:\\Users\\v-nopeng\\Desktop\\C#\\"'
 
 # Check to see if the specified ResourceGroup exists.
 Write-Host "Building Resource Group"
@@ -66,4 +66,3 @@ ForEach-Object {
         
     }
 }
-
