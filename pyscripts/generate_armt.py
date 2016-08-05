@@ -60,6 +60,9 @@ VARIABLES = {
     "subnetRef": "[concat(variables('vnetID'), '/subnets/', variables('subnetName'))]"
 }
 
+with io.open(os.path.join(CURRENT_PATH, 'templates', 'iis-vm.params.json')) as content:
+    PARAM_TEMPLATE = json.loads(content.read())
+
 def load_arm_vars():
     with io.open(os.path.join(CURRENT_PATH, '__save', 'arm_vars.csv')) as content:
         new_dict = {}
@@ -74,12 +77,21 @@ def create_armt_from_meta():
         content = json.loads(content.read())
     content['variables'] = VARIABLES
 
+    PARAM_TEMPLATE['parameters']['adminUsername']['value'] = sys.argv[1]
+    PARAM_TEMPLATE['parameters']['adminPassword']['value'] = sys.argv[2]
+    PARAM_TEMPLATE['parameters']['dnsLabelPrefix']['value'] = sys.argv[3]
+
+
     for project in os.listdir(os.path.join(CURRENT_PATH, "__save")):
         project_path = os.path.join(CURRENT_PATH, '__save', project)
         if os.path.isdir(project_path):
 
             with io.open(os.path.join(project_path, 'armtemplate.json'), 'w') as template:
                 template.write(json.dumps(content, indent=2))
+
+            with io.open(os.path.join(project_path, 'armtemplate.params.json'), 'w') as paramtemplate:
+                template.write(json.dumps(PARAM_TEMPLATE, indent=2))
+
 
 if __name__ == "__main__":
     load_arm_vars()
