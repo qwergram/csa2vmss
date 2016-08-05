@@ -97,7 +97,7 @@ def create_armt_from_meta():
             content['variables']['nicName'] = project_id + VARIABLES['nicName']
             content['variables']['publicIPAddressName'] = project_id + VARIABLES['publicIPAddressName']
 
-            PARAM_TEMPLATE['parameters']['dnsLabelPrefix'] = project_id + PARAM_TEMPLATE['parameters']['dnsLabelPrefix']['value']
+            PARAM_TEMPLATE['parameters']['dnsLabelPrefix']['value'] = 'd' + project_id + PARAM_TEMPLATE['parameters']['dnsLabelPrefix']['value']
 
             with io.open(os.path.join(project_path, 'armtemplate.json'), 'w') as template:
                 template.write(json.dumps(content, indent=2))
