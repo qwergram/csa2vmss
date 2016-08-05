@@ -183,22 +183,34 @@ class VSCloudService(object):
         parent_data = self.solution_data['parent']
         root = load_xml(parent_data['csdef'])
 
-        web_stats = {
-            "name": {key: value for key, value in root.find(mess("WebRole")).items()}['name'],
-            "vmsize": {key: value for key, value in root.find(mess("WebRole")).items()}['vmsize'],
-            "endpoint": {key: value for key, value in root.find(mess("WebRole")).find(mess("Endpoints")).find(mess("InputEndpoint")).items()},
-            "settings": [value for child in root.find(mess("WebRole")).find(mess("ConfigurationSettings")).getchildren() for key, value in child.items()],
-            "imports": [value for child in root.find(mess("WebRole")).find(mess("Imports")).getchildren() for key, value in child.items()]
-        }
+        for i, project in enumerate(self.solution_data['projects']):
+            self.solution_data['projects'][i]['name'] = project['folder'].split("\\")[-1]
 
-        worker_stats = {
-            "name": {key: value for key, value in root.find(mess("WorkerRole")).items()}['name'],
-            "vmsize": {key: value for key, value in root.find(mess("WorkerRole")).items()}['vmsize'],
-            "settings": [value for child in root.find(mess("WorkerRole")).find(mess("ConfigurationSettings")).getchildren() for key, value in child.items()],
-            "imports": [value for child in root.find(mess("WorkerRole")).find(mess("Imports")).getchildren() for key, value in child.items()]
-        }
+        for role in root.getchildren():
+            attributes = {key: value for key, value in role.items()}
+            # if clean(role.tag) == "WebRole":
+            projectname = attributes['name']
+            for i, project in enumerate(self.solution_data['projects']):
+                if project['name'] == projectname:
+                    self.solution_data['projects'][i]['role_type'] = attributes['name']
 
-        self.solution_data['parent']['csdef'] = {"path": parent_data['csdef'], "data": {"worker": worker_stats, "web": web_stats}}
+
+        # web_stats = {
+        #     "name": {key: value for key, value in root.find(mess("WebRole")).items()}['name'],
+        #     "vmsize": {key: value for key, value in root.find(mess("WebRole")).items()}['vmsize'],
+        #     "endpoint": {key: value for key, value in root.find(mess("WebRole")).find(mess("Endpoints")).find(mess("InputEndpoint")).items()},
+        #     "settings": [value for child in root.find(mess("WebRole")).find(mess("ConfigurationSettings")).getchildren() for key, value in child.items()],
+        #     "imports": [value for child in root.find(mess("WebRole")).find(mess("Imports")).getchildren() for key, value in child.items()]
+        # }
+        #
+        # worker_stats = {
+        #     "name": {key: value for key, value in root.find(mess("WorkerRole")).items()}['name'],
+        #     "vmsize": {key: value for key, value in root.find(mess("WorkerRole")).items()}['vmsize'],
+        #     "settings": [value for child in root.find(mess("WorkerRole")).find(mess("ConfigurationSettings")).getchildren() for key, value in child.items()],
+        #     "imports": [value for child in root.find(mess("WorkerRole")).find(mess("Imports")).getchildren() for key, value in child.items()]
+        # }
+
+        # self.solution_data['parent']['csdef'] = {"path": parent_data['csdef'], "data": {"worker": worker_stats, "web": web_stats}}
 
     def _load_cloud_service_configs(self):
 
