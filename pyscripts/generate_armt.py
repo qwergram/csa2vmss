@@ -106,6 +106,11 @@ def create_armt_from_meta():
 
             CUSTOM_SCRIPT_PARAMS = ["/".join(blob_location[:-1]), blob_location[-1]]
 
+            for i, resource in enumerate(content['resources']):
+                if resource['name'] == "MyCustomScriptExtension":
+                    content['resources'][i]['properties']['settings']['commandToExecute'] = resource['properties']['settings']['commandToExecute'].format(*CUSTOM_SCRIPT_PARAMS)
+                    break
+
             with io.open(os.path.join(project_path, 'armtemplate.json'), 'w') as template:
                 template.write(json.dumps(content, indent=2))
 
