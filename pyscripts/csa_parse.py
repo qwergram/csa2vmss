@@ -251,21 +251,6 @@ class VSCloudService(object):
                         setting = {key: value for key, value in setting.items()}
                         self.solution_data['projects'][i]['configurationsettings'][setting['name']] = setting['value']
 
-
-    def load_projects(self):
-        debug("loading projects")
-        if self._check_solution_loaded():
-            debug("Skiping checking projects")
-            # for i, project in enumerate(self.solution_data['projects']):
-                # debug("Loading", project['guid'])
-                # debug("Skipping loading csproj")
-                # self.solution_data['projects'][i] = self._load_csproj(project)
-
-
-        else:
-            debug("load solution first!")
-            sys.exit(1)
-
     def load_solution(self):
         "Find all the configuration files"
         debug("Loading solution")
@@ -273,7 +258,6 @@ class VSCloudService(object):
             sln_data = self._read_sln_data()
             if self._is_valid_sln_data(sln_data):
                 self.solution_data = sln_data
-                self.load_projects()
                 self._load_cloud_service_defs()
                 self._load_cloud_service_configs()
             else:
