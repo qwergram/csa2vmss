@@ -261,8 +261,20 @@ class VSCloudService(object):
                         self.solution_data['projects'][i]['configurationsettings'][setting['name']] = setting['value']
 
     def _read_assembly_infos(self):
-        for project in self.solution_data['projects']:
-            print(project)
+        for i, project in enumerate(self.solution_data['projects']):
+            assembly = os.path.join(project['folder'], 'Properties', 'AssemblyInfo.cs')
+            if os.path.isfile(assembly):
+                with io.open(assembly, 'rb') as f:
+                    assembly_content = [line.strip().decode() for line in f.readlines() if line.lower().startswith(b"[assembly:")]
+                for line in assembly_content:
+                    contents = line.replace("[assembly: ", "").replace('("', " ").replace('")]', '').split(' ', 1)
+                    try:
+                        print(contents)
+                    except UnicodeEncodeError:
+                        pass
+            else:
+                self.solution_data['projects'][i]['assembly'] = None
+            # print(assembly, os.path.isfile(assembly))
 
     def load_solution(self):
         "Find all the configuration files"
