@@ -19,6 +19,7 @@ def load_solution(params):
     parsed = pyscripts.csa_parse.VSCloudService(params['Location'])
     parsed.load_solution()
     solution = parsed.solution_data
+    print(json.dumps(solution, indent=2, sort_keys=True))
     # import pdb; pdb.set_trace()
     return solution
 
@@ -44,6 +45,8 @@ def clean():
 
 
 def main():
+    if len(CURRENT_PATH.split('/')) <= 2 and len(CURRENT_PATH.split("\\")) <= 2:
+        raise Exception("Cannot operate out of %s" % CURRENT_PATH)
     if os.path.isdir(os.path.join(CURRENT_PATH, '__save')) and LAZY:
         pass
     else:
@@ -53,7 +56,7 @@ def main():
             param = parse(i, param)
             params[param[0]] = param[1]
         solution = load_solution(params)
-        zips = package_projects(solution)
+        # zips = package_projects(solution)
 
 
 if __name__ == "__main__":
