@@ -115,7 +115,7 @@ class VSCloudService(object):
 
     @property
     def sln_json(self):
-        return json.dumps(self.solution_data, indent=2)
+        return json.dumps(self.solution_data, indent=2, sorted_keys=True)
 
     def json(self, *args, **kwargs):
         return {}
@@ -175,7 +175,7 @@ class VSCloudService(object):
             return root
 
         def clean(text):
-            return text.replace("{http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition}", '')
+            return text.replace("{http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition}", '').lower()
 
         def mess(text):
             return "{http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition}" + text
@@ -191,20 +191,26 @@ class VSCloudService(object):
             # if clean(role.tag) == "WebRole":
             projectname = attributes['name']
             role_settings = {}
+
             for setting in role.getchildren():
-                role_settings[clean(setting.tag)] = {}
-                for subset in setting.getchildren():
-                    role_settings[clean(setting.tag)][clean(subset.tag)] = {}
-                    for key, value in subset.items():
-                        role_settings[clean(setting.tag)][clean(subset.tag)][key] = value
+                if clean(setting.tag) == "endpoints": # Spaghetti Drainer strat ftw
+                    role_settings[clean(setting.tag)] = {}
+                    for subset in setting.getchildren():
+                        for key, value in subset.items():
+                            role_settings[clean(setting.tag)][key] = value
+                else:
+                    role_settings[clean(setting.tag)] = []
+                    for subset in setting.getchildren():
+                        for key, value in subset.items():
+                            role_settings[clean(setting.tag)].append(value)
 
             for i, project in enumerate(self.solution_data['projects']):
                 if project['name'] == projectname:
                     self.solution_data['projects'][i]['role_type'] = clean(role.tag)
-                    self.solution_data['projects'][i]['config'] = role_settings
+                    for key, value in role_settings.items():
+                        self.solution_data['projects'][i][key.lower()] = value
+                    self.solution_data['projects'][i]['vmsize'] = attributes['vmsize']
                     break
-
-
 
         # web_stats = {
         #     "name": {key: value for key, value in root.find(mess("WebRole")).items()}['name'],
