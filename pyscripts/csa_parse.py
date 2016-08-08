@@ -1,5 +1,5 @@
-import os
 import io
+import os
 import sys
 import json
 
@@ -190,10 +190,20 @@ class VSCloudService(object):
             attributes = {key: value for key, value in role.items()}
             # if clean(role.tag) == "WebRole":
             projectname = attributes['name']
+            role_settings = {}
+            for setting in role.getchildren():
+                role_settings[clean(setting.tag)] = {}
+                for subset in setting.getchildren():
+                    role_settings[clean(setting.tag)][clean(subset.tag)] = {}
+                    for key, value in subset.items():
+                        role_settings[clean(setting.tag)][clean(subset.tag)][key] = value
+
             for i, project in enumerate(self.solution_data['projects']):
                 if project['name'] == projectname:
                     self.solution_data['projects'][i]['role_type'] = clean(role.tag)
+                    self.solution_data['projects'][i]['config'] = role_settings
                     break
+
 
 
         # web_stats = {
