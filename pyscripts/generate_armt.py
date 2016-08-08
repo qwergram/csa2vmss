@@ -104,7 +104,7 @@ def create_armt_from_meta():
             with io.open(os.path.join(project_path, 'blob_location.txt')) as location:
                 blob_location = location.read().strip()
 
-            CUSTOM_SCRIPT_PARAMS = ["/".join(blob_location[:-1]), blob_location[-1]]
+            CUSTOM_SCRIPT_PARAMS = ["/".join(blob_location.split('/')[:-1]), blob_location.split('/')[-1]]
 
             for i, resource in enumerate(content['resources']):
                 if resource['name'] == "MyCustomScriptExtension":
