@@ -139,6 +139,7 @@ ForEach-Object {
     ForEach-Object {
         if ($_.Name -eq "armtemplate.json") {
             $armtemplate = $_.FullName
+            $currentVmName = (Get-Content $_.FullName | ConvertFrom-Json).variables.vmName
         } elseif ($_.Name -eq "armtemplate.params.json") {
             $paramtemplate = $_.FullName
         } elseif ($_.Name.Endswith('.zip')) {
@@ -149,4 +150,10 @@ ForEach-Object {
     # There should be checking to see if $armtemplate and $paramtemplate is the right file
     Write-Host ("Building " + $zipfile)
     New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
+    
+    # Unable to include this in the ARM template succesfully, so I'll just do it with PS
+    
+    # Working on this last
+    # Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "iis-config.ps1" -VMName $currentVmName 
+
 }
