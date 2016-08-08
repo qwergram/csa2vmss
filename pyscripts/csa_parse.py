@@ -212,23 +212,6 @@ class VSCloudService(object):
                     self.solution_data['projects'][i]['vmsize'] = attributes['vmsize']
                     break
 
-        # web_stats = {
-        #     "name": {key: value for key, value in root.find(mess("WebRole")).items()}['name'],
-        #     "vmsize": {key: value for key, value in root.find(mess("WebRole")).items()}['vmsize'],
-        #     "endpoint": {key: value for key, value in root.find(mess("WebRole")).find(mess("Endpoints")).find(mess("InputEndpoint")).items()},
-        #     "settings": [value for child in root.find(mess("WebRole")).find(mess("ConfigurationSettings")).getchildren() for key, value in child.items()],
-        #     "imports": [value for child in root.find(mess("WebRole")).find(mess("Imports")).getchildren() for key, value in child.items()]
-        # }
-        #
-        # worker_stats = {
-        #     "name": {key: value for key, value in root.find(mess("WorkerRole")).items()}['name'],
-        #     "vmsize": {key: value for key, value in root.find(mess("WorkerRole")).items()}['vmsize'],
-        #     "settings": [value for child in root.find(mess("WorkerRole")).find(mess("ConfigurationSettings")).getchildren() for key, value in child.items()],
-        #     "imports": [value for child in root.find(mess("WorkerRole")).find(mess("Imports")).getchildren() for key, value in child.items()]
-        # }
-
-        # self.solution_data['parent']['csdef'] = {"path": parent_data['csdef'], "data": {"worker": worker_stats, "web": web_stats}}
-
     def _load_cloud_service_configs(self):
 
         def load_xml(location):
