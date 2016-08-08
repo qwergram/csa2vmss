@@ -84,7 +84,7 @@ ForEach-Object {
     } else {
         Get-ChildItem ($_.FullName + "\") -Filter "*.zip" | 
         ForEach-Object {
-            Set-AzureStorageBlobContent -File $_.FullName -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob $_.Name -Context $blobContext 
+            Set-AzureStorageBlobContent -File $_.FullName -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob $_.Name -Context $blobContext -Force
             
             # https://storagesysprep25.blob.core.windows.net/containersysprep25/zip_92A80_package.zip <- Should look something like this
             ("https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $solutionName.ToLower() + "/" + $_.Name) | Out-File -FilePath ($_.Directory.ToString() + "\blob_location.txt") -Encoding ascii
@@ -113,6 +113,16 @@ if ($singleWindow) {
     # Python Script input params: VMAdminn, VMPassword, DNSprefix
     start-process python -argument (($pwd.Path + "\pyscripts\generate_armt.py") +' ' + $VMAdmin + ' ' + $VMPassword + ' ' + ($DNSPrefx.ToLower() + $SolutionName.ToLower())) -ErrorAction Stop -Wait
 }
+
+# Create the IIS installation
+# Resources: 
+# https://blogs.msdn.microsoft.com/powershell/2014/08/07/introducing-the-azure-powershell-dsc-desired-state-configuration-extension/
+# https://msdn.microsoft.com/en-us/library/mt603660.aspx
+# https://msdn.microsoft.com/en-us/library/mt603584.aspx
+
+Write-Host "Uploading custom script for IIS installation"
+Set-AzureStorageBlobContent -File ($pwd.Path + "\templates\iis-config.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "iis-config.ps1" -Context $blobContext -Force
+
 
 # Build the VMs
 Write-Host "Building VMs"
