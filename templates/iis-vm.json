@@ -56,27 +56,6 @@
   },
   "resources": [
     {
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "MyCustomScriptExtension",
-      "apiVersion": "2015-05-01-preview",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/',variables('vmName'))]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Compute",
-        "type": "CustomScriptExtension",
-        "typeHandlerVersion": "1.4",
-        "autoUpgradeMinorVersion": false,
-        "settings": {
-          "fileUris": [
-            "https://sdaviesms.blob.core.windows.net/customscripts/install-iis-and-default-web-app.ps1"
-          ],
-          "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -File install-iis-and-default-web-app.ps1 -FileName {0} -FileLocation {1}"
-        }
-      }
-    },
-    {
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[variables('storageAccountName')]",
       "apiVersion": "2016-01-01",
