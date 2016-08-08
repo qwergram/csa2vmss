@@ -125,6 +125,7 @@ class VSCloudService(object):
         return bool(self.solution_data.get('projects', False) and self.solution_data.get('parent', False))
 
 
+    # XXX INCLUDE THIS SOMEHOW
     def _load_csproj(self, project_json):
         """Read xml of csproj"""
         debug("Reading xml contents")
@@ -196,13 +197,21 @@ class VSCloudService(object):
                 if clean(setting.tag) == "endpoints": # Spaghetti Drainer strat ftw
                     role_settings[clean(setting.tag)] = {}
                     for subset in setting.getchildren():
-                        for key, value in subset.items():
-                            role_settings[clean(setting.tag)][key] = value
+                        subset_items = {key: value for key, value in subset.items()}
+                        role_settings[clean(setting.tag)][subset_items['name']] = {"port": subset_items['port'], "protocol": subset_items["protocol"]}
                 elif clean(setting.tag) == "configurationsettings":
                     role_settings[clean(setting.tag)] = {}
                     for subset in setting.getchildren():
                         for key, value in subset.items():
                             role_settings[clean(setting.tag)][value] = None
+                elif clean(setting.tag) == "sites":
+                    role_settings[clean(setting.tag)] = {"bindings": []}
+                    for site in setting.getchildren():
+                        for bindings in site.getchildren():
+                            for binding in bindings.getchildren():
+                                binding = {key: value for key, value in binding.items()}
+                                if binding.get('endpointName'):
+                                    role_settings[clean(setting.tag)]['bindings'].append(binding['endpointName'])
                 else:
                     role_settings[clean(setting.tag)] = []
                     for subset in setting.getchildren():
@@ -251,6 +260,10 @@ class VSCloudService(object):
                         setting = {key: value for key, value in setting.items()}
                         self.solution_data['projects'][i]['configurationsettings'][setting['name']] = setting['value']
 
+    def _read_assembly_infos(self):
+        for project in self.solution_data['projects']:
+            print(project)
+
     def load_solution(self):
         "Find all the configuration files"
         debug("Loading solution")
@@ -260,6 +273,7 @@ class VSCloudService(object):
                 self.solution_data = sln_data
                 self._load_cloud_service_defs()
                 self._load_cloud_service_configs()
+                self._read_assembly_infos()
             else:
                 debug(".sln data invalid")
                 sys.exit(1)
