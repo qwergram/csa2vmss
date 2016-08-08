@@ -198,6 +198,11 @@ class VSCloudService(object):
                     for subset in setting.getchildren():
                         for key, value in subset.items():
                             role_settings[clean(setting.tag)][key] = value
+                elif clean(setting.tag) == "configurationsettings":
+                    role_settings[clean(setting.tag)] = {}
+                    for subset in setting.getchildren():
+                        for key, value in subset.items():
+                            role_settings[clean(setting.tag)][value] = None
                 else:
                     role_settings[clean(setting.tag)] = []
                     for subset in setting.getchildren():
@@ -235,7 +240,6 @@ class VSCloudService(object):
 
         root = load_xml(self.solution_data['parent']['cscfg'])
 
-        # === Uncomment this and work on it ===
         for role in root.getchildren():
             role_items = {key: value for key, value in role.items()}
             for i, project in enumerate(self.solution_data['projects']):
@@ -243,21 +247,10 @@ class VSCloudService(object):
                     instances = int(role.find(mess("Instances")).items()[0][1])
                     self.solution_data['projects'][i]['instances'] = instances
 
-        #     if role_items[0][1] == self.solution_data['parent']['csdef']['data']['web']['name']:
-        #         type = "web"
-        #     elif role_items[0][1] == self.solution_data['parent']['csdef']['data']['worker']['name']:
-        #         type = "worker"
-        #     else:
-        #         debug("Unexpected configuration file (%s)" % (role_items))
-        #         sys.exit(1)
-        #
-        #     self.solution_data['parent']['csdef']['data'][type]["instances"] = role.find(mess("Instances")).items()[0][1]
-        #     self.solution_data['parent']['csdef']['data'][type]["setting_values"] = {}
-        #     for setting in role.find(mess("ConfigurationSettings")).getchildren():
-        #         setting = {key: value for key, value in setting.items()}
-        #         self.solution_data['parent']['csdef']['data'][type]["setting_values"][setting["name"]] = setting["value"]
-        #
-        # self.solution_data['parent']['cscfg']
+                    for setting in role.find(mess("ConfigurationSettings")).getchildren():
+                        setting = {key: value for key, value in setting.items()}
+                        self.solution_data['projects'][i]['configurationsettings'][setting['name']] = setting['value']
+
 
     def load_projects(self):
         debug("loading projects")
