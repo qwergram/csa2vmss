@@ -270,9 +270,30 @@ class VSCloudService(object):
         return json_blob
 
     def _read_appconfigs(self, config_path):
+        configs = load_xml(config_path).getchildren()
+        config_blob = {}
+        for category in configs:
+            tag = category.tag.lower()
+            if tag in ["configsections", "connectionstrings"]:
+                config_blob[tag] = [{key: value for key, value in setting.items()} for setting in category.getchildren()]
+            elif tag in ["appsettings"]:
+                config_blob[tag] = {}
+                for setting in category.getchildren():
+                    content = {key: value for key, value in setting.items()}
+                    value = content["value"]
+                    value = int(value) if value.isdigit() else value
+                    value = False if type(value) == str and value.lower() == "false" else value
+                    value = True if type(value) == str and value.lower() == "true" else value
+                    config_blob[tag][content["key"]] = value
+            # elif tag == "runtime":
+                # pass
+            # elif tag == "entityframework":
+                # pass
+            else:
+                pass
+        import pdb; pdb.set_trace()
 
-
-
+        return config_blob
 
 
 
@@ -291,7 +312,7 @@ class VSCloudService(object):
 
             if os.path.isfile(appconfig):
                 self.solution_data['projects'][i]['appconfig_path'] = appconfig
-                # self.solution_data['projects'][i]['app_configs'] = self._read_appconfigs(packages)
+                self.solution_data['projects'][i]['app_configs'] = self._read_appconfigs(appconfig)
 
     def load_solution(self):
         "Find all the configuration files"
