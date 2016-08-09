@@ -291,8 +291,6 @@ class VSCloudService(object):
                 # pass
             else:
                 pass
-        import pdb; pdb.set_trace()
-
         return config_blob
 
 
