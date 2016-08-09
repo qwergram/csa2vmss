@@ -11,11 +11,10 @@ def debug(*args, **kwargs):
     if DEBUG:
         print("[!]", *args, **kwargs)
 
-def script(script):
-    return os.path.join(CURRENT_PATH, 'scripts', script)
-
-def template(name):
-    return os.path.join(CURRENT_PATH, 'templates', name)
+def load_xml(location):
+    import xml.etree.ElementTree
+    root = xml.etree.ElementTree.parse(location).getroot()
+    return root
 
 
 class VSCloudService(object):
@@ -136,11 +135,6 @@ class VSCloudService(object):
         def clean(text):
             return text.replace("{http://schemas.microsoft.com/developer/msbuild/2003}", "")
 
-        def load_xml(location):
-            import xml.etree.ElementTree
-            root = xml.etree.ElementTree.parse(location).getroot()
-            return root
-
         config_json = []
         include_json = {}
 
@@ -169,11 +163,6 @@ class VSCloudService(object):
         return project_json
 
     def _load_cloud_service_defs(self):
-
-        def load_xml(location):
-            import xml.etree.ElementTree
-            root = xml.etree.ElementTree.parse(location).getroot()
-            return root
 
         def clean(text):
             return text.replace("{http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition}", '').lower()
@@ -228,11 +217,6 @@ class VSCloudService(object):
 
     def _load_cloud_service_configs(self):
 
-        def load_xml(location):
-            import xml.etree.ElementTree
-            root = xml.etree.ElementTree.parse(location).getroot()
-            return root
-
         def clean(text):
             return text.replace("{http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration}", '')
 
@@ -280,15 +264,17 @@ class VSCloudService(object):
 
     def _read_packages(self, package):
 
-        def load_xml(location):
-            import xml.etree.ElementTree
-            root = xml.etree.ElementTree.parse(location).getroot()
-            return root
-
         packages = load_xml(package).getchildren()
         json_blob = [{key: value for key, value in package.items()} for package in packages]
 
         return json_blob
+
+    def _read_appconfigs(self, config_path):
+
+
+
+
+
 
     def _read_package_configs(self):
         for i, project in enumerate(self.solution_data['projects']):
