@@ -19,7 +19,7 @@ def load_solution(params):
     parsed = pyscripts.csa_parse.VSCloudService(params['Location'])
     parsed.load_solution()
     solution = parsed.solution_data
-    print(json.dumps(solution, indent=2, sort_keys=True))
+    # print(json.dumps(solution, indent=2, sort_keys=True))
     # import pdb; pdb.set_trace()
     return solution
 
