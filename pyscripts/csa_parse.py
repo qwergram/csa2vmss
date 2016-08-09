@@ -278,6 +278,18 @@ class VSCloudService(object):
             else:
                 self.solution_data['projects'][i]['assembly'] = None
 
+    def _read_packages(self, package):
+
+        def load_xml(location):
+            import xml.etree.ElementTree
+            root = xml.etree.ElementTree.parse(location).getroot()
+            return root
+
+        packages = load_xml(package).getchildren()
+        json_blob = [{key: value for key, value in package.items()} for package in packages]
+
+        return json_blob
+
     def _read_package_configs(self):
         for i, project in enumerate(self.solution_data['projects']):
             folder = project['folder']
@@ -286,10 +298,14 @@ class VSCloudService(object):
                 appconfig = os.path.join(project['folder'], 'Web.config')
             else:
                 appconfig = os.path.join(project['folder'], 'app.config')
+
             if os.path.isfile(packages):
                 self.solution_data['projects'][i]['packageconfig_path'] = packages
+                self.solution_data['projects'][i]['packages'] = self._read_packages(packages)
+
             if os.path.isfile(appconfig):
                 self.solution_data['projects'][i]['appconfig_path'] = appconfig
+                # self.solution_data['projects'][i]['app_configs'] = self._read_appconfigs(packages)
 
     def load_solution(self):
         "Find all the configuration files"
