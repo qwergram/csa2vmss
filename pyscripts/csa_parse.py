@@ -261,20 +261,22 @@ class VSCloudService(object):
                         self.solution_data['projects'][i]['configurationsettings'][setting['name']] = setting['value']
 
     def _read_assembly_infos(self):
+        "Read assembly files"
         for i, project in enumerate(self.solution_data['projects']):
             assembly = os.path.join(project['folder'], 'Properties', 'AssemblyInfo.cs')
             if os.path.isfile(assembly):
                 with io.open(assembly, 'rb') as f:
                     assembly_content = [line.strip().decode() for line in f.readlines() if line.lower().startswith(b"[assembly:")]
+                self.solution_data['projects'][i]['assembly'] = {}
                 for line in assembly_content:
-                    contents = line.replace("[assembly: ", "").replace('("', " ").replace('")]', '').split(' ', 1)
-                    try:
-                        print(contents)
-                    except UnicodeEncodeError:
-                        pass
+                    key, value = line.replace("[assembly: ", "").replace('(', " ").replace(')]', '').split(' ', 1)
+                    value = value[1:-1] if value.startswith('"') and value.endswith('"') else value
+                    value = False if value.lower() == "false" else value
+                    value = True if type(value) == str and value.lower() == "true" else value
+                    value = int(value) if type(value) == str and value.isdigit() else value
+                    self.solution_data['projects'][i]['assembly'][key] = value
             else:
                 self.solution_data['projects'][i]['assembly'] = None
-            # print(assembly, os.path.isfile(assembly))
 
     def load_solution(self):
         "Find all the configuration files"
