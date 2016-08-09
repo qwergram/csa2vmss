@@ -278,6 +278,19 @@ class VSCloudService(object):
             else:
                 self.solution_data['projects'][i]['assembly'] = None
 
+    def _read_package_configs(self):
+        for i, project in enumerate(self.solution_data['projects']):
+            folder = project['folder']
+            packages = os.path.join(project['folder'], 'packages.config')
+            if project.get('role_type') == 'webrole':
+                appconfig = os.path.join(project['folder'], 'Web.config')
+            else:
+                appconfig = os.path.join(project['folder'], 'app.config')
+            if os.path.isfile(packages):
+                self.solution_data['projects'][i]['packageconfig_path'] = packages
+            if os.path.isfile(appconfig):
+                self.solution_data['projects'][i]['appconfig_path'] = appconfig
+
     def load_solution(self):
         "Find all the configuration files"
         debug("Loading solution")
@@ -288,6 +301,7 @@ class VSCloudService(object):
                 self._load_cloud_service_defs()
                 self._load_cloud_service_configs()
                 self._read_assembly_infos()
+                self._read_package_configs()
             else:
                 debug(".sln data invalid")
                 sys.exit(1)
