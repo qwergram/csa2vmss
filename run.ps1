@@ -76,16 +76,16 @@ Try {
 }
 
 # Okay, upload the files now
-Get-ChildItem ($pwd.Path + "\__save") | 
+Get-ChildItem ($pwd.Path + "\__save") |
 ForEach-Object {
     # Look for the zip file
     if ($_.FullName.EndsWith('.csv')) {
-        
+
     } else {
-        Get-ChildItem ($_.FullName + "\") -Filter "*.zip" | 
+        Get-ChildItem ($_.FullName + "\") -Filter "*.zip" |
         ForEach-Object {
             Set-AzureStorageBlobContent -File $_.FullName -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob $_.Name -Context $blobContext -Force
-            
+
             # https://storagesysprep25.blob.core.windows.net/containersysprep25/zip_92A80_package.zip <- Should look something like this
             ("https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $solutionName.ToLower() + "/" + $_.Name) | Out-File -FilePath ($_.Directory.ToString() + "\blob_location.txt") -Encoding ascii
         }
@@ -115,7 +115,7 @@ if ($singleWindow) {
 }
 
 # Create the IIS installation
-# Resources: 
+# Resources:
 # https://blogs.msdn.microsoft.com/powershell/2014/08/07/introducing-the-azure-powershell-dsc-desired-state-configuration-extension/
 # https://msdn.microsoft.com/en-us/library/mt603660.aspx
 # https://msdn.microsoft.com/en-us/library/mt603584.aspx
@@ -125,17 +125,19 @@ Set-AzureStorageBlobContent -File ($pwd.Path + "\templates\iis-config.ps1") -Con
 
 
 # Build the VMs
+# Resrouces:
+# http://weblogs.asp.net/scottgu/automating-deployment-with-microsoft-web-deploy
 Write-Host "Building VMs"
-Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.csv' | 
+Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.csv' |
 ForEach-Object {
     # Get the Jon templates
-    
+
     $armtemplate = $null
     $paramtemplate = $null
     $zipfile = $null
     $projectid = $null
 
-    Get-ChildItem ($_.FullName + "\") | 
+    Get-ChildItem ($_.FullName + "\") |
     ForEach-Object {
         if ($_.Name -eq "armtemplate.json") {
             $armtemplate = $_.FullName
@@ -145,15 +147,17 @@ ForEach-Object {
         } elseif ($_.Name.Endswith('.zip')) {
             $projectid = $_.Name.Split('_')[1]
             $zipfile = $_.FullName
-        }       
+        }
     }
     # There should be checking to see if $armtemplate and $paramtemplate is the right file
     Write-Host ("Building " + $zipfile)
     New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
-    
+
     # Unable to include this in the ARM template succesfully, so I'll just do it with PS
-    
+
     # Working on this last
-    # Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "iis-config.ps1" -VMName $currentVmName 
+    # Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "iis-config.ps1" -VMName $currentVmName
+    # Install this on server: http://go.microsoft.com/fwlink/?LinkID=145505
+    # Used for web deploys
 
 }
