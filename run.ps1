@@ -173,7 +173,8 @@ ForEach-Object {
         if ($_.Name -eq "armtemplate.json") {
             $armtemplate = $_.FullName
             $currentProjectData = Get-Content $_.FullName | ConvertFrom-Json
-            $currentVmName = $currentVmName.variables.vmName
+            $currentVmName = $currentProjectData.variables.vmName
+            $currentVmRole = $currentProjectData.role_type
         } elseif ($_.Name -eq "armtemplate.params.json") {
             $paramtemplate = $_.FullName
         } elseif ($_.Name.Endswith('.zip')) {
@@ -189,13 +190,19 @@ ForEach-Object {
     Write-Host "Enabling Remote Powershell Terminal"
     Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run "rmps.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
     
+    
     # Enable Web Deploy ONLY if it's a Web role
 
-    # Enable IIS
-    Write-Host "Enabling IIS"
-    Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run "iis.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
+    if ($currentVmRole.ToLower() -eq "webrole"){
+        
+        Write-Host "Installing Web Role components"
 
+        # Enable IIS
+        Write-Host "Enabling IIS"
+        Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run "iis.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
 
-    
-    Write-Host "Enabling Web Deploy"
+        Write-Host "Enabling Web Deploy"
+    } else {
+        Write-Host "Installing Worker Role components"
+    }
 }
