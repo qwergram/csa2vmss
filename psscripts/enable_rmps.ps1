@@ -7,7 +7,21 @@ Import-Module ServerManager
 # --------------------------------------------------------------------
 # Installing IIS
 # --------------------------------------------------------------------
-Add-WindowsFeature -Name Web-Common-Http,Web-Asp-Net,Web-Net-Ext,Web-ISAPI-Ext,Web-ISAPI-Filter,Web-Http-Logging,Web-Request-Monitor,Web-Basic-Auth,Web-Windows-Auth,Web-Filtering,Web-Performance,Web-Mgmt-Console,Web-Mgmt-Compat,RSAT-Web-Server,WAS -IncludeAllSubFeature
+Add-WindowsFeature -Name Web-Common-Http -IncludeAllSubFeature
+Add-WindowsFeature -Name Web-Asp-Net -IncludeAllSubFeature
+Add-WindowsFeature -Name Web-Net-Ext -IncludeAllSubFeature
+Add-WindowsFeature -Name Web-ISAPI-Ext -IncludeAllSubFeature
+Add-WindowsFeature -Name Web-ISAPI-Filter -IncludeAllSubFeature
+Add-WindowsFeature -Name Web-Http-Logging -IncludeAllSubFeature
+Add-WindowsFeature -Name Web-Request-Monitor -IncludeAllSubFeature
+Add-WindowsFeature -Name Web-Basic-Auth -IncludeAllSubFeature
+Add-WindowsFeature -Name Web-Windows-Auth -IncludeAllSubFeature
+Add-WindowsFeature -Name Web-Filtering -IncludeAllSubFeature
+Add-WindowsFeature -Name Web-Performance -IncludeAllSubFeature
+Add-WindowsFeature -Name Web-Mgmt-Console -IncludeAllSubFeature
+Add-WindowsFeature -Name Web-Mgmt-Compat -IncludeAllSubFeature
+Add-WindowsFeature -Name RSAT-Web-Server -IncludeAllSubFeature
+Add-WindowsFeature -Name WAS -IncludeAllSubFeature
 
 # --------------------------------------------------------------------
 # Loading IIS Modules
