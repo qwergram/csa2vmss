@@ -1,7 +1,7 @@
 
 # These need to be params later...
 $SLNLocation = "C:\\Users\\v-nopeng\\Desktop\\C#\\"
-$SolutionName = "SysPrep26"
+$SolutionName = "SysPrep27"
 $ResourcePrefix = "ResGroup"
 $StoragePrefix = "storage"
 $VMPrefix = "VM"
@@ -16,6 +16,7 @@ $VMVHDSize = 100
 $VMSize = "Standard_D1"
 $VMAdmin = "titan"
 $VMPassword = "Mar.Wed.17.2027"
+$AzureProfile = "Free Trial"
 
 
 # Visualizations for This App
@@ -151,12 +152,18 @@ ForEach-Object {
     }
     # There should be checking to see if $armtemplate and $paramtemplate is the right file
     Write-Host ("Building " + $zipfile)
-    New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
+    # New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
 
     # Unable to include this in the ARM template succesfully, so I'll just do it with PS
 
     # Working on this last
-    # Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "iis-config.ps1" -VMName $currentVmName
+    $currentVMObject = Get-AzureRmVM -Name $currentVmName -ResourceGroupName ($ResourcePrefix + $SolutionName)
+    Write-Host $currentVmName
+    Write-Host ($ResourcePrefix + $SolutionName)
+    Write-Host ($StoragePrefix.ToLower() + $SolutionName.ToLower())
+    Write-Host ($containerPrefix.ToLower() + $SolutionName.ToLower())
+
+    Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "iis-config.ps1" -VMName $currentVmName -Run "iis-config.ps1" -StorageAccountKey $key
     # Install this on server: http://go.microsoft.com/fwlink/?LinkID=145505
     # Used for web deploys
 
