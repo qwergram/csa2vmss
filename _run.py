@@ -45,14 +45,14 @@ def clean():
 
 
 def screenshot(data):
-    with io.open(os.path.join(CURRENT_PATH, '__save', 'screenshot.json')) as context:
+    with io.open(os.path.join(CURRENT_PATH, '__save', 'screenshot.json'), 'w') as context:
         context.write(json.dumps(data, indent=2))
 
 
 def main():
     if len(CURRENT_PATH.split('/')) <= 2 and len(CURRENT_PATH.split("\\")) <= 2:
         raise Exception("Cannot operate out of %s" % CURRENT_PATH)
-    if os.path.isdir(os.path.join(CURRENT_PATH, '__save')) and LAZY:
+    if os.path.isdir(os.path.join(CURRENT_PATH, '__save', 'screenshot.json')) and LAZY:
         pass
     else:
         clean()
