@@ -1,7 +1,8 @@
 
 # These need to be params later...
+
 $SLNLocation = "C:\\Users\\v-nopeng\\Desktop\\C#\\"
-$SolutionName = "SysPrep27"
+$SolutionName = "SysPrep28"
 $ResourcePrefix = "ResGroup"
 $StoragePrefix = "storage"
 $VMPrefix = "VM"
@@ -10,14 +11,14 @@ $SkuName = "Standard_LRS"
 $containerPrefix = "container"
 $DNSPrefx = "dns"
 $DeploymentPrefix = "deploy"
+$scriptPrefix = "script"
+$AzureProfile = "Free Trial"
 
 # Virtual Machine Stats
 $VMVHDSize = 100
 $VMSize = "Standard_D1"
 $VMAdmin = "titan"
 $VMPassword = "Mar.Wed.17.2027"
-$AzureProfile = "Free Trial"
-
 
 # Visualizations for This App
 $singleWindow = $false
@@ -155,16 +156,16 @@ ForEach-Object {
     # New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
 
     # Unable to include this in the ARM template succesfully, so I'll just do it with PS
-
-    # Working on this last
-    $currentVMObject = Get-AzureRmVM -Name $currentVmName -ResourceGroupName ($ResourcePrefix + $SolutionName)
-    Write-Host $currentVmName
-    Write-Host ($ResourcePrefix + $SolutionName)
-    Write-Host ($StoragePrefix.ToLower() + $SolutionName.ToLower())
-    Write-Host ($containerPrefix.ToLower() + $SolutionName.ToLower())
-
-    Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "iis-config.ps1" -VMName $currentVmName -Run "iis-config.ps1" -StorageAccountKey $key
     # Install this on server: http://go.microsoft.com/fwlink/?LinkID=145505
+
     # Used for web deploys
+
+    # Run the script
+    Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "iis-config.ps1" -VMName $currentVmName -Run "iis-config.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
+
+    # Get the VM and get status of script
+    $currentVMObject = Get-AzureRmVM -Name $currentVmName -ResourceGroupName ($ResourcePrefix + $SolutionName)
+
+
 
 }
