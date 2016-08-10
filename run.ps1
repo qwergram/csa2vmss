@@ -148,8 +148,11 @@ if ($singleWindow) {
 # https://msdn.microsoft.com/en-us/library/mt603660.aspx
 # https://msdn.microsoft.com/en-us/library/mt603584.aspx
 
-Write-Host "Uploading custom script to storage blob"
+Write-Host "Uploading custom scripts to storage blob"
+Write-Host "Uploading RMPS script"
 Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_rmps.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "rmps.ps1" -Context $blobContext -Force
+Write-Host "Uploading IIS script"
+Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_iis.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "iis.ps1" -Context $blobContext -Force
 
 
 # Build the VMs
@@ -169,7 +172,8 @@ ForEach-Object {
     ForEach-Object {
         if ($_.Name -eq "armtemplate.json") {
             $armtemplate = $_.FullName
-            $currentVmName = (Get-Content $_.FullName | ConvertFrom-Json).variables.vmName
+            $currentProjectData = Get-Content $_.FullName | ConvertFrom-Json
+            $currentVmName = $currentVmName.variables.vmName
         } elseif ($_.Name -eq "armtemplate.params.json") {
             $paramtemplate = $_.FullName
         } elseif ($_.Name.Endswith('.zip')) {
@@ -181,10 +185,17 @@ ForEach-Object {
     Write-Host ("Building " + $zipfile)
     New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
 
-    # Enable Powershell/IIS
-    Write-Host "Enabling Remote Powershell Terminal & IIS"
+    # Enable Powershell
+    Write-Host "Enabling Remote Powershell Terminal"
     Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run "rmps.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
-
+    
     # Enable Web Deploy ONLY if it's a Web role
+
+    # Enable IIS
+    Write-Host "Enabling IIS"
+    Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run "iis.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
+
+
+    
     Write-Host "Enabling Web Deploy"
 }
