@@ -20,7 +20,6 @@ Add-WindowsFeature -Name Web-Filtering -IncludeAllSubFeature
 Add-WindowsFeature -Name Web-Performance -IncludeAllSubFeature
 Add-WindowsFeature -Name Web-Mgmt-Console -IncludeAllSubFeature
 Add-WindowsFeature -Name Web-Mgmt-Compat -IncludeAllSubFeature
-Add-WindowsFeature -Name RSAT-Web-Server -IncludeAllSubFeature
 Add-WindowsFeature -Name WAS -IncludeAllSubFeature
 
 # --------------------------------------------------------------------
@@ -41,7 +40,11 @@ Invoke-Expression -Command $Command
 Enable-PSRemoting -Force
 
 # Create rule in Windows Firewall
-New-NetFirewallRule -Name "WinRM HTTPS" -DisplayName "WinRM HTTPS" -Enabled True -Profile Any -Action Allow -Direction Inbound -LocalPort 5986 -Protocol TCP
+Try {
+    Get-NetFirewallRule -Name "WinRM HTTPS" -ErrorAction Stop
+} Catch {
+    New-NetFirewallRule -Name "WinRM HTTPS" -DisplayName "WinRM HTTPS" -Enabled True -Profile Any -Action Allow -Direction Inbound -LocalPort 5986 -Protocol TCP
+}
 
 # Create Self Signed certificate and store thumbprint
 $thumbprint = (New-SelfSignedCertificate -DnsName $env:COMPUTERNAME -CertStoreLocation Cert:\LocalMachine\My).Thumbprint
