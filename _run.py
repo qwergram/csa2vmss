@@ -5,7 +5,7 @@ import json
 import pyscripts.csa_parse
 
 CURRENT_PATH = os.getcwd()
-LAZY = False
+LAZY = True
 
 
 def parse(enum, content):
@@ -44,6 +44,11 @@ def clean():
     os.mkdir(os.path.join(CURRENT_PATH, '__save'))
 
 
+def screenshot(data):
+    with io.open(os.path.join(CURRENT_PATH, '__save', 'screenshot.json')) as context:
+        context.write(json.dumps(data, indent=2))
+
+
 def main():
     if len(CURRENT_PATH.split('/')) <= 2 and len(CURRENT_PATH.split("\\")) <= 2:
         raise Exception("Cannot operate out of %s" % CURRENT_PATH)
@@ -56,6 +61,7 @@ def main():
             param = parse(i, param)
             params[param[0]] = param[1]
         solution = load_solution(params)
+        screenshot(solution)
         zips = package_projects(solution)
 
 
