@@ -177,6 +177,11 @@ class VSCloudService(object):
             self.solution_data['projects'][i]['name'] = project['folder'].split("\\")[-1]
 
         for role in root.getchildren():
+            """
+            The commons file should not be treated as a role... it includes files that should be found on
+            both the webrole and workerrole.. right?
+            """
+
             attributes = {key: value for key, value in role.items()}
             # if clean(role.tag) == "WebRole":
             projectname = attributes['name']
