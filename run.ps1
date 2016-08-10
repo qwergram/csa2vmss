@@ -2,7 +2,7 @@
 # These need to be params later...
 
 $SLNLocation = "C:\\Users\\v-nopeng\\Desktop\\C#\\"
-$SolutionName = "SysPrep29"
+$SolutionName = "SysPrep30"
 $ResourcePrefix = "ResGroup"
 $StoragePrefix = "storage"
 $VMPrefix = "VM"
@@ -161,24 +161,18 @@ ForEach-Object {
     }
     # There should be checking to see if $armtemplate and $paramtemplate is the right file
     Write-Host ("Building " + $zipfile)
-    #New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
+    New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
 
-    # Unable to include this in the ARM template succesfully, so I'll just do it with PS
-    # Install this on server: http://go.microsoft.com/fwlink/?LinkID=145505
-
-    # Used for web deploys
-
-    # Run the script
+    #Write-Host "Getting VM object"
+    #$currentVMObject = Get-AzureRmVM -Name $currentVmName -ResourceGroupName ($ResourcePrefix + $SolutionName)
     Write-Host "Creating Custom Script Extension"
     Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run "rmps.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
+    # Update-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -VM $currentVMObject -Confirm
     
     # Get the VM and get status of script
     # Resources: 
     # https://msdn.microsoft.com/en-us/library/mt603830.aspx
     # https://blogs.technet.microsoft.com/uktechnet/2016/02/12/create-a-custom-script-extension-for-an-azure-resource-manager-vm-using-powershell/
-    $results = Get-AzureRmVMCustomScriptExtension -Name ($scriptPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -VMName $currentVmName
-
-    Write-Host "Getting VM object"
-    $currentVMObject = Get-AzureRmVM -Name $currentVmName -ResourceGroupName ($ResourcePrefix + $SolutionName)
+    # $results = Get-AzureRmVMCustomScriptExtension -Name ($scriptPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -VMName $currentVmName
 
 }
