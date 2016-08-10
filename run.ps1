@@ -2,7 +2,7 @@
 # These need to be params later...
 
 $SLNLocation = "C:\\Users\\v-nopeng\\Desktop\\C#\\"
-$SolutionName = "SysPrep28"
+$SolutionName = "SysPrep29"
 $ResourcePrefix = "ResGroup"
 $StoragePrefix = "storage"
 $VMPrefix = "VM"
@@ -20,15 +20,23 @@ $VMSize = "Standard_D1"
 $VMAdmin = "titan"
 $VMPassword = "Mar.Wed.17.2027"
 
+
+
 # Visualizations for This App
 $singleWindow = $false
 
 # Have the User Login
 Write-Host "Hello!"
 Try {
-    Get-AzureRmSubscription -ErrorAction Stop
+    $RmSubscription = Get-AzureRmSubscription -ErrorAction Stop
 } Catch {
     Login-AzureRmAccount
+}
+
+Try {
+    $Subscription = Select-AzureSubscription $AzureProfile -ErrorAction Stop
+} Catch {
+    Add-AzureAccount
 }
 
 # This script parses the Visual Studio Solution and zips it
@@ -123,7 +131,7 @@ if ($singleWindow) {
 # https://msdn.microsoft.com/en-us/library/mt603584.aspx
 
 Write-Host "Uploading custom script for IIS installation"
-Set-AzureStorageBlobContent -File ($pwd.Path + "\templates\iis-config.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "iis-config.ps1" -Context $blobContext -Force
+Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_rmps.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "rmps.ps1" -Context $blobContext -Force
 
 
 # Build the VMs
@@ -153,7 +161,7 @@ ForEach-Object {
     }
     # There should be checking to see if $armtemplate and $paramtemplate is the right file
     Write-Host ("Building " + $zipfile)
-    # New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
+    #New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
 
     # Unable to include this in the ARM template succesfully, so I'll just do it with PS
     # Install this on server: http://go.microsoft.com/fwlink/?LinkID=145505
@@ -161,11 +169,16 @@ ForEach-Object {
     # Used for web deploys
 
     # Run the script
-    Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "iis-config.ps1" -VMName $currentVmName -Run "iis-config.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
-
+    Write-Host "Creating Custom Script Extension"
+    Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run "rmps.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
+    
     # Get the VM and get status of script
+    # Resources: 
+    # https://msdn.microsoft.com/en-us/library/mt603830.aspx
+    # https://blogs.technet.microsoft.com/uktechnet/2016/02/12/create-a-custom-script-extension-for-an-azure-resource-manager-vm-using-powershell/
+    $results = Get-AzureRmVMCustomScriptExtension -Name ($scriptPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -VMName $currentVmName
+
+    Write-Host "Getting VM object"
     $currentVMObject = Get-AzureRmVM -Name $currentVmName -ResourceGroupName ($ResourcePrefix + $SolutionName)
-
-
 
 }
