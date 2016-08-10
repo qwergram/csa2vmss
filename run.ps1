@@ -153,7 +153,8 @@ Write-Host "Uploading RMPS script"
 Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_rmps.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "rmps.ps1" -Context $blobContext -Force
 Write-Host "Uploading IIS script"
 Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_iis.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "iis.ps1" -Context $blobContext -Force
-
+Write-Host "Uploading Web Deploy script"
+Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_web_deploy.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "web_deploy.ps1" -Context $blobContext -Force
 
 # Build the VMs
 # Resrouces:
@@ -201,7 +202,11 @@ ForEach-Object {
         Write-Host "Enabling IIS"
         Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run "iis.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
 
+        # Enable Web Deploy
         Write-Host "Enabling Web Deploy"
+        Set-Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run "web_deploy.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
+
+
     } else {
         Write-Host "Installing Worker Role components"
     }
