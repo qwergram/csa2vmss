@@ -1,24 +1,42 @@
 
 # These need to be params later...
-
-$SLNLocation = "C:\\Users\\v-nopeng\\Desktop\\C#\\"
-$SolutionName = "SysPrep30"
-$ResourcePrefix = "ResGroup"
-$StoragePrefix = "storage"
-$VMPrefix = "VM"
-$Location = "West US"
-$SkuName = "Standard_LRS"
-$containerPrefix = "container"
-$DNSPrefx = "dns"
-$DeploymentPrefix = "deploy"
-$scriptPrefix = "script"
-$AzureProfile = "Free Trial"
+Param(
+    [string]
+    $SLNLocation = "C:\\Users\\v-nopeng\\Desktop\\C#\\",
+    [string]
+    $SolutionName = "SysPrep32",
+    [string]
+    $ResourcePrefix = "ResGroup",
+    [string]
+    $StoragePrefix = "storage",
+    [string]
+    $VMPrefix = "VM",
+    [string]
+    $Location = "West US",
+    [string]
+    $SkuName = "Standard_LRS",
+    [string]
+    $containerPrefix = "container",
+    [string]
+    $DNSPrefx = "dns",
+    [string]
+    $DeploymentPrefix = "deploy",
+    [string]
+    $scriptPrefix = "script",
+    [string]
+    $AzureProfile = "Free Trial",
+    [int]
+    $VMVHDSize = 100,
+    [string]
+    $VMSize = "Standard_D1",
+    [string]
+    $VMAdmin = "titan",
+    [string]
+    $VMPassword = "Mar.Wed.17.2027"
+)
 
 # Virtual Machine Stats
-$VMVHDSize = 100
-$VMSize = "Standard_D1"
-$VMAdmin = "titan"
-$VMPassword = "Mar.Wed.17.2027"
+
 
 
 
@@ -138,7 +156,7 @@ Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_rmps.ps1") -Co
 # Resrouces:
 # http://weblogs.asp.net/scottgu/automating-deployment-with-microsoft-web-deploy
 Write-Host "Building VMs"
-Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.csv' |
+Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.*' |
 ForEach-Object {
     # Get the Jon templates
 

@@ -94,7 +94,7 @@ def create_armt_from_meta():
         load_arm_params()
         project_path = os.path.join(CURRENT_PATH, '__save', project)
         if os.path.isdir(project_path):
-            project_id = project[:3].lower()
+            project_id = project[:4].lower()
             # Personalize each important variable to each project
             content['variables']['vmName'] = project_id + VARIABLES['vmName']
             content['variables']['storageAccountName'] = project_id + VARIABLES['storageAccountName']
