@@ -64,6 +64,8 @@ CUSTOM_SCRIPT_PARAMS = []
 
 PARAM_TEMPLATE = {}
 
+PUBLIC_IP = VARIABLES['publicIPAddressName']
+
 def load_arm_vars():
     with io.open(os.path.join(CURRENT_PATH, '__save', 'arm_vars.csv')) as content:
         new_dict = {}
@@ -97,7 +99,7 @@ def create_armt_from_meta():
             content['variables']['vmName'] = project_id + VARIABLES['vmName']
             content['variables']['storageAccountName'] = project_id + VARIABLES['storageAccountName']
             content['variables']['nicName'] = project_id + VARIABLES['nicName']
-            content['variables']['publicIPAddressName'] = project_id + VARIABLES['publicIPAddressName']
+            content['variables']['publicIPAddressName'] = project_id + PUBLIC_IP
 
             PARAM_TEMPLATE['parameters']['dnsLabelPrefix']['value'] = 'd' + project_id + PARAM_TEMPLATE['parameters']['dnsLabelPrefix']['value']
 
