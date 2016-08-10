@@ -130,7 +130,7 @@ if ($singleWindow) {
 # https://msdn.microsoft.com/en-us/library/mt603660.aspx
 # https://msdn.microsoft.com/en-us/library/mt603584.aspx
 
-Write-Host "Uploading custom script for IIS installation"
+Write-Host "Uploading custom script to storage blob"
 Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_rmps.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "rmps.ps1" -Context $blobContext -Force
 
 
@@ -163,16 +163,10 @@ ForEach-Object {
     Write-Host ("Building " + $zipfile)
     New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
 
-    #Write-Host "Getting VM object"
-    #$currentVMObject = Get-AzureRmVM -Name $currentVmName -ResourceGroupName ($ResourcePrefix + $SolutionName)
-    Write-Host "Creating Custom Script Extension"
+    # Enable Powershell/IIS
+    Write-Host "Enabling Remote Powershell Terminal & IIS"
     Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run "rmps.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
-    # Update-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -VM $currentVMObject -Confirm
-    
-    # Get the VM and get status of script
-    # Resources: 
-    # https://msdn.microsoft.com/en-us/library/mt603830.aspx
-    # https://blogs.technet.microsoft.com/uktechnet/2016/02/12/create-a-custom-script-extension-for-an-azure-resource-manager-vm-using-powershell/
-    # $results = Get-AzureRmVMCustomScriptExtension -Name ($scriptPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -VMName $currentVmName
 
+    # Enable Web Deploy ONLY if it's a Web role
+    Write-Host "Enabling Web Deploy"
 }
