@@ -2,7 +2,7 @@
 # These need to be params later...
 Param(
     [string] # Location of the Cloud Service App
-    $SLNLocation = "C:\\Users\\v-nopeng\\Desktop\\C#\\",
+    $SLNLocation = "C:\Users\v-nopeng\Desktop\C#\",
     [string] # The new Solution Name
     $SolutionName = "SysPrep33",
     [string] # Resource name = $ResourcePrefix + $SolutionName
@@ -36,6 +36,8 @@ Param(
     [bool] # run app in single window?
     $singleWindow = $false
 )
+
+$msdeploy = '"%programfiles%\IIS\Microsoft Web Deploy V3\msdeploy.exe" '
 
 # Have the User Login
 Write-Host "Hello!"
@@ -155,7 +157,7 @@ Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_rmps.ps1") -Co
 Write-Host "Building VMs"
 Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.json', '*.csv' |
 ForEach-Object {
-    # Get the Jon templates
+    # Get the Json templates
 
     $armtemplate = $null
     $paramtemplate = $null
@@ -199,6 +201,13 @@ ForEach-Object {
         # Enable Powershell
         Write-Host "Enabling Remote Powershell Terminal"
         Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run "rmps.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
-
     }
+
+    # Deploy the roles to the VMs
+    Write-Host "Deploying current packages to VM"
+
+    cmd.exe /c ($msdeploy + '-verb:sync -source:iisApp="' + $SLNLocation + '" -dest:package="%appdata%\project.zip"')
+
+    # cmd.exe /c ($msdeploy + '-verb:sync ' + '-source:iisApp="C:\Users\v-nopeng\Desktop\C#\ContosoAdsWeb\" -dest:package="C:\Users\v-nopeng\Desktop\TryAGain\__save\92A8015A-1CCC-4527-B890-F604A2E764ED\package.zip"')
+    # msdeploy.exe -verb:sync -source:iisApp="C:\Users\v-nopeng\Desktop\C#\" -dest:webServer="d92a8dnssysprep33.westus.cloudapp.azure.com",username=titan,password="Mar.Wed.17.2027,skipAppCreation=false" -allowUntrusted=true
 }
