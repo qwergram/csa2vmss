@@ -4,7 +4,7 @@ Param(
     [string]
     $SLNLocation = "C:\\Users\\v-nopeng\\Desktop\\C#\\",
     [string]
-    $SolutionName = "SysPrep32",
+    $SolutionName = "SysPrep33",
     [string]
     $ResourcePrefix = "ResGroup",
     [string]
@@ -34,11 +34,6 @@ Param(
     [string]
     $VMPassword = "Mar.Wed.17.2027"
 )
-
-# Virtual Machine Stats
-
-
-
 
 # Visualizations for This App
 $singleWindow = $false
