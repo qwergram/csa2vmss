@@ -1,42 +1,41 @@
 
 # These need to be params later...
 Param(
-    [string]
+    [string] # Location of the Cloud Service App
     $SLNLocation = "C:\\Users\\v-nopeng\\Desktop\\C#\\",
-    [string]
+    [string] # The new Solution Name
     $SolutionName = "SysPrep33",
-    [string]
+    [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "ResGroup",
-    [string]
+    [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
     $StoragePrefix = "storage",
-    [string]
+    [string] # VM prefix to mark VM related resources
     $VMPrefix = "VM",
-    [string]
+    [string] # Location for servers
     $Location = "West US",
-    [string]
+    [string] # Size of VM
     $SkuName = "Standard_LRS",
-    [string]
+    [string] # container name = $containerPrefix + $SolutionName.ToLower()
     $containerPrefix = "container",
-    [string]
+    [string] # DNS prefix to mark dns related resources
     $DNSPrefx = "dns",
-    [string]
+    [string] # Deployment resource name
     $DeploymentPrefix = "deploy",
-    [string]
+    [string] # script resource name
     $scriptPrefix = "script",
-    [string]
+    [string] # Which subscription to use
     $AzureProfile = "Free Trial",
-    [int]
+    [int] # Size in GB of VM VHD
     $VMVHDSize = 100,
-    [string]
+    [string] # VM Size
     $VMSize = "Standard_D1",
-    [string]
+    [string] # VM Admin username
     $VMAdmin = "titan",
-    [string]
-    $VMPassword = "Mar.Wed.17.2027"
+    [string] # VM Password
+    $VMPassword = "Mar.Wed.17.2027",
+    [bool] # run app in single window?
+    $singleWindow = $false
 )
-
-# Visualizations for This App
-$singleWindow = $false
 
 # Have the User Login
 Write-Host "Hello!"
