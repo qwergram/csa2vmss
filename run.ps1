@@ -154,7 +154,7 @@ Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_web_deploy.ps1
 # Resrouces:
 # http://weblogs.asp.net/scottgu/automating-deployment-with-microsoft-web-deploy
 Write-Host "Building VMs"
-Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.*' |
+Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.json', '*.csv' |
 ForEach-Object {
     # Get the Jon templates
 
@@ -167,14 +167,17 @@ ForEach-Object {
     ForEach-Object {
         if ($_.Name -eq "armtemplate.json") {
             $armtemplate = $_.FullName
-            $currentProjectData = Get-Content $_.FullName | ConvertFrom-Json
-            $currentVmName = $currentProjectData.variables.vmName
-            $currentVmRole = $currentProjectData.role_type
+            $currentProjectTemplate = Get-Content $_.FullName | ConvertFrom-Json
+            $currentVmName = $currentProjectTemplate.variables.vmName
         } elseif ($_.Name -eq "armtemplate.params.json") {
             $paramtemplate = $_.FullName
         } elseif ($_.Name.Endswith('.zip')) {
             $projectid = $_.Name.Split('_')[1]
             $zipfile = $_.FullName
+        } elseif ($_.Name -eq "meta.json") {
+            $metadata = $_.FullName
+            $currentProjectTemplate = Get-Content $_.FullName | ConvertFrom-Json
+            $currentVmRole = $currentProjectTemplate.role_type.ToLower()
         }
     }
     # There should be checking to see if $armtemplate and $paramtemplate is the right file
@@ -188,7 +191,7 @@ ForEach-Object {
     
     # Enable Web Deploy ONLY if it's a Web role
 
-    if ($currentVmRole.ToLower() -eq "webrole"){
+    if ($currentVmRole -eq "webrole"){
         
         Write-Host "Installing Web Role components"
 
