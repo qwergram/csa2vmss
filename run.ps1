@@ -143,12 +143,11 @@ if ($singleWindow) {
 # https://msdn.microsoft.com/en-us/library/mt603584.aspx
 
 Write-Host "Uploading custom scripts to storage blob"
-Write-Host "Uploading RMPS script"
+Write-Host "Uploading WebRole Script"
+Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\webrole.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "webrole.ps1" -Context $blobContext -Force
+Write-Host "Uploading WorkerRole Script"
 Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_rmps.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "rmps.ps1" -Context $blobContext -Force
-Write-Host "Uploading IIS script"
-Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_iis.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "iis.ps1" -Context $blobContext -Force
-Write-Host "Uploading Web Deploy script"
-Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_web_deploy.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "web_deploy.ps1" -Context $blobContext -Force
+
 
 # Build the VMs
 # Resrouces:
@@ -180,31 +179,26 @@ ForEach-Object {
             $currentVmRole = $currentProjectTemplate.role_type.ToLower()
         }
     }
+    
     # There should be checking to see if $armtemplate and $paramtemplate is the right file
     Write-Host ("Building " + $zipfile)
     New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
 
-    # Enable Powershell
-    Write-Host "Enabling Remote Powershell Terminal"
-    Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run "rmps.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
-    
-    
     # Enable Web Deploy ONLY if it's a Web role
 
     if ($currentVmRole -eq "webrole"){
         
+        # Enable IIS, Webdeploy and Remote PowerShell
         Write-Host "Installing Web Role components"
-
-        # Enable IIS
-        Write-Host "Enabling IIS"
-        Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run "iis.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
-
-        # Enable Web Deploy
-        Write-Host "Enabling Web Deploy"
-        Set-Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run "web_deploy.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
+        Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "webrole.ps1" -VMName $currentVmName -Run "webrole.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
 
 
     } else {
         Write-Host "Installing Worker Role components"
+        
+        # Enable Powershell
+        Write-Host "Enabling Remote Powershell Terminal"
+        Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run "rmps.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
+
     }
 }
