@@ -193,7 +193,7 @@ ForEach-Object {
         Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "webrole.ps1" -VMName $currentVmName -Run "webrole.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
 
 
-    } else {
+    } elseif ($currentVmRole -eq "workerrole") {
         Write-Host "Installing Worker Role components"
         
         # Enable Powershell
