@@ -3,3 +3,5 @@
 
 Invoke-WebRequest -Uri http://go.microsoft.com/fwlink/?LinkID=309497 -OutFile installer.msi
 msiexec /i ./installer.msi /quiet ADDLOCAL=ALL
+
+cmd.exe /c "net start msdepsvc"
