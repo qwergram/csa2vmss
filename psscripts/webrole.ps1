@@ -66,3 +66,5 @@ msiexec /i wmsvc.msi /quiet ADDLOCAL=ALL
 cmd.exe /c '"%programfiles%\microsoft\web platform installer\WebpiCmd.exe" /Install /Products:ManagementService'
 cmd.exe /c "net start msdepsvc"
 cmd.exe /c "net start wmsvc"
+
+$scripts_location = '"%programfiles%\IIS\Microsoft Web Deploy v2\Scripts\" '
