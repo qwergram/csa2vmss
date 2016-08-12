@@ -303,7 +303,11 @@ class VSCloudService(object):
     def _get_worker_azure_requirements(self):
         for project in self.solution_data['projects']:
             if project.get('role_type') == 'workerrole':
-                print(json.dumps(project, indent=2, sort_keys=1))
+                folder = project['folder']
+                azure_requirements = []
+                for cs_file in [os.path.join(folder, item) for item in os.listdir(folder) if item.endswith('.cs')]:
+                    print(cs_file)
+
 
     def load_solution(self):
         "Find all the configuration files"
