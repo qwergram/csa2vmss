@@ -67,4 +67,5 @@ cmd.exe /c '"%programfiles%\microsoft\web platform installer\WebpiCmd.exe" /Inst
 cmd.exe /c "net start msdepsvc"
 cmd.exe /c "net start wmsvc"
 
-$scripts_location = '"%programfiles%\IIS\Microsoft Web Deploy v2\Scripts\" '
+$scripts_location = '%programfiles%\IIS\Microsoft Web Deploy v2\Scripts\'
+

@@ -4,7 +4,7 @@ Param(
     [string] # Location of the Cloud Service App
     $SLNLocation = "C:\Users\v-nopeng\Desktop\C#\",
     [string] # The new Solution Name
-    $SolutionName = "SysPrep33",
+    $SolutionName = "SysPrep34",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "ResGroup",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
@@ -58,6 +58,11 @@ Write-Host "Reading Cloud Service App and Packaging it (Python Script)"
 if ($singleWindow) {
     python _run.py ('-Location="' + $SLNLocation + '"')
 } else {
+    if ($SLNLocation.EndsWith("\") -and -not $SLNLocation.EndsWith("\\")){
+        $pythonlocation = $SLNLocation + "\"
+    } else {
+        $pythonlocation = $SLNLocation
+    }
     start-process python -argument ('_run.py -Location="' + $SLNLocation + '"') -Wait
 }
 
