@@ -302,8 +302,8 @@ class VSCloudService(object):
 
     def _get_worker_requirements(self):
         for project in self.solution_data['projects']:
-            if project['role_type'] == 'workerrole':
-                print(project)
+            if project.get('role_type') == 'workerrole':
+                print(json.dumps(project, indent=2, sort_keys=1))
 
     def load_solution(self):
         "Find all the configuration files"
@@ -326,4 +326,5 @@ class VSCloudService(object):
 
 if __name__ == "__main__":
     solution = VSCloudService(project_path="C:\\Users\\v-nopeng\\Desktop\\C#\\")
-    print(solution.sln_json)
+    solution.load_solution()
+    # print(solution.sln_json)
