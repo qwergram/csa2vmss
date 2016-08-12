@@ -302,7 +302,7 @@ class VSCloudService(object):
 
     def _get_worker_azure_requirements(self):
         "Get all Azure resources required"
-        for project in self.solution_data['projects']:
+        for i, project in enumerate(self.solution_data['projects']):
             if project.get('role_type') == 'workerrole':
                 folder = project['folder']
                 azure_requirements = []
@@ -310,16 +310,13 @@ class VSCloudService(object):
                     with io.open(cs_file) as handle:
                         for line in handle.readlines():
                             line = line.strip()
-                            if (len(line) > 1 and
-                                (not "=" in line) and
+                            if (
                                 (len(line.split(' ')) == 3) and
                                 (line.split(' ')[0].isalpha()) and
                                 (line.split(' ')[1].isalpha()) and
                                 (line.endswith(";"))
                                ): azure_requirements.append(line[:-1].split()[1])
-                    print(azure_requirements)
-
-
+                    self.solution_data['worker_requirements'] = azure_requirements
 
     def load_solution(self):
         "Find all the configuration files"
@@ -343,4 +340,4 @@ class VSCloudService(object):
 if __name__ == "__main__":
     solution = VSCloudService(project_path="C:\\Users\\v-nopeng\\Desktop\\C#\\")
     solution.load_solution()
-    # print(solution.sln_json)
+    print(solution.sln_json)
