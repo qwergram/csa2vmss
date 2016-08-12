@@ -111,7 +111,7 @@ class VSCloudService(object):
 
     @property
     def sln_json(self):
-        return json.dumps(self.solution_data, indent=2, sorted_keys=True)
+        return json.dumps(self.solution_data, indent=2, sort_keys=True)
 
     def json(self, *args, **kwargs):
         return {}
@@ -300,6 +300,11 @@ class VSCloudService(object):
                 self.solution_data['projects'][i]['appconfig_path'] = appconfig
                 self.solution_data['projects'][i]['app_configs'] = self._read_appconfigs(appconfig)
 
+    def _get_worker_requirements(self):
+        for project in self.solution_data['projects']:
+            if project['role_type'] == 'workerrole':
+                print(project)
+
     def load_solution(self):
         "Find all the configuration files"
         debug("Loading solution")
@@ -311,9 +316,14 @@ class VSCloudService(object):
                 self._load_cloud_service_configs()
                 self._read_assembly_infos()
                 self._read_package_configs()
+                self._get_worker_requirements()
             else:
                 debug(".sln data invalid")
                 sys.exit(1)
         else:
             debug("Not a visual studio project")
             sys.exit(1)
+
+if __name__ == "__main__":
+    solution = VSCloudService(project_path="C:\\Users\\v-nopeng\\Desktop\\C#\\")
+    print(solution.sln_json)
