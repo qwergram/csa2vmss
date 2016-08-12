@@ -182,8 +182,12 @@ ForEach-Object {
             $zipfile = $_.FullName
         } elseif ($_.Name -eq "meta.json") {
             $metadata = $_.FullName
-            $currentProjectTemplate = Get-Content $_.FullName | ConvertFrom-Json
-            $currentVmRole = $currentProjectTemplate.role_type.ToLower()
+            $currentProjectMeta = Get-Content $_.FullName | ConvertFrom-Json
+            $currentVmRole = $currentProjectMeta.role_type.ToLower()
+        } elseif ($_.Name -eq "blob_location.txt") {
+            $blob_location = Get-Content $_.FullName
+            Write-Host "Uploading Blob Location"
+            Set-AzureStorageBlobContent -File ($_.FullName) -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "blob_location.txt" -Context $blobContext -Force
         }
     }
 
