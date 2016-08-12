@@ -61,7 +61,7 @@ Invoke-WebRequest -Uri http://go.microsoft.com/fwlink/?LinkId=209116 -OutFile wm
 
 msiexec /i WebInstaller.msi /quiet
 msiexec /i installer.msi /quiet ADDLOCAL=ALL
-msiexec /i wmsvc.msi ADDLOCAL=ALL
+msiexec /i wmsvc.msi /quiet ADDLOCAL=ALL
 
 cmd.exe /c '"%programfiles%\microsoft\web platform installer\WebpiCmd.exe" /Install /Products:ManagementService'
 cmd.exe /c "net start msdepsvc"
