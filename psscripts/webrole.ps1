@@ -55,10 +55,16 @@ Invoke-Expression -Command $Command
 # Enable Web Deploy on remote server
 # http://www.iis.net/learn/publish/using-web-deploy/use-the-web-deployment-tool
 
+Invoke-WebRequest -Uri http://go.microsoft.com/fwlink/?LinkId=255386 -OutFile WebInstaller.msi
 Invoke-WebRequest -Uri http://go.microsoft.com/fwlink/?LinkID=309497 -OutFile installer.msi
-Invoke-WebRequest -Uri http://go.microsoft.com/fwlink/?LinkId=209116 -OutFile wmsvc.msi
+# Invoke-WebRequest -Uri http://go.microsoft.com/fwlink/?LinkId=209116 -OutFile wmsvc.msi
 
+msiexec /i WebInstaller.msi /quiet
 msiexec /i installer.msi /quiet ADDLOCAL=ALL
-msiexec /i wmsvc.msi ADDLOCAL=ALL
+cmd.exe /c '"%programfiles%\microsoft\web platform installer\WebpiCmd.exe" /Install /Products:ManagementService'
+
+
+# msiexec /i wmsvc.msi ADDLOCAL=ALL
 
 cmd.exe /c "net start msdepsvc"
+cmd.exe /c "net start wmsvc"
