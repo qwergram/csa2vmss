@@ -56,6 +56,9 @@ Invoke-Expression -Command $Command
 # http://www.iis.net/learn/publish/using-web-deploy/use-the-web-deployment-tool
 
 Invoke-WebRequest -Uri http://go.microsoft.com/fwlink/?LinkID=309497 -OutFile installer.msi
+Invoke-WebRequest -Uri http://go.microsoft.com/fwlink/?LinkId=209116 -OutFile wmsvc.msi
+
 msiexec /i installer.msi /quiet ADDLOCAL=ALL
+msiexec /i wmsvc.msi ADDLOCAL=ALL
 
 cmd.exe /c "net start msdepsvc"
