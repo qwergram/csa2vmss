@@ -300,7 +300,7 @@ class VSCloudService(object):
                 self.solution_data['projects'][i]['appconfig_path'] = appconfig
                 self.solution_data['projects'][i]['app_configs'] = self._read_appconfigs(appconfig)
 
-    def _get_worker_requirements(self):
+    def _get_worker_azure_requirements(self):
         for project in self.solution_data['projects']:
             if project.get('role_type') == 'workerrole':
                 print(json.dumps(project, indent=2, sort_keys=1))
@@ -316,7 +316,7 @@ class VSCloudService(object):
                 self._load_cloud_service_configs()
                 self._read_assembly_infos()
                 self._read_package_configs()
-                self._get_worker_requirements()
+                self._get_worker_azure_requirements()
             else:
                 debug(".sln data invalid")
                 sys.exit(1)
