@@ -76,7 +76,6 @@ class VSCloudService(object):
                         debug("unknown file type: [%s]" % parse[5])
                         debug("Are you sure it's a Cloud Service Project?")
                         sys.exit(1)
-
         return stats
 
     def _load_ccproj_dir(self, parse):
@@ -94,9 +93,7 @@ class VSCloudService(object):
                 parent_data['csdef'] = os.path.join(parent_data['folder'], item)
             elif item.endswith('cscfg'):
                 parent_data['cscfg'].append(os.path.join(parent_data['folder'], item))
-
         return parent_data
-
 
     def _is_valid_sln_data(self, sln_data):
         """Make sure that the data we're looking for exists"""
@@ -137,13 +134,10 @@ class VSCloudService(object):
 
         config_json = []
         include_json = {}
-
         csproj_location = project_json['csproj']
         csproj = load_xml(csproj_location)
-
         configurations = csproj.findall(mess("PropertyGroup"))
         include = csproj.findall(mess("ItemGroup"))
-
         debug("Loading PropertyGroup Data")
         for config in configurations:
             for child in config.getchildren():
@@ -152,14 +146,11 @@ class VSCloudService(object):
                     "items": {key: value for (key, value) in child.items()},
                     "text": child.text
                 })
-
         project_json['PropertyGroups'] = config_json
-
         debug("Loading ItemGroup Data")
         for references in include:
             for reference in references.getchildren():
                 print(clean(reference.tag), reference.items())
-
         return project_json
 
     def _load_cloud_service_defs(self):
@@ -235,9 +226,7 @@ class VSCloudService(object):
         else:
             debug("Unable to find cloud configuration, using first file")
             self.solution_data['parent']['cscfg'] = self.solution_data['parent']['cscfg'][0]
-
         root = load_xml(self.solution_data['parent']['cscfg'])
-
         for role in root.getchildren():
             role_items = {key: value for key, value in role.items()}
             for i, project in enumerate(self.solution_data['projects']):
@@ -268,10 +257,8 @@ class VSCloudService(object):
                 self.solution_data['projects'][i]['assembly'] = None
 
     def _read_packages(self, package):
-
         packages = load_xml(package).getchildren()
         json_blob = [{key: value for key, value in package.items()} for package in packages]
-
         return json_blob
 
     def _read_appconfigs(self, config_path):
@@ -298,8 +285,6 @@ class VSCloudService(object):
                 pass
         return config_blob
 
-
-
     def _read_package_configs(self):
         for i, project in enumerate(self.solution_data['projects']):
             folder = project['folder']
@@ -308,11 +293,9 @@ class VSCloudService(object):
                 appconfig = os.path.join(project['folder'], 'Web.config')
             else:
                 appconfig = os.path.join(project['folder'], 'app.config')
-
             if os.path.isfile(packages):
                 self.solution_data['projects'][i]['packageconfig_path'] = packages
                 self.solution_data['projects'][i]['packages'] = self._read_packages(packages)
-
             if os.path.isfile(appconfig):
                 self.solution_data['projects'][i]['appconfig_path'] = appconfig
                 self.solution_data['projects'][i]['app_configs'] = self._read_appconfigs(appconfig)
