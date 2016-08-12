@@ -206,7 +206,7 @@ ForEach-Object {
     # Deploy the roles to the VMs
     Write-Host "Deploying current packages to VM"
 
-    cmd.exe /c ($msdeploy + '-verb:sync -source:iisApp="' + $SLNLocation + '" -dest:package="%appdata%\project.zip"')
+    # cmd.exe /c ($msdeploy + '-verb:sync -source:iisApp="' + $SLNLocation + '" -dest:package="%appdata%\project.zip"')
 
     # cmd.exe /c ($msdeploy + '-verb:sync ' + '-source:iisApp="C:\Users\v-nopeng\Desktop\C#\ContosoAdsWeb\" -dest:package="C:\Users\v-nopeng\Desktop\TryAGain\__save\92A8015A-1CCC-4527-B890-F604A2E764ED\package.zip"')
     # msdeploy.exe -verb:sync -source:iisApp="C:\Users\v-nopeng\Desktop\C#\" -dest:webServer="d92a8dnssysprep33.westus.cloudapp.azure.com",username=titan,password="Mar.Wed.17.2027,skipAppCreation=false" -allowUntrusted=true
