@@ -301,12 +301,24 @@ class VSCloudService(object):
                 self.solution_data['projects'][i]['app_configs'] = self._read_appconfigs(appconfig)
 
     def _get_worker_azure_requirements(self):
+        "Get all Azure resources required"
         for project in self.solution_data['projects']:
             if project.get('role_type') == 'workerrole':
                 folder = project['folder']
                 azure_requirements = []
                 for cs_file in [os.path.join(folder, item) for item in os.listdir(folder) if item.endswith('.cs')]:
-                    print(cs_file)
+                    with io.open(cs_file) as handle:
+                        for line in handle.readlines():
+                            line = line.strip()
+                            if (len(line) > 1 and
+                                (not "=" in line) and
+                                (len(line.split(' ')) == 3) and
+                                (line.split(' ')[0].isalpha()) and
+                                (line.split(' ')[1].isalpha()) and
+                                (line.endswith(";"))
+                               ): azure_requirements.append(line[:-1].split()[1])
+                    print(azure_requirements)
+
 
 
     def load_solution(self):
