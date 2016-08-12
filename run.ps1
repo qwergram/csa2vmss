@@ -181,7 +181,7 @@ ForEach-Object {
             $currentVmRole = $currentProjectTemplate.role_type.ToLower()
         }
     }
-    
+
     # There should be checking to see if $armtemplate and $paramtemplate is the right file
     Write-Host ("Building " + $zipfile)
     New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
@@ -189,7 +189,7 @@ ForEach-Object {
     # Enable Web Deploy ONLY if it's a Web role
 
     if ($currentVmRole -eq "webrole"){
-        
+
         # Enable IIS, Webdeploy and Remote PowerShell
         Write-Host "Installing Web Role components"
         Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "webrole.ps1" -VMName $currentVmName -Run "webrole.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
@@ -197,7 +197,7 @@ ForEach-Object {
 
     } elseif ($currentVmRole -eq "workerrole") {
         Write-Host "Installing Worker Role components"
-        
+
         # Enable Powershell
         Write-Host "Enabling Remote Powershell Terminal"
         Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run "rmps.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
@@ -206,8 +206,4 @@ ForEach-Object {
     # Deploy the roles to the VMs
     Write-Host "Deploying current packages to VM"
 
-    # cmd.exe /c ($msdeploy + '-verb:sync -source:iisApp="' + $SLNLocation + '" -dest:package="%appdata%\project.zip"')
-
-    # cmd.exe /c ($msdeploy + '-verb:sync ' + '-source:iisApp="C:\Users\v-nopeng\Desktop\C#\ContosoAdsWeb\" -dest:package="C:\Users\v-nopeng\Desktop\TryAGain\__save\92A8015A-1CCC-4527-B890-F604A2E764ED\package.zip"')
-    # msdeploy.exe -verb:sync -source:iisApp="C:\Users\v-nopeng\Desktop\C#\" -dest:webServer="d92a8dnssysprep33.westus.cloudapp.azure.com",username=titan,password="Mar.Wed.17.2027,skipAppCreation=false" -allowUntrusted=true
 }
