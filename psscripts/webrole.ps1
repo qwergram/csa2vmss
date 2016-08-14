@@ -55,8 +55,7 @@ Import-Module WebAdministration
 # --------------------------------------------------------------------
 # Resetting IIS
 # --------------------------------------------------------------------
-$Command = "IISRESET"
-Invoke-Expression -Command $Command
+Invoke-Expression -Command "IISRESET"
 
 # Enable Web Deploy on remote server
 # http://www.iis.net/learn/publish/using-web-deploy/use-the-web-deployment-tool
