@@ -63,7 +63,7 @@ if ($singleWindow) {
     } else {
         $pythonlocation = $SLNLocation
     }
-    start-process python -argument ('_run.py -Location="' + $SLNLocation + '"') -Wait
+    start-process python -argument ('_run.py -Location="' + $pythonlocation + '"') -Wait
 }
 
 # Check to see if the specified ResourceGroup exists.
@@ -206,6 +206,8 @@ ForEach-Object {
         # Enable Powershell
         Write-Host "Enabling Remote Powershell Terminal"
         Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run "rmps.ps1" -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
+
+
     }
 
     # Deploy the roles to the VMs
