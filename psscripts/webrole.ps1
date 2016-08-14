@@ -1,3 +1,9 @@
+Param(
+    [Parameter(Mandatory=$true)]
+    [string] 
+    $urlcontainer
+)
+
 # https://blogs.technet.microsoft.com/uktechnet/2016/02/12/create-a-custom-script-extension-for-an-azure-resource-manager-vm-using-powershell/
 # Ensure PS remoting is enabled, although this is enabled by default for Azure VMs
 Enable-PSRemoting -Force
@@ -69,3 +75,4 @@ cmd.exe /c "net start wmsvc"
 
 $scripts_location = '%programfiles%\IIS\Microsoft Web Deploy v2\Scripts\'
 $zipName = ("zip_" + $env:COMPUTERNAME.Substring(0, 4).ToUpper() + "_package.zip")
+
