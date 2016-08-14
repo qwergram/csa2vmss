@@ -75,3 +75,4 @@ cmd.exe /c "net start wmsvc"
 $scripts_location = '%programfiles%\IIS\Microsoft Web Deploy v2\Scripts\'
 $zipName = ("zip_" + $env:COMPUTERNAME.Substring(0, 4).ToUpper() + "_package.zip")
 
+Invoke-WebRequest -Uri ($urlcontainer + $zipName) -OutFile project.zip
