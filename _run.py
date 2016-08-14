@@ -38,7 +38,7 @@ def package_projects(solution):
             os.mkdir(os.path.join(CURRENT_PATH, '__save', project['guid']))
             with io.open(os.path.join(CURRENT_PATH, '__save', project['guid'], "meta.json"), 'w') as f:
                 f.write(json.dumps(project, indent=2))
-                run_powershell("save_roles.ps1", {"zipfilename": os.path.join(CURRENT_PATH, '__save', project['guid'], "zip_" + project['guid'][:5] + "_package.zip"), "sourcedir": project['folder'] + "\\" if project['folder'].endswith("\\") else project['folder']})
+                run_powershell("save_roles.ps1", {"zipfilename": os.path.join(CURRENT_PATH, '__save', project['guid'], "zip_" + project['guid'][:4] + "_package.zip"), "sourcedir": project['folder'] + "\\" if project['folder'].endswith("\\") else project['folder']})
 
 def clean():
     os.system('rm -r %s' % os.path.join(CURRENT_PATH, '__save'))
