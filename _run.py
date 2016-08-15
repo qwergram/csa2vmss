@@ -63,7 +63,8 @@ def main():
             params[param[0]] = param[1]
         solution = load_solution(params)
         screenshot(solution)
-        zips = package_projects(solution)
+        if params.get("skip_zip") != "True":
+            zips = package_projects(solution)
 
 
 if __name__ == "__main__":
