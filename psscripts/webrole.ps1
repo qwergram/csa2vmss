@@ -31,6 +31,7 @@ Import-Module ServerManager
 # --------------------------------------------------------------------
 # Installing IIS
 # --------------------------------------------------------------------
+Add-WindowsFeature -Name Web-Server -IncludeAllSubFeature
 Add-WindowsFeature -Name Web-Common-Http -IncludeAllSubFeature
 Add-WindowsFeature -Name Web-Asp-Net -IncludeAllSubFeature
 Add-WindowsFeature -Name Web-Net-Ext -IncludeAllSubFeature
@@ -45,6 +46,7 @@ Add-WindowsFeature -Name Web-Performance -IncludeAllSubFeature
 Add-WindowsFeature -Name Web-Mgmt-Console -IncludeAllSubFeature
 Add-WindowsFeature -Name Web-Mgmt-Compat -IncludeAllSubFeature
 Add-WindowsFeature -Name WAS -IncludeAllSubFeature
+
 
 # --------------------------------------------------------------------
 # Loading IIS Modules
