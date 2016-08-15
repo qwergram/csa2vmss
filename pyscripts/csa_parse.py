@@ -320,11 +320,17 @@ class VSCloudService(object):
 
     def _get_cloud_service_package(self):
         cspkg_location = self.solution_data['parent']['cspkg']['location']
+        self.solution_data['parent']['cspkg']['contents'] = {}
         destination = os.path.join(CURRENT_PATH, '__save', 'cspkg', '')
         os.mkdir(os.path.join(destination))
         arguments = "-target %s -destination %s" % (cspkg_location, destination)
         execute_this = ("powershell -ExecutionPolicy Unrestricted -File \"%s\" %s" % (os.path.join(CURRENT_PATH, 'psscripts', 'unzip_cspkg.ps1'), arguments))
         os.system(execute_this)
+        for file in os.listdir(destination):
+            self.solution_data['parent']['cspkg'].setdefault(file.split('.')[-1], []).append(os.path.join(cspkg_location, file))
+
+    def _unzip_cssx_components(self):
+        pass
 
     def _contains_package(self):
         "Make sure the user already packaged the project for cloud service app"
@@ -349,6 +355,7 @@ class VSCloudService(object):
                 self._get_worker_azure_requirements()
                 if self._contains_package():
                     self._get_cloud_service_package()
+                    self._unzip_cssx_components()
                 else:
                     debug("Project has not been packaged")
                     sys.exit(1)
