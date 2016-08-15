@@ -36,7 +36,7 @@ class VSCloudService(object):
         debug("Checking if project is a VS15 project")
         # Check if it's actually a vs project
         is_vs_project = os.path.isdir(os.path.join(self.project_path, '.vs'))
-        contains_sln_file = len([file for file in os.listdir(self.project_path) if file.endswith('.sln')])
+        contains_sln_file = len([file for file in os.listdir(self.project_path) if file.endswith('.sln')]) == 1
         # TODO: Check for files that only appear in Cloud apps
         return is_vs_project and contains_sln_file
 
@@ -318,6 +318,18 @@ class VSCloudService(object):
                                ): azure_requirements.append(line[:-1].split()[1])
                     self.solution_data['worker_requirements'] = azure_requirements
 
+    def _get_cloud_service_package(self):
+        pass
+
+    def _contains_package(self):
+        "Make sure the user already packaged the project for cloud service app"
+        cspkg_location = os.path.join(self.solution_data['parent']['folder'], 'bin', 'Release', 'app.publish')
+        cspkgs = [file for file in os.listdir(cspkg_location) if file.lower().endswith(".cspkg")]
+        if len(cspkgs) == 1:
+            self.solution_data['parent']['cspkg'] = {"location": os.path.join(cspkg_location, cspkgs[0])}
+            return True
+        return False
+
     def load_solution(self):
         "Find all the configuration files"
         debug("Loading solution")
@@ -330,6 +342,11 @@ class VSCloudService(object):
                 self._read_assembly_infos()
                 self._read_package_configs()
                 self._get_worker_azure_requirements()
+                if self._contains_package():
+                    self._get_cloud_service_package()
+                else:
+                    debug("Project has not been packaged")
+                    sys.exit(1)
             else:
                 debug(".sln data invalid")
                 sys.exit(1)
