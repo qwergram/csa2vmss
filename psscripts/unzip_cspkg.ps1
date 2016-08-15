@@ -8,14 +8,6 @@ param(
   $destination
 )
 
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::ExtractToDirectory($file, $destination)
 
-function Expand-ZIPFile($file, $destination){
-  $shell = new-object -com shell.application
-  $zip = $shell.NameSpace($file)
-  foreach($item in $zip.items())
-  {
-    $shell.Namespace($destination).copyhere($item)
-  }
-}
-
-Expand-ZIPFile -file $file -destination $destination
