@@ -56,7 +56,12 @@ Try {
 # This script parses the Visual Studio Solution and zips it
 Write-Host "Reading Cloud Service App and Packaging it (Python Script)"
 if ($singleWindow) {
-    python _run.py ('-Location="' + $SLNLocation + '"')
+    if ($SLNLocation.EndsWith("\") -and -not $SLNLocation.EndsWith("\\")){
+        $pythonlocation = $SLNLocation + "\"
+    } else {
+        $pythonlocation = $SLNLocation
+    }
+    python _run.py ('-Location="' + $pythonlocation + '"')
 } else {
     if ($SLNLocation.EndsWith("\") -and -not $SLNLocation.EndsWith("\\")){
         $pythonlocation = $SLNLocation + "\"
