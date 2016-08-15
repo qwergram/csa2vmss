@@ -1,7 +1,7 @@
 param(
   [Parameter(Mandatory=$True)]
   [string]
-  $file,
+  $target,
 
   [Parameter(Mandatory=$True)]
   [string]
@@ -9,5 +9,4 @@ param(
 )
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-[System.IO.Compression.ZipFile]::ExtractToDirectory($file, $destination)
-
+[System.IO.Compression.ZipFile]::ExtractToDirectory($target, $destination)
