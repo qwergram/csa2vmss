@@ -319,7 +319,12 @@ class VSCloudService(object):
                     self.solution_data['worker_requirements'] = azure_requirements
 
     def _get_cloud_service_package(self):
-        pass
+        cspkg_location = self.solution_data['parent']['cspkg']['location']
+        destination = os.path.join(CURRENT_PATH, '__save', 'cspkg', '')
+        os.mkdir(os.path.join(destination))
+        arguments = "-target %s -destination %s" % (cspkg_location, destination)
+        execute_this = ("powershell -ExecutionPolicy Unrestricted -File \"%s\" %s" % (os.path.join(CURRENT_PATH, 'psscripts', 'unzip_cspkg.ps1'), arguments))
+        os.system(execute_this)
 
     def _contains_package(self):
         "Make sure the user already packaged the project for cloud service app"
