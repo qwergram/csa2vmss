@@ -4,7 +4,7 @@ Param(
     [string] # Location of the Cloud Service App
     $SLNLocation = "C:\Users\v-nopeng\Desktop\C#\",
     [string] # The new Solution Name
-    $SolutionName = "SysPrep34",
+    $SolutionName = "SysPrep35",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "ResGroup",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
@@ -159,6 +159,10 @@ Write-Host "Uploading WebRole Script"
 Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\webrole.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "webrole.ps1" -Context $blobContext -Force
 Write-Host "Uploading WorkerRole Script"
 Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_rmps.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "rmps.ps1" -Context $blobContext -Force
+
+
+# Package the cspkg and upload that too
+.\pssscripts\save_roles.ps1 -zipfilename ($pwd.Path + "\__save\cspkg.zip") -sourcedir ($pwd.Path + "\__save\cspkg\")
 
 
 # Build the VMs
