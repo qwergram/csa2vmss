@@ -162,7 +162,7 @@ Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_rmps.ps1") -Co
 
 
 # Package the cspkg and upload that too
-.\pssscripts\save_roles.ps1 -zipfilename ($pwd.Path + "\__save\cspkg.zip") -sourcedir ($pwd.Path + "\__save\cspkg\")
+.\psscripts\save_roles.ps1 -zipfilename ($pwd.Path + "\__save\cspkg.zip") -sourcedir ($pwd.Path + "\__save\cspkg\")
 
 
 # Build the VMs
