@@ -194,9 +194,8 @@ ForEach-Object {
     }
 
     # There should be checking to see if $armtemplate and $paramtemplate is the right file
-    
+
     Write-Host ("Building " + $zipfile)
-    Write-Host ("This: " + $foldername)
     New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
 
     # Enable Web Deploy ONLY if it's a Web role
@@ -216,8 +215,5 @@ ForEach-Object {
 
 
     }
-
-    # Deploy the roles to the VMs
-    Write-Host "Deploying current packages to VM"
 
 }
