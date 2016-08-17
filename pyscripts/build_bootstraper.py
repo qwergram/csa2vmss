@@ -19,6 +19,13 @@ def reset_sln(sln_location, to_remove):
     with io.open(sln_location, 'w') as context:
         context.write(clean_sln)
 
+def copy_compiled_code(directory):
+    print(directory)
+    for project in os.listdir(directory):
+        project_path = os.path.join(directory, project)
+        print(project)
+        print(os.listdir(project_path))
+
 def main(worker, solution, current_path, zip_package_name):
     # print(json.dumps(worker, indent=2))
     solution['parent']['name'] = solution['parent']['folder'].split("\\")[-1]
@@ -27,29 +34,13 @@ def main(worker, solution, current_path, zip_package_name):
     project_dest = os.path.join(current_path, '__save', worker['guid'], "projects")
 
     for project in projects[::-1]:
-
-        project_binaries_release = os.path.join(project['folder'], 'bin', 'Release', '')
-        project_binaries_debug = os.path.join(project['folder'], 'bin', 'Debug', '')
-
-        if os.path.isdir(project_binaries_release):
-            project_binaries = project_binaries_release
-            for i, _project in enumerate(solution['projects']):
-                if _project == project:
-                    solution['projects'][i].setdefault('bins', {})['release'] = project_binaries_release
-
-        elif os.path.isdir(project_binaries_debug):
-            project_binaries = project_binaries_debug
-            for i, _project in enumerate(solution['projects']):
-                if _project == project:
-                    solution['projects'][i].setdefault('bins', {})['debug'] = project_binaries_debug
-        else:
-            raise FileNotFoundError("project binaries not found. Please build package before proceeding!")
-
         shutil.copytree(project['folder'], os.path.join(project_dest, project['name']))
 
-    packaged_worker_sln = os.path.join(project_dest, solution['sln'].split("\\")[-1])
-    shutil.copy(solution['sln'], project_dest)
+    packaged_worker_sln = os.path.join(project_dest, solution['parent']['name'])
+    shutil.copy(solution['sln'], packaged_worker_sln)
     reset_sln(packaged_worker_sln, to_remove)
     os.system("C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\MSBuild.exe \"%s\"" % packaged_worker_sln)
+    copy_compiled_code(project_dest)
+
 
     return solution
