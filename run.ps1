@@ -199,7 +199,6 @@ ForEach-Object {
     New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
 
     # Enable Web Deploy ONLY if it's a Web role
-
     if ($currentVmRole -eq "webrole"){
 
         # Enable IIS, Webdeploy and Remote PowerShell
@@ -215,14 +214,21 @@ ForEach-Object {
 
     }
 
-    Write-Host "Getting VHDs"
-
+    Write-Host "Deploying VMSS!"
     # only deal with worker role for now
     if ($currentVmRole -eq "workerrole") {
-        Write-How "Getting WorkerRole Image"
+        Write-Host "Getting WorkerRole Image"
         $vm = Get-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName
         $image_uri = $vm.StorageProfile.DataDisks[0].Vhd.Uri
         
+        if ($singleWindow) {
+            python ($pwd.Path + "\pyscripts\generate_vmss_armt.py") $currentVmName $image_uri
+        } else {
+            start-process python -argument (($pwd.Path + "\pyscripts\generate_vmss_armt.py") +' ' + $currentVmName + ' ' + $iamge_uri) -ErrorAction Stop -Wait
+        }
+
+        New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_" + $currentVmName + "\vmss.json") -TemplateParameterFile ($pwd.Path + "\__save\vmss_" + $currentVmName + "\vmss.params.json")
+
     }
 
 }
