@@ -24,11 +24,26 @@ def load_bootstrapper(location, workername, classname):
     bootstrap = bootstrap.replace("{$WORKERNAME!}", workername).replace("{$CLASSNAME!}", classname)
     return bootstrap
 
+def reset_sln(sln_location, to_remove):
+    with io.open(sln_location) as context:
+        sln_data = context.readlines()
+    clean = []
+    for line in sln_data:
+        for guid in to_remove:
+            if guid in line:
+                break
+        else:
+            clean.append(line)
+
+    clean_sln = "".join(clean).replace("EndProject\nEndProject\n", "EndProject\n")
+    with io.open(sln_location, 'w') as context:
+        context.write(clean_sln)
+
 def main(worker, solution, current_path):
     # print(json.dumps(worker, indent=2))
+    solution['parent']['name'] = solution['parent']['folder'].split("\\")[-1]
     projects = [worker] + [project for project in solution['projects'] if not project.get('role_type')]
-    to_remove = [project['name'] for project in solution['projects'] if project not in projects]
-    input(to_remove)
+    to_remove = [project['guid'] for project in solution['projects'] if project not in projects] + [solution['parent']['guid']]
     project_dest = os.path.join(current_path, '__save', worker['guid'], "projects")
 
     for project in projects[::-1]:
@@ -54,6 +69,8 @@ def main(worker, solution, current_path):
 
     shutil.copy(solution['sln'], project_dest)
 
+    reset_sln(os.path.join(project_dest, solution['sln'].split("\\")[-1]), to_remove)
+
     # global APPCONFIG, ASSEMBLIES, CSPROJ, BOOTSTRAP
     # print("Building bootstrapper")
     # APPCONFIG = load_appconfig()
@@ -62,6 +79,3 @@ def main(worker, solution, current_path):
     # BOOTSTRAP = load_bootstrapper()
 
     return solution
-
-if __name__ == "__main__":
-    main()
