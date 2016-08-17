@@ -20,6 +20,8 @@ def load_solution(params):
     parsed = pyscripts.csa_parse.VSCloudService(params['Location'])
     parsed.load_solution()
     solution = parsed.solution_data
+    solution['origin'] = params['Location']
+    solution['sln'] = os.path.join(params['Location'], [f for f in os.listdir(params['Location']) if f.lower().endswith('.sln')][0])
     print(json.dumps(solution, indent=2, sort_keys=True))
     # import pdb; pdb.set_trace()
     return solution
@@ -34,7 +36,7 @@ def run_powershell(name, arguments):
 def package_projects(solution):
     for project in solution['projects']:
         project.setdefault("instances", 1)
-        project.setdefault("role_type", "unknown")
+        project.setdefault("role_type", None)
         # if project['role_type'] == 'webrole':
         #     os.mkdir(os.path.join(CURRENT_PATH, '__save', project['guid']))
         #     with io.open(os.path.join(CURRENT_PATH, '__save', project['guid'], "meta.json"), 'w') as f:
@@ -43,9 +45,9 @@ def package_projects(solution):
         # elif project['role_type'] == 'workerrole':
         if project['role_type'] == 'workerrole':
             os.mkdir(os.path.join(CURRENT_PATH, '__save', project['guid']))
-            with io.open(os.path.join(CcURRENT_PATH, '__save', project['guid'], "meta.json"), 'w') as f:
+            with io.open(os.path.join(CURRENT_PATH, '__save', project['guid'], "meta.json"), 'w') as f:
                 f.write(json.dumps(project, indent=2))
-                pyscripts.build_bootstraper.main(project)
+                solution = pyscripts.build_bootstraper.main(project, solution, CURRENT_PATH)
 
 def clean():
     os.system('rm -r %s' % os.path.join(CURRENT_PATH, '__save'))
