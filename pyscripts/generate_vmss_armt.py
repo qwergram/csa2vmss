@@ -44,14 +44,12 @@ def load_solution_data():
         return json.loads(context.read())
 
 def load_arm_params():
-    with io.open(os.path.join(CURRENT_PATH, 'templates', 'iis-vm.params.json')) as content:
-        template = json.loads(content.read())
 
     PARAMETERS['adminUsername']['value'] = SOLUTION_DATA['vmparams']['username']
     PARAMETERS['adminPassword']['value'] = SOLUTION_DATA['vmparams']['password']
-    PARAMETERS['dnsNamePrefix']['value'] = NAME[0] + SOLUTION_DATA['vmparams']['dnslabel']
+    PARAMETERS['dnsNamePrefix']['value'] = 'v' + SOLUTION_DATA['vmparams']['dnslabel'].lower()
     PARAMETERS['sourceImageVhdUri']['value'] = URI
-    PARAMETERS["vmSSName"]['value'] = NAME.lower().replace("vm", 'vmss')
+    PARAMETERS["vmSSName"]['value'] = NAME.lower().replace("vm", 'ss')[:9]
 
 def save_arm_params():
     location = os.path.join(CURRENT_PATH, "__save", "vmss_" + NAME, "")
