@@ -11,7 +11,7 @@ PARAMETERS = {
         "value": None
     },
     "instanceCount": {
-        "value": 2
+        "value": 1
     },
     "vmSize": {
         "value": "Standard_D1"
@@ -44,7 +44,10 @@ def load_solution_data():
         return json.loads(context.read())
 
 def load_arm_params():
-
+    for project in SOLUTION_DATA['projects']:
+        if project['name'] == NAME:
+            PARAMETERS['instanceCount'] = project['instances']
+    
     PARAMETERS['adminUsername']['value'] = SOLUTION_DATA['vmparams']['username']
     PARAMETERS['adminPassword']['value'] = SOLUTION_DATA['vmparams']['password']
     PARAMETERS['dnsNamePrefix']['value'] = 'v' + SOLUTION_DATA['vmparams']['dnslabel'].lower()
