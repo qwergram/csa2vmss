@@ -217,8 +217,11 @@ ForEach-Object {
     Write-Host "Deploying VMSS!"
     # only deal with worker role for now
     if ($currentVmRole -eq "workerrole") {
-        Write-Host "Getting WorkerRole Image"
         
+        Write-Host "Marking VM as Generalized"
+        Set-AzureRmVm -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Generalized
+
+        Write-Host "Getting WorkerRole Image"
         Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $currentVmName -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path test
 
         if ($singleWindow) {
