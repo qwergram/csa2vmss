@@ -23,8 +23,9 @@ def copy_compiled_code(directory):
     print(directory)
     for project in os.listdir(directory):
         project_path = os.path.join(directory, project)
-        print(project)
-        print(os.listdir(project_path))
+        if os.path.isfile(project_path):
+            print(project)
+            print(os.listdir(project_path))
 
 def main(worker, solution, current_path, zip_package_name):
     # print(json.dumps(worker, indent=2))
@@ -36,7 +37,7 @@ def main(worker, solution, current_path, zip_package_name):
     for project in projects[::-1]:
         shutil.copytree(project['folder'], os.path.join(project_dest, project['name']))
 
-    packaged_worker_sln = os.path.join(project_dest, solution['parent']['name'])
+    packaged_worker_sln = os.path.join(project_dest, solution['sln'].split("\\")[-1])
     shutil.copy(solution['sln'], packaged_worker_sln)
     reset_sln(packaged_worker_sln, to_remove)
     os.system("C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\MSBuild.exe \"%s\"" % packaged_worker_sln)
