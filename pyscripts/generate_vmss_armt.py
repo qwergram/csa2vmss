@@ -57,7 +57,10 @@ def load_arm_params():
 
 def save_arm_params():
     location = os.path.join(CURRENT_PATH, "__save", "vmss_" + NAME, "")
-    os.mkdir(location)
+    try:
+        os.mkdir(location)
+    except FileExistsError:
+        pass
     with io.open(os.path.join(location, "vmss.params.json"), 'w') as context:
         context.write(json.dumps(VMSS_PARAMS_ARMT, indent=2, sort_keys=True))
 
