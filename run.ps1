@@ -110,19 +110,15 @@ Try {
 }
 
 # Okay, upload the files now
-Get-ChildItem ($pwd.Path + "\__save") |
+Get-ChildItem ($pwd.Path + "\__save") -Exclude "*.csv", "*.json" |
 ForEach-Object {
     # Look for the zip file
-    if ($_.FullName.EndsWith('.csv')) {
+    Get-ChildItem ($_.FullName + "\") -Filter "*.zip" |
+    ForEach-Object {
+        Set-AzureStorageBlobContent -File $_.FullName -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob $_.Name -Context $blobContext -Force
 
-    } else {
-        Get-ChildItem ($_.FullName + "\") -Filter "*.zip" |
-        ForEach-Object {
-            Set-AzureStorageBlobContent -File $_.FullName -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob $_.Name -Context $blobContext -Force
-
-            # https://storagesysprep25.blob.core.windows.net/containersysprep25/zip_92A80_package.zip <- Should look something like this
-            ("https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $solutionName.ToLower() + "/" + $_.Name) | Out-File -FilePath ($_.Directory.ToString() + "\blob_location.txt") -Encoding ascii
-        }
+        # https://storagesysprep25.blob.core.windows.net/containersysprep25/zip_92A80_package.zip <- Should look something like this
+        ("https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $solutionName.ToLower() + "/" + $_.Name) | Out-File -FilePath ($_.Directory.ToString() + "\blob_location.txt") -Encoding ascii
     }
 }
 
@@ -173,6 +169,7 @@ Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.json', '*.csv' |
 ForEach-Object {
     # Get the Json templates
 
+    $foldername = $_.FullName
     $armtemplate = $null
     $paramtemplate = $null
     $zipfile = $null
@@ -197,7 +194,13 @@ ForEach-Object {
     }
 
     # There should be checking to see if $armtemplate and $paramtemplate is the right file
+    
+    if ( -not $zip -eq $null){
+
+    }
+    
     Write-Host ("Building " + $zipfile)
+    Write-Host ("This: " + $foldername)
     New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
 
     # Enable Web Deploy ONLY if it's a Web role
