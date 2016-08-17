@@ -74,6 +74,19 @@ def load_arm_vars():
                 key, value = line.strip().split(',')
                 VARIABLES[key] = value
 
+def save_params_to_solution():
+    with io.open(os.path.join(CURRENT_PATH, "__save", "screenshot.json")) as context:
+        solution = json.loads(context.read())
+
+    solution['vmparams'] = {
+        "username": sys.argv[1],
+        "password": sys.argv[2],
+        "dnslabel": sys.argv[3]
+    }
+
+    with io.open(os.path.join(CURRENT_PATH, "__save", "screenshot.json"), 'w') as context:
+        context.write(json.dumps(solution, indent=2, sort_keys=True))
+
 def load_arm_params():
     global PARAM_TEMPLATE
     with io.open(os.path.join(CURRENT_PATH, 'templates', 'iis-vm.params.json')) as content:
@@ -82,7 +95,7 @@ def load_arm_params():
     PARAM_TEMPLATE['parameters']['adminUsername']['value'] = sys.argv[1]
     PARAM_TEMPLATE['parameters']['adminPassword']['value'] = sys.argv[2]
     PARAM_TEMPLATE['parameters']['dnsLabelPrefix']['value'] = sys.argv[3]
-
+    save_params_to_solution()
 
 def create_armt_from_meta():
     with io.open(os.path.join(CURRENT_PATH, "templates", "iis-vm.json")) as content:
