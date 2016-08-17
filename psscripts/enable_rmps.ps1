@@ -26,3 +26,6 @@ cmd.exe /C $cmd
 # Download the package for this worker role
 $zipName = ("zip_" + $env:COMPUTERNAME.Substring(0, 4).ToUpper() + "_package.zip")
 Invoke-WebRequest -Uri ($urlcontainer + $zipName) -OutFile project.zip
+
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::ExtractToDirectory("project.zip", "project")
