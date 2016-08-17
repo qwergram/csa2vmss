@@ -3,6 +3,7 @@ import os
 import io
 import json
 import pyscripts.csa_parse
+import pyscripts.build_bootstraper
 
 CURRENT_PATH = os.getcwd()
 LAZY = True
@@ -34,11 +35,17 @@ def package_projects(solution):
     for project in solution['projects']:
         project.setdefault("instances", 1)
         project.setdefault("role_type", "unknown")
-        if project['role_type'] != 'unknown':
+        # if project['role_type'] == 'webrole':
+        #     os.mkdir(os.path.join(CURRENT_PATH, '__save', project['guid']))
+        #     with io.open(os.path.join(CURRENT_PATH, '__save', project['guid'], "meta.json"), 'w') as f:
+        #         f.write(json.dumps(project, indent=2))
+        #         run_powershell("save_roles.ps1", {"zipfilename": os.path.join(CURRENT_PATH, '__save', project['guid'], "zip_" + project['guid'][:4] + "_package.zip"), "sourcedir": project['folder'] + "\\" if project['folder'].endswith("\\") else project['folder']})
+        # elif project['role_type'] == 'workerrole':
+        if project['role_type'] == 'workerrole':
             os.mkdir(os.path.join(CURRENT_PATH, '__save', project['guid']))
-            with io.open(os.path.join(CURRENT_PATH, '__save', project['guid'], "meta.json"), 'w') as f:
+            with io.open(os.path.join(CcURRENT_PATH, '__save', project['guid'], "meta.json"), 'w') as f:
                 f.write(json.dumps(project, indent=2))
-                run_powershell("save_roles.ps1", {"zipfilename": os.path.join(CURRENT_PATH, '__save', project['guid'], "zip_" + project['guid'][:4] + "_package.zip"), "sourcedir": project['folder'] + "\\" if project['folder'].endswith("\\") else project['folder']})
+                pyscripts.build_bootstraper.main(project)
 
 def clean():
     os.system('rm -r %s' % os.path.join(CURRENT_PATH, '__save'))
@@ -64,7 +71,7 @@ def main():
         solution = load_solution(params)
         screenshot(solution)
         if params.get("skip_zip") != "True":
-            zips = package_projects(solution)
+            package_projects(solution)
 
 
 if __name__ == "__main__":
