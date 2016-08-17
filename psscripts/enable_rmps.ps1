@@ -34,4 +34,4 @@ $run_task = "schtasks /run /tn workerrole_bootstrap"
 cmd.exe /C $schedule_task
 cmd.exe /C $run_task
 
-cmd.exe /C "%windir%\System32\Sysprep\sysprep.exe /quiet /shutdown /generalize /oobe"
+cmd.exe /C "%windir%\System32\Sysprep\sysprep.exe /quiet /shutdown /generalize /audit"
