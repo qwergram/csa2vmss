@@ -35,7 +35,7 @@ def copy_compiled_code(directory):
         elif os.path.isdir(bin_path_debug):
             origin_bin_path = bin_path_debug
         else:
-            continue
+            return
         os.system('xcopy \"%s\" \"%s\" /E /Y' % (origin_bin_path, bin_dest))
 
     for project in os.listdir(directory):
