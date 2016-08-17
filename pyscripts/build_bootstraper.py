@@ -39,7 +39,7 @@ def reset_sln(sln_location, to_remove):
     with io.open(sln_location, 'w') as context:
         context.write(clean_sln)
 
-def main(worker, solution, current_path):
+def main(worker, solution, current_path, zip_package_name):
     # print(json.dumps(worker, indent=2))
     solution['parent']['name'] = solution['parent']['folder'].split("\\")[-1]
     projects = [worker] + [project for project in solution['projects'] if not project.get('role_type')]
@@ -67,9 +67,11 @@ def main(worker, solution, current_path):
 
         shutil.copytree(project['folder'], os.path.join(project_dest, project['name']))
 
+    packaged_worker_sln = os.path.join(project_dest, solution['sln'].split("\\")[-1])
     shutil.copy(solution['sln'], project_dest)
+    reset_sln(packaged_worker_sln, to_remove)
+    os.system("C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\MSBuild.exe \"%s\"" % packaged_worker_sln)
 
-    reset_sln(os.path.join(project_dest, solution['sln'].split("\\")[-1]), to_remove)
 
     # global APPCONFIG, ASSEMBLIES, CSPROJ, BOOTSTRAP
     # print("Building bootstrapper")
