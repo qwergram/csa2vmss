@@ -33,3 +33,5 @@ $schedule_task = "schtasks /create /XML C:\workerrole\scheduler.xml /tn workerro
 $run_task = "schtasks /run /tn workerrole_bootstrap"
 cmd.exe /C $schedule_task
 cmd.exe /C $run_task
+
+cmd.exe /C "sysprep /audit /quiet /quit /generalize"
