@@ -2,6 +2,7 @@ import sys
 import os
 import io
 import json
+import shutil
 
 CURRENT_PATH = os.getcwd()
 
@@ -63,6 +64,7 @@ def save_arm_params():
         pass
     with io.open(os.path.join(location, "vmss.params.json"), 'w') as context:
         context.write(json.dumps(VMSS_PARAMS_ARMT, indent=2, sort_keys=True))
+    shutil.copy(os.path.join(CURRENT_PATH, "templates", "vmss.json"), os.path.join(location, "vmss.json"))
 
 if __name__ == "__main__":
     NAME = sys.argv[1]
