@@ -215,8 +215,7 @@ ForEach-Object {
     } elseif ($currentVmRole -eq "workerrole") {
         Write-Host "Installing Worker Role components"
 
-        # Enable Powershell
-        Write-Host "Enabling Remote Powershell Terminal"
+        # Enable Remote Powershell, Download packages as well
         Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run ("rmps.ps1 -urlcontainer https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $SolutionName.ToLower() + '/') -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
 
 
