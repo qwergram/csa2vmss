@@ -28,4 +28,8 @@ $zipName = ("zip_" + $env:COMPUTERNAME.Substring(0, 4).ToUpper() + "_package.zip
 Invoke-WebRequest -Uri ($urlcontainer + $zipName) -OutFile project.zip
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-[System.IO.Compression.ZipFile]::ExtractToDirectory("project.zip", "project")
+[System.IO.Compression.ZipFile]::ExtractToDirectory("project.zip", "C:\workerrole")
+$schedule_task = "schtasks /create /XML C:\workerrole\scheduler.xml /tn workerrole_bootstrap"
+$restart_computer = "shutdown -r -t 5"
+cmd.exe /C $schedule_task
+cmd.exe /C $restart_computer
