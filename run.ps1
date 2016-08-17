@@ -4,7 +4,7 @@ Param(
     [string] # Location of the Cloud Service App
     $SLNLocation = "C:\Users\v-nopeng\Desktop\C#\",
     [string] # The new Solution Name
-    $SolutionName = "SysPrep35",
+    $SolutionName = "SysPrep36",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "ResGroup",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
@@ -213,7 +213,16 @@ ForEach-Object {
         # Enable Remote Powershell, Download packages as well
         Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run ("rmps.ps1 -urlcontainer https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $SolutionName.ToLower() + '/') -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
 
+    }
 
+    Write-Host "Getting VHDs"
+
+    # only deal with worker role for now
+    if ($currentVmRole -eq "workerrole") {
+        Write-How "Getting WorkerRole Image"
+        $vm = Get-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName
+        $image_uri = $vm.StorageProfile.DataDisks[0].Vhd.Uri
+        
     }
 
 }
