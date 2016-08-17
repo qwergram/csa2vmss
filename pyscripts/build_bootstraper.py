@@ -19,16 +19,38 @@ def reset_sln(sln_location, to_remove):
     with io.open(sln_location, 'w') as context:
         context.write(clean_sln)
 
+def run_powershell(name, arguments):
+    arguments = " ".join(["-%s \"%s\"" % (key, value) for key, value in arguments.items()]).strip()
+    execute_this = "powershell \"%s\" %s" % (name, arguments)
+    os.system(execute_this)
+
 def copy_compiled_code(directory):
-    print(directory)
+    bin_dest = os.path.join(directory, 'bin', '')
+
+    def xcopy(project):
+        bin_path_debug = os.path.join(directory, project, 'bin', 'Debug')
+        bin_path_release = os.path.join(directory, project, 'bin', 'Release')
+        if os.path.isdir(bin_path_release):
+            origin_bin_path = bin_path_release
+        elif os.path.isdir(bin_path_debug):
+            origin_bin_path = bin_path_debug
+        else:
+            continue
+        os.system('xcopy \"%s\" \"%s\" /E /Y' % (origin_bin_path, bin_dest))
+
     for project in os.listdir(directory):
-        project_path = os.path.join(directory, project)
-        if os.path.isfile(project_path):
-            print(project)
-            print(os.listdir(project_path))
+        if "bootstrap" not in project.lower():
+            xcopy(project)
+
+    for project in os.listdir(directory):
+        if "bootstrap" in project.lower():
+            xcopy(project)
+
 
 def main(worker, solution, current_path, zip_package_name):
     # print(json.dumps(worker, indent=2))
+    global CURRENT_PATH
+    CURRENT_PATH = current_path
     solution['parent']['name'] = solution['parent']['folder'].split("\\")[-1]
     projects = [worker] + [project for project in solution['projects'] if not project.get('role_type')]
     to_remove = [project['guid'] for project in solution['projects'] if project not in projects] + [solution['parent']['guid']]
