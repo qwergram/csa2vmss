@@ -233,8 +233,11 @@ ForEach-Object {
             start-process python -argument (($pwd.Path + "\pyscripts\generate_vmss_armt.py") + ' ' + $currentVmName) -ErrorAction Stop -Wait
         }
 
-        # New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_" + $currentVmName + "\vmss.json") -TemplateParameterFile ($pwd.Path + "\__save\vmss_" + $currentVmName + "\vmss.params.json")
-
+        Write-Host "Deploying VMSS"
+        New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_" + $currentVmName + "\vmss.json") -TemplateParameterFile ($pwd.Path + "\__save\vmss_" + $currentVmName + "\vmss.params.json")
+        
+        Write-Host "Deleting old VM"
+        Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName
     }
 
 }
