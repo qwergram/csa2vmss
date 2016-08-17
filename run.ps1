@@ -195,10 +195,6 @@ ForEach-Object {
 
     # There should be checking to see if $armtemplate and $paramtemplate is the right file
     
-    if ( -not $zip -eq $null){
-
-    }
-    
     Write-Host ("Building " + $zipfile)
     Write-Host ("This: " + $foldername)
     New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
