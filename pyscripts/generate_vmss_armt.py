@@ -7,7 +7,7 @@ CURRENT_PATH = os.getcwd()
 
 PARAMETERS = {
     "vmSSName": {
-        "value": "changeme"
+        "value": None
     },
     "instanceCount": {
         "value": 2
@@ -16,16 +16,16 @@ PARAMETERS = {
         "value": "Standard_D1"
     },
     "dnsNamePrefix": {
-        "value": "changeme"
+        "value": None
     },
     "adminUsername": {
-        "value": "changeme"
+        "value": None
     },
     "adminPassword": {
-        "value": "changeme"
+        "value": None
     },
     "sourceImageVhdUri": {
-        "value": "changeme"
+        "value": None
     },
     "frontEndLBPort": {
         "value": 80
@@ -35,12 +35,15 @@ PARAMETERS = {
     }
 }
 
-PARAM_TEMPLATE = {}
+with io.open(os.path.join(CURRENT_PATH, "templates", "vmss.json")) as vmss_context:
+    VMSS_ARMT = json.loads(vmss_context.read())
+
+with io.open(os.path.join(CURRENT_PATH, "templates", "vmss.params.json")) as vmss_param_context:
+    VMSS_PARAMS_ARMT = json.loads(vmss_param_context.read())
 
 def load_solution_data():
     with io.open(os.path.join(CURRENT_PATH, "__save", "screenshot.json")) as context:
         return json.loads(context.read())
-
 
 def load_arm_params():
     with io.open(os.path.join(CURRENT_PATH, 'templates', 'iis-vm.params.json')) as content:
@@ -48,11 +51,22 @@ def load_arm_params():
 
     PARAMETERS['adminUsername']['value'] = SOLUTION_DATA['vmparams']['username']
     PARAMETERS['adminPassword']['value'] = SOLUTION_DATA['vmparams']['password']
-    PARAMETERS['dnsNamePrefix']['value'] = SOLUTION_DATA['vmparams']['dnslabel']
+    PARAMETERS['dnsNamePrefix']['value'] = NAME[0] + SOLUTION_DATA['vmparams']['dnslabel']
+    PARAMETERS['sourceImageVhdUri']['value'] = URI
+    PARAMETERS["vmSSName"]['value'] = NAME.lower().replace("vm", 'vmss')
 
+def save_arm_params():
+    location = os.path.join(CURRENT_PATH, "__save", "vmss_" + NAME, "")
+    os.mkdir(location)
+    with io.open(os.path.join(location, "vmss.params.json"), 'w') as context:
+        context.write(json.dumps(VMSS_PARAMS_ARMT, indent=2, sort_keys=True))
 
 if __name__ == "__main__":
     NAME = sys.argv[1]
     URI = sys.argv[2]
     SOLUTION_DATA = load_solution_data()
-    print(json.dumps(SOLUTION_DATA['vmparams'], indent=2, sort_keys=True))
+    load_arm_params()
+    VMSS_PARAMS_ARMT["parameters"] = PARAMETERS
+    save_arm_params()
+
+    print(json.dumps(VMSS_PARAMS_ARMT, indent=2, sort_keys=True))
