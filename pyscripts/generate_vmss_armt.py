@@ -36,9 +36,6 @@ PARAMETERS = {
     }
 }
 
-with io.open(os.path.join(CURRENT_PATH, "templates", "vmss.json")) as vmss_context:
-    VMSS_ARMT = json.loads(vmss_context.read())
-
 with io.open(os.path.join(CURRENT_PATH, "templates", "vmss.params.json")) as vmss_param_context:
     VMSS_PARAMS_ARMT = json.loads(vmss_param_context.read())
 
