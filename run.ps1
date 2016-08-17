@@ -165,7 +165,7 @@ Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_rmps.ps1") -Co
 # Resrouces:
 # http://weblogs.asp.net/scottgu/automating-deployment-with-microsoft-web-deploy
 Write-Host "Building VMs"
-Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.json', '*.csv' |
+Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.json', '*.csv', '*.zip', 'cspkg' |
 ForEach-Object {
     # Get the Json templates
 
