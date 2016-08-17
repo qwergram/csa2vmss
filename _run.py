@@ -47,7 +47,7 @@ def package_projects(solution):
             os.mkdir(os.path.join(CURRENT_PATH, '__save', project['guid']))
             with io.open(os.path.join(CURRENT_PATH, '__save', project['guid'], "meta.json"), 'w') as f:
                 f.write(json.dumps(project, indent=2))
-                solution = pyscripts.build_bootstraper.main(project, solution, CURRENT_PATH)
+                solution = pyscripts.build_bootstraper.main(project, solution, CURRENT_PATH, os.path.join(CURRENT_PATH, '__save', project['guid'], "zip_" + project['guid'][:4] + "_package.zip"))
 
 def clean():
     os.system('rm -r %s' % os.path.join(CURRENT_PATH, '__save'))
