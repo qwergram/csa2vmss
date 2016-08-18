@@ -116,8 +116,11 @@ def create_armt_from_meta():
 
             PARAM_TEMPLATE['parameters']['dnsLabelPrefix']['value'] = 'd' + project_id + PARAM_TEMPLATE['parameters']['dnsLabelPrefix']['value']
 
-            with io.open(os.path.join(project_path, 'blob_location.txt')) as location:
-                blob_location = location.read().strip()
+            try:
+                with io.open(os.path.join(project_path, 'blob_location.txt')) as location:
+                    blob_location = location.read().strip()
+            except FileNotFoundError:
+                continue
 
             CUSTOM_SCRIPT_PARAMS = ["/".join(blob_location.split('/')[:-1]), blob_location.split('/')[-1]]
 
