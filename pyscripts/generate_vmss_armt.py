@@ -52,7 +52,7 @@ def load_arm_params():
     PARAMETERS['adminPassword']['value'] = SOLUTION_DATA['vmparams']['password']
     PARAMETERS['dnsNamePrefix']['value'] = 'v' + SOLUTION_DATA['vmparams']['dnslabel'].lower()
     PARAMETERS['sourceImageVhdUri']['value'] = URI
-    PARAMETERS["vmSSName"]['value'] = NAME.lower().replace("vm", 'ss')[:9]
+    PARAMETERS["vmSSName"]['value'] = NAME.lower().replace("vm", 'vmss')[:9]
 
 def save_arm_params():
     location = os.path.join(CURRENT_PATH, "__save", "vmss_" + NAME, "")
