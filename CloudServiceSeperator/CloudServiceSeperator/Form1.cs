@@ -16,5 +16,20 @@ namespace CloudServiceSeperator
         {
             InitializeComponent();
         }
+
+        private void LoadCloudService(string sln_path)
+        {
+
+        }
+
+        private void SelectFolderButton_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog SLNSelector = new OpenFileDialog();
+            var SLNResult = SLNSelector.ShowDialog();
+            if (SLNResult == DialogResult.OK)
+            {
+                this.LoadCloudService(SLNSelector.FileName);
+            }
+        }
     }
 }

@@ -31,7 +31,10 @@
             this.CS2VMTabs = new System.Windows.Forms.TabControl();
             this.SelectProjectTab = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.SelectFolderButton = new System.Windows.Forms.Button();
+            this.LocationHintLabel = new System.Windows.Forms.Label();
             this.CS2VMTabs.SuspendLayout();
+            this.SelectProjectTab.SuspendLayout();
             this.SuspendLayout();
             // 
             // CS2VMTabs
@@ -46,6 +49,8 @@
             // 
             // SelectProjectTab
             // 
+            this.SelectProjectTab.Controls.Add(this.LocationHintLabel);
+            this.SelectProjectTab.Controls.Add(this.SelectFolderButton);
             this.SelectProjectTab.Location = new System.Drawing.Point(4, 29);
             this.SelectProjectTab.Name = "SelectProjectTab";
             this.SelectProjectTab.Padding = new System.Windows.Forms.Padding(3);
@@ -59,10 +64,29 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 29);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(192, 67);
+            this.tabPage2.Size = new System.Drawing.Size(1029, 627);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // SelectFolderButton
+            // 
+            this.SelectFolderButton.Location = new System.Drawing.Point(6, 6);
+            this.SelectFolderButton.Name = "SelectFolderButton";
+            this.SelectFolderButton.Size = new System.Drawing.Size(204, 40);
+            this.SelectFolderButton.TabIndex = 1;
+            this.SelectFolderButton.Text = "Select Project Directory";
+            this.SelectFolderButton.UseVisualStyleBackColor = true;
+            this.SelectFolderButton.Click += new System.EventHandler(this.SelectFolderButton_Click);
+            // 
+            // LocationHintLabel
+            // 
+            this.LocationHintLabel.AutoSize = true;
+            this.LocationHintLabel.Location = new System.Drawing.Point(219, 15);
+            this.LocationHintLabel.Name = "LocationHintLabel";
+            this.LocationHintLabel.Size = new System.Drawing.Size(51, 20);
+            this.LocationHintLabel.TabIndex = 2;
+            this.LocationHintLabel.Text = "label1";
             // 
             // PreCs2Vm
             // 
@@ -73,6 +97,8 @@
             this.Name = "PreCs2Vm";
             this.Text = "Pre-Script Cloud Service to VM";
             this.CS2VMTabs.ResumeLayout(false);
+            this.SelectProjectTab.ResumeLayout(false);
+            this.SelectProjectTab.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -82,6 +108,8 @@
         private System.Windows.Forms.TabControl CS2VMTabs;
         private System.Windows.Forms.TabPage SelectProjectTab;
         private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.Button SelectFolderButton;
+        private System.Windows.Forms.Label LocationHintLabel;
     }
 }
 
