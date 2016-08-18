@@ -19,7 +19,7 @@ namespace CloudServiceSeperator
 
         private void LoadCloudService(string sln_path)
         {
-
+            LocationHintLabel.Text = sln_path;
         }
 
         private void SelectFolderButton_Click(object sender, EventArgs e)

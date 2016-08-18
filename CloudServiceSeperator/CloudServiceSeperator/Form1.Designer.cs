@@ -82,11 +82,10 @@
             // LocationHintLabel
             // 
             this.LocationHintLabel.AutoSize = true;
-            this.LocationHintLabel.Location = new System.Drawing.Point(219, 15);
+            this.LocationHintLabel.Location = new System.Drawing.Point(219, 16);
             this.LocationHintLabel.Name = "LocationHintLabel";
-            this.LocationHintLabel.Size = new System.Drawing.Size(51, 20);
+            this.LocationHintLabel.Size = new System.Drawing.Size(0, 20);
             this.LocationHintLabel.TabIndex = 2;
-            this.LocationHintLabel.Text = "label1";
             // 
             // PreCs2Vm
             // 
