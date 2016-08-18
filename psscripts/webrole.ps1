@@ -79,5 +79,9 @@ $zipName = ("zip_" + $env:COMPUTERNAME.Substring(0, 4).ToUpper() + "_package.zip
 
 Invoke-WebRequest -Uri ($urlcontainer + $zipName) -OutFile project.zip
 
+if (Test-Path -Path "C:\webrole") {
+    Remove-Item -Recurse -Force "C:\webrole\"
+}
+
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 [System.IO.Compression.ZipFile]::ExtractToDirectory("project.zip", "C:\webrole\")
