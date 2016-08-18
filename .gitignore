@@ -1,3 +1,6 @@
 __pycache__/
 __save/
 autogen.*
+.vs/
+bin/
+obj/
