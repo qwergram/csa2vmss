@@ -1,6 +1,6 @@
 Param(
     [Parameter(Mandatory=$true)]
-    [string] 
+    [string]
     $urlcontainer
 )
 
@@ -78,3 +78,6 @@ $scripts_location = '%programfiles%\IIS\Microsoft Web Deploy v2\Scripts\'
 $zipName = ("zip_" + $env:COMPUTERNAME.Substring(0, 4).ToUpper() + "_package.zip")
 
 Invoke-WebRequest -Uri ($urlcontainer + $zipName) -OutFile project.zip
+
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::ExtractToDirectory($zipName, "C:\webrole\")
