@@ -4,7 +4,7 @@ Param(
     [string] # Location of the Cloud Service App
     $SLNLocation = "C:\Users\v-nopeng\Desktop\C#\",
     [string] # The new Solution Name
-    $SolutionName = "SysPrep37",
+    $SolutionName = "SysPrep39",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "ResGroup",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
