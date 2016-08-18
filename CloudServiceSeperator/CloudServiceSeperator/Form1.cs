@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace CloudServiceSeperator
 {
-    public partial class Form1 : Form
+    public partial class PreCs2Vm : Form
     {
-        public Form1()
+        public PreCs2Vm()
         {
             InitializeComponent();
         }
