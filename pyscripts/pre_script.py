@@ -194,18 +194,15 @@ def update_sln():
     for vm in os.listdir(OUTPUT):
         print("Updating sln of", vm)
         path = os.path.join(OUTPUT, vm)
-        contains_custom_parent = len([f for f in os.listdir(path) if f == ".parent"]) == 1
-        if contains_custom_parent:
-            print("Finding sln and ccproj")
+        parent_path = os.path.join(path, '.parent')
+        if os.path.isfile(parent_path): continue
+        if os.path.isdir(parent_path):
             sln = [os.path.join(path, sln) for sln in os.listdir(path) if sln.endswith('.sln')][0]
-            ccproj = [ccproj for ccproj in os.listdir(path) if ccproj.endswith('.ccproj')][0]
-            print("Reading sln")
+            ccproj = [ccproj for ccproj in os.listdir(parent_path) if ccproj.endswith('.ccproj')]
             with io.open(sln) as context:
                 sln_contents = context.read()
-            print("Transforming sln")
             parent_project_string = '\nProject("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = ".parent", ".parent\%s", "{AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE}"\nEndProject\n' % ccproj
             sln_contents = sln_contents.replace("\nGlobal", parent_project_string + "Global")
-            print("Saving sln")
             with io.open(sln, 'w') as context:
                 context.write(sln_contents)
         else:
