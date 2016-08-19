@@ -145,6 +145,8 @@ def check():
         output = os.popen("%windir%\\Microsoft.NET\\Framework64\\v4.0.30319\\MSBuild.exe \"{}\"".format(sln_file)).read()
         if "0 Error(s)" in output:
             write_confirm(path)
+            with io.open(os.path.join(path, '.log'), 'w') as context:
+                context.write(output)
             print("Compiled", directory)
         else:
             with io.open(os.path.join(path, ".errors"), 'w') as context:
