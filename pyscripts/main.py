@@ -49,7 +49,10 @@ def package_solution(project_name, solution, keep=True):
         project_path = os.path.join(source_dir, project)
         if os.path.isdir(project_path) and project != 'packages' and not project.startswith('.'):
             debug("Copying  %s.%s" % (project_name, project))
-            shutil.copytree(project_path, os.path.join(prelim_path, project))
+            try:
+                shutil.copytree(project_path, os.path.join(prelim_path, project))
+            except shutil.Error:
+                os.popen("xcopy \"{}\" \"{}\" /E".format(project_path, os.path.join(prelim_path, project)))
         else:
             debug("Ignoring %s.%s" % (project_name, project))
     
@@ -57,11 +60,16 @@ def package_solution(project_name, solution, keep=True):
     if not keep:
         shutil.rmtree(prelim_path)
 
+
 def main():
-    solution = csa_parse.VSCloudService(project_path="C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\vms\\ContosoAdsWeb\\")
-    solution.load_solution()
-    save_solution_data(name_to_guid("ContosoAdsWeb", solution.solution_data), solution)
-    package_solution("ContosoAdsWeb", solution)
+    VM_PATH = os.path.join(CURRENT_PATH, "__save", "vms")
+    for vm_name in os.listdir(VM_PATH):
+        vm_path = os.path.join(VM_PATH, vm_name)
+        if os.path.isfile(vm_path): continue
+        solution = csa_parse.VSCloudService(project_path=vm_path)
+        solution.load_solution()
+        save_solution_data(name_to_guid(vm_name, solution.solution_data), solution)
+        package_solution(vm_name, solution)
 
 if __name__ == "__main__":
     main()
