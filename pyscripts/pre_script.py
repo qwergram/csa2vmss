@@ -18,12 +18,27 @@ def main(solution_path):
     build_webroles(webroles, commons)
 
 
+def clean_binaries(path, strict=False):
+    for to_clean in ["bin", "obj", "backup"]:
+        print("Cleaning project of", to_clean)
+        try:
+            shutil.rmtree(os.path.join(path, to_clean))
+        except FileNotFoundError as e:
+            if strict:
+                raise e
+
 def build_webroles(webroles, commons):
     print("Building Web roles")
     for path, name in webroles:
+        new_location = os.path.join(OUTPUT, name, name)
         print("Building", name)
-        shutil.copytree(path, os.path.join(OUTPUT, 'webrole', name))
-
+        shutil.copytree(path, new_location)
+        clean_binaries(new_location)
+        for common in commons:
+            new_common_location = os.path.join(OUTPUT, name, common[1])
+            print("Copying", common[1])
+            shutil.copytree(common[0], new_common_location)
+            clean_binaries(new_common_location)
 
 def get_user_choice(project_choices, auto=None):
     while True:
