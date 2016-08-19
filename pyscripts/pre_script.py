@@ -181,13 +181,12 @@ def get_parent():
 
 def copy_parent(parent_path):
     print("Copying Parent to each vm instance")
-    parent_name = parent_path.split("\\")[-1]
     for vm in os.listdir(OUTPUT):
         vm_path = os.path.join(OUTPUT, vm)
         if os.path.isdir(vm_path):
             print("Copying to", vm)
             shutil.copytree(parent_path, os.path.join(vm_path, ".parent"))
-
+    print("If the cloud service app is already in the vm directory, delete `.parent`")
 
 if __name__ == "__main__":
     try:
