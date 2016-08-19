@@ -160,13 +160,8 @@ if __name__ == "__main__":
     except IndexError:
         print("You need to pass in at least one parameter")
         sys.exit(1)
-    try:
-        if "-open" in sys.argv:
-            os.system("explorer.exe " + OUTPUT)
-        elif "-check" in sys.argv:
-            check()
-
-    except IndexError:
-        pass
-
+    if "-open" in sys.argv:
+        os.system("explorer.exe " + OUTPUT)
+    elif "-check" in sys.argv:
+        check()
 
