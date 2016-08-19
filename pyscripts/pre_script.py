@@ -189,6 +189,7 @@ def copy_parent(parent_path):
     print("If the cloud service app is already in the vm directory, delete `.parent`")
     print("When you made the adjustments you need, run this again with `-updatesln`")
 
+
 def update_sln():
     print("Updating .SLNs")
     for vm in os.listdir(OUTPUT):

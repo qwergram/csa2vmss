@@ -2,6 +2,7 @@ import io
 import os
 import sys
 import json
+import shutil
 
 CURRENT_PATH = os.getcwd()
 
@@ -278,9 +279,12 @@ class VSCloudService(object):
         cspkg_location = self.solution_data['parent']['cspkg']['location']
         self.solution_data['parent']['cspkg']['contents'] = {}
         destination = os.path.join(CURRENT_PATH, '__save', 'cspkg', '')
-        os.mkdir(os.path.join(destination))
+        try:
+            os.mkdir(destination)
+        except FileExistsError:
+            shutil.rmtree(destination)
         arguments = "-target %s -destination %s" % (cspkg_location, destination)
-        execute_this = ("powershell -ExecutionPolicy Unrestricted -File \"%s\" %s" % (os.path.join(CURRENT_PATH, 'psscripts', 'unzip_cspkg.ps1'), arguments))
+        execute_this = ("powershell -ExecutionPolicy Unrestricted -File \"%s\" %s" % (os.path.join(CURRENT_PATH, 'psscripts', 'unzip.ps1'), arguments))
         os.system(execute_this)
         for file in os.listdir(destination):
             self.solution_data['parent']['cspkg'].setdefault(file.split('.')[-1], []).append(os.path.join(cspkg_location, file))
@@ -324,6 +328,6 @@ class VSCloudService(object):
             sys.exit(1)
 
 if __name__ == "__main__":
-    solution = VSCloudService(project_path="C:\\Users\\v-nopeng\\Desktop\\C#\\")
+    solution = VSCloudService(project_path="C:\\Users\\v-nopeng\\code\\msft2016\\Contoso")
     solution.load_solution()
     print(solution.sln_json)
