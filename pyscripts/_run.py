@@ -17,7 +17,7 @@ def parse(enum, content):
         return enum, content
 
 
-def load_solution(params, location):
+def load_solution(location):
     parsed = pyscripts.csa_parse.VSCloudService(location)
     parsed.load_solution()
     solution = parsed.solution_data
@@ -77,7 +77,7 @@ def main():
             params[param[0]] = param[1]
         for directory in params["Location"]:  # For every role in vsm that the user should've set up
             location = os.path.join(params["Location"], directory)
-            solution = load_solution(params, location)  # load that solution
+            solution = load_solution(location)  # load that solution
             screenshot(solution)  # let future processess know what the project looks like
             if params.get("skip_zip") != "True":  # zip the project if necessary
                 package_projects(solution)
