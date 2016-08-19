@@ -199,7 +199,7 @@ def update_sln():
         if os.path.isfile(parent_path): continue
         if os.path.isdir(parent_path):
             sln = [os.path.join(path, sln) for sln in os.listdir(path) if sln.endswith('.sln')][0]
-            ccproj = [ccproj for ccproj in os.listdir(parent_path) if ccproj.endswith('.ccproj')]
+            ccproj = [ccproj for ccproj in os.listdir(parent_path) if ccproj.endswith('.ccproj')][0]
             with io.open(sln) as context:
                 sln_contents = context.read()
             parent_project_string = '\nProject("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = ".parent", ".parent\%s", "{AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE}"\nEndProject\n' % ccproj
