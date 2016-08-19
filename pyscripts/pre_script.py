@@ -123,18 +123,34 @@ def select_commons(project_choices):
         print(i, "-", project[1])
     return get_user_choice(project_choices, [1, 2])
 
-    
+def write_confirm(location):
+    with io.open(os.path.join(location, ".confirm"), 'w') as context:
+        context.write("true")
+
+
+def check():
+    print("\nChecking to see if build was succesful")
+    for directory in os.listdir(OUTPUT):
+        path = os.path.join(OUTPUT, directory)
+        clean_binaries(path)
+        sln_file = os.path.join(path, [f for f in os.listdir(path) if f.lower().endswith('.sln')][0])
+        errors = os.system("%windir%\\Microsoft.NET\\Framework64\\v4.0.30319\\MSBuild.exe \"{}\"".format(sln_file))
+        if not errors:
+            write_confirm(path)
+        else:
+            print("Error compiling", directory)
+
 
 if __name__ == "__main__":
     make_save()
-    # main(sys.argv[1])
-    # try:
-    #     if "-open" in sys.argv:
-    #         os.system("explorer.exe " + OUTPUT)
-    #     elif "-check" in sys.argv:
-    #         os.system("")
+    main(sys.argv[1])
+    try:
+        if "-open" in sys.argv:
+            os.system("explorer.exe " + OUTPUT)
+        elif "-check" in sys.argv:
+            check()
 
-    # except IndexError:
-    #     pass
+    except IndexError:
+        pass
 
 
