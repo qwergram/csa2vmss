@@ -15,7 +15,8 @@ def main(solution_path):
     commons = select_commons(project_choices)
     webroles = select_webroles(project_choices, commons)
     workerroles = select_workerroles(project_choices, commons + webroles)
-    build_webroles(webroles, commons)
+    build_roles(webroles, commons, "Web")
+    build_roles(workerroles, commons, "Worker")
 
 
 def clean_binaries(path, strict=False):
@@ -66,10 +67,9 @@ def copy_sln(src, dest, required_solutions):
 """)
 
 
-
-def build_webroles(webroles, commons):
-    print("Building Web roles")
-    for path, name in webroles:
+def build_roles(roles, commons, mode):
+    print("Building", mode, "roles")
+    for path, name in roles:
         new_location = os.path.join(OUTPUT, name, name)
         print("Building", name)
         shutil.copytree(path, new_location)
@@ -79,7 +79,7 @@ def build_webroles(webroles, commons):
             print("Copying", common[1])
             shutil.copytree(common[0], new_common_location)
             clean_binaries(new_common_location)
-        copy_sln("\\".join(path.split("\\")[:-1]), os.path.join(OUTPUT, name), webroles + commons)
+        copy_sln("\\".join(path.split("\\")[:-1]), os.path.join(OUTPUT, name), roles + commons)
         
 
 def get_user_choice(project_choices, auto=None):
