@@ -20,12 +20,52 @@ def main(solution_path):
 
 def clean_binaries(path, strict=False):
     for to_clean in ["bin", "obj", "backup"]:
-        print("Cleaning project of", to_clean)
+        print("Cleaning project of", os.path.join(path, to_clean))
         try:
             shutil.rmtree(os.path.join(path, to_clean))
-        except FileNotFoundError as e:
+        except FileNotFoundError as error:
             if strict:
-                raise e
+                raise error
+
+def copy_sln(src, dest, required_solutions):
+    required_solutions = [sln[1] for sln in required_solutions]
+    sln_name = [f for f in os.listdir(src) if f.lower().endswith('.sln')][0]
+    src = os.path.join(src, sln_name)
+    dest_sln = os.path.join(dest, sln_name)
+
+    print("Reading solution document")
+    with io.open(src) as context:
+        solution_file = context.readlines()
+    
+    blacklist_keys = []
+    print("Transforming solution document")
+    for i, line in enumerate(solution_file):
+        line_lower = line.lower()
+        if line_lower.startswith("project("):
+            project_guid = line.split('"')[-2][1:-1]
+            project_name = line.split("= \"")[1].split("\",", 1)[0]
+            if project_name not in required_solutions:
+                blacklist_keys.append(project_guid)
+                blacklist_keys.append(project_name)
+        for key in blacklist_keys:
+            if key in line:
+                solution_file[i] = ''
+    solution = "".join(solution_file).replace("EndProject\nEndProject", "EndProject")
+    
+    print("Writing solution document")
+    with io.open(dest_sln, 'w') as context:
+        context.write(solution)
+
+    print("Leaving a nice message :)")
+    with io.open(os.path.join(dest, "README.md"), 'w') as context:
+        context.write("""# Tasks:
+- Open the project in visual studio and edit it as neccesary
+- When done, you can run the main script
+## Things to keep in mind:
+- The Cloud Service App Paradigm no longer applies here. So don't use it.
+""")
+
+
 
 def build_webroles(webroles, commons):
     print("Building Web roles")
@@ -39,6 +79,8 @@ def build_webroles(webroles, commons):
             print("Copying", common[1])
             shutil.copytree(common[0], new_common_location)
             clean_binaries(new_common_location)
+        copy_sln("\\".join(path.split("\\")[:-1]), os.path.join(OUTPUT, name), webroles + commons)
+        
 
 def get_user_choice(project_choices, auto=None):
     while True:
