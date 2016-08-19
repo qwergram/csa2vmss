@@ -58,9 +58,9 @@ if ($SLNLocation.EndsWith("\") -and -not $SLNLocation.EndsWith("\\")){
     $pythonlocation = $SLNLocation
 }
 if ($singleWindow) {
-    python $PYSCRIPTS + "\_run.py" ('-Location="' + $pythonlocation + '"')
+    python $PYSCRIPTS + "\_run.py"
 } else {
-    start-process python -argument ($PYSCRIPTS + '\_run.py -Location="' + $pythonlocation + '"') -Wait
+    start-process python -argument ($PYSCRIPTS + '\_run.py') -Wait
 }
 
 
