@@ -3,6 +3,8 @@ import shutil
 import sys
 import os
 
+OUTPUT = os.path.join(os.getcwd(), '__save', 'vms')
+
 def main(solution_path):
     print("A tool to seperate the Project into seperate directories")
     project_choices = []
@@ -13,7 +15,13 @@ def main(solution_path):
     commons = select_commons(project_choices)
     webroles = select_webroles(project_choices, commons)
     workerroles = select_workerroles(project_choices, commons + webroles)
+    build_webroles(webroles, commons)
 
+
+def build_webroles(webroles, commons):
+    print("Building Web roles")
+    for path, name in webroles:
+        print("Building", name)
 
 def get_user_choice(project_choices):
     while True:
@@ -38,6 +46,7 @@ def select_webroles(project_choices, ignore):
         if choice not in ignore:
             print(i, "-", choice[1])
     return get_user_choice(project_choices)
+
 
 def select_commons(project_choices):
     print("\nSelect which project to be packaged with all roles (seperated by spaces)")
