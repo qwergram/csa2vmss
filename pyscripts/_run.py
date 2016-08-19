@@ -41,7 +41,7 @@ def package_projects(solution):
             os.mkdir(os.path.join(CURRENT_PATH, '__save', project['guid']))
             with io.open(os.path.join(CURRENT_PATH, '__save', project['guid'], "meta.json"), 'w') as f:
                 f.write(json.dumps(project, indent=2))
-                run_powershell("save_roles.ps1", {"zipfilename": os.path.join(CURRENT_PATH, '__save', project['guid'], "zip_" + project['guid'][:4] + "_package.zip"), "sourcedir": project['folder'] + "\\" if project['folder'].endswith("\\") else project['folder']})
+                run_powershell("zip.ps1", {"zipfilename": os.path.join(CURRENT_PATH, '__save', project['guid'], "zip_" + project['guid'][:4] + "_package.zip"), "sourcedir": project['folder'] + "\\" if project['folder'].endswith("\\") else project['folder']})
         elif project['role_type'] == 'workerrole':
             os.mkdir(os.path.join(CURRENT_PATH, '__save', project['guid']))
             with io.open(os.path.join(CURRENT_PATH, '__save', project['guid'], "meta.json"), 'w') as f:
@@ -53,14 +53,17 @@ def clean():
         for directory in os.listdir(os.path.join(CURRENT_PATH, '__save')):
             path = os.path.join(CURRENT_PATH, '__save', directory)
             if directory != "vms":
-                shutil.rmtree(path)
+                if os.path.isdir(path):
+                    shutil.rmtree(path)
+                else:
+                    os.remove(path)
     except FileNotFoundError:
         print("Prescript has not been run!")
         sys.exit(1)
 
 
-def screenshot(data):
-    with io.open(os.path.join(CURRENT_PATH, '__save', 'screenshot.json'), 'w') as context:
+def screenshot(data, location):
+    with io.open(os.path.join(CURRENT_PATH, '__save', location, 'screenshot.json'), 'w') as context:
         context.write(json.dumps(data, indent=2))
 
 
