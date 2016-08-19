@@ -62,9 +62,14 @@ def clean():
         sys.exit(1)
 
 
-def screenshot(data, location):
-    with io.open(os.path.join(CURRENT_PATH, '__save', location, 'screenshot.json'), 'w') as context:
+def screenshot(data):
+    with io.open(os.path.join(CURRENT_PATH, '__save', 'screenshot.json'), 'w') as context:
         context.write(json.dumps(data, indent=2))
+
+
+def load_location():
+    with io.open(os.path.join(CURRENT_PATH, '__save', 'vms', '.source')) as context:
+        return {"Location": context.read().strip()}
 
 
 def main():
@@ -74,19 +79,16 @@ def main():
         pass
     else:
         clean()  # Delete everything except the vms\
-        params = {"Location": os.path.join(CURRENT_PATH, "__save", "vms")} 
+        params = load_location()
         for i, param in enumerate(sys.argv):  # get params
             param = parse(i, param)
             params[param[0]] = param[1]
-        for directory in os.listdir(params["Location"]):  # For every role in vm that the user should've set up
-            location = os.path.join(params["Location"], directory)
-            if os.path.isdir(location):
-                solution = load_solution(location)  # load that solution
-                screenshot(solution)  # let future processess know what the project looks like
-                if params.get("skip_zip") != "True":  # zip the project if necessary
-                    package_projects(solution)
-            else:
-                pass
+        location = params["Location"]
+        if os.path.isdir(location):
+            solution = load_solution(location)  # load that solution
+            screenshot(solution)  # let future processess know what the project looks like
+            if params.get("skip_zip") != "True":  # zip the project if necessary
+                package_projects(solution)
 
 if __name__ == "__main__":
     main()

@@ -305,7 +305,6 @@ class VSCloudService(object):
 
             if self._is_valid_sln_data(sln_data):
                 self.solution_data = sln_data
-                import pdb; pdb.set_trace()
                 self._load_cloud_service_defs()
                 self._load_cloud_service_configs()
                 self._read_assembly_infos()
