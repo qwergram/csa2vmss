@@ -120,5 +120,10 @@ def select_commons(project_choices):
 
 if __name__ == "__main__":
     main(sys.argv[1])
+    try:
+        if sys.argv[2] == "-open":
+            os.system("explorer.exe " + OUTPUT)
+    except IndexError:
+        pass
 
 
