@@ -54,9 +54,9 @@ Try {
 Write-Output "Reading Cloud Service App and Packaging it"
 
 if ($singleWindow) {
-    python ($PYSCRIPTS + "\_run.py")
+    python ($PYSCRIPTS + "\main.py")
 } else {
-    start-process python -argument ($PYSCRIPTS + '\_run.py -skipzip') -Wait
+    start-process python -argument ($PYSCRIPTS + '\main.py') -Wait
 }
 
 
