@@ -219,6 +219,8 @@ if __name__ == "__main__":
     except IndexError:
         print("You need to pass in at least one parameter")
         sys.exit(1)
+    if "-clear" in sys.argv:
+        shutil.rmtree(os.path.join(OUTPUT))
     if "-open" in sys.argv:
         os.system("explorer.exe " + OUTPUT)
     if "-check" in sys.argv:
@@ -228,3 +230,4 @@ if __name__ == "__main__":
         copy_parent(parent)
     if "-updatesln" in sys.argv:
         update_sln()
+    
