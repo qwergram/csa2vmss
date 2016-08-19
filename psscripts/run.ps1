@@ -1,10 +1,8 @@
 
 # These need to be params later...
 Param(
-    [string] # Location of the Cloud Service App
-    $SLNLocation = "C:\Users\v-nopeng\code\msft2016\Contoso",
     [string] # The new Solution Name
-    $SolutionName = "SysPrep39",
+    $SolutionName = "SysPrep42",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "ResGroup",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
@@ -49,18 +47,17 @@ Try {
 }
 
 
-
 # This script parses the Visual Studio Solution and zips it
-Write-Verbose "Reading Cloud Service App and Packaging it (Python Script)"
+Write-Verbose "Reading Cloud Service App and Packaging it"
 if ($SLNLocation.EndsWith("\") -and -not $SLNLocation.EndsWith("\\")){
     $pythonlocation = $SLNLocation + "\"
 } else {
     $pythonlocation = $SLNLocation
 }
 if ($singleWindow) {
-    python _run.py ('-Location="' + $pythonlocation + '"')
+    python pyscripts\_run.py ('-Location="' + $pythonlocation + '"')
 } else {
-    start-process python -argument ('_run.py -Location="' + $pythonlocation + '"') -Wait
+    start-process python -argument ('pyscripts\_run.py -Location="' + $pythonlocation + '"') -Wait
 }
 
 
