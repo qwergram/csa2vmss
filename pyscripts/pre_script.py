@@ -164,6 +164,18 @@ def check():
             print("Error compiling", directory, "\nError Message saved in .errors")
 
 
+def get_parent():
+    with io.open(os.path.join(OUTPUT, ".source")) as context:
+        path = context.read().strip()
+    for project in os.listdir(path):
+        project_path = os.path.join(path, project)
+        if os.path.isdir(project_path):
+            csdef = len([f for f in os.listdir(project_path) if f.lower().endswith(".csdef")]) >= 1
+            cscfg = len([f for f in os.listdir(project_path) if f.lower().endswith(".cscfg")]) >= 1
+            if csdef and cscfg:
+                return project_path
+
+
 if __name__ == "__main__":
     try:
         if not sys.argv[1].startswith("-"):
@@ -176,4 +188,6 @@ if __name__ == "__main__":
         os.system("explorer.exe " + OUTPUT)
     if "-check" in sys.argv:
         check()
+    if "-cscopy" in sys.argv:
+        get_parent()
 
