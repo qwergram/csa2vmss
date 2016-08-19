@@ -126,7 +126,12 @@ def select_commons(project_choices):
         print(i, "-", project[1])
     return get_user_choice(project_choices, [1, 2])
 
+
 def write_confirm(location):
+    try:
+        os.remove(os.path.join(location, '.errors'))
+    except FileNotFoundError:
+        pass
     with io.open(os.path.join(location, ".confirm"), 'w') as context:
         context.write("true")
 
