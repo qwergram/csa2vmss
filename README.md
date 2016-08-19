@@ -21,6 +21,7 @@ And it will deploy a VM for each role required
 
 ## Params:
 
+### pre_script.py
 ```
 python.exe .\pyscripts\pre_script.py
     <Path to project>
@@ -28,7 +29,7 @@ python.exe .\pyscripts\pre_script.py
 
 ```
 
-
+### run.ps1
 ```
 Powershell ./run.ps1
     -SLNLocation
