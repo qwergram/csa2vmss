@@ -5,6 +5,13 @@ import os
 
 OUTPUT = os.path.join(os.getcwd(), '__save', 'vms')
 
+def make_save():
+    try:
+        os.mkdir(os.path.join(os.getcwd(), '__save'))
+    except FileExistsError:
+        shutil.rmtree(os.path.join(os.getcwd(), '__save'))
+        os.mkdir(os.path.join(os.getcwd(), '__save'))
+
 def main(solution_path):
     print("A tool to seperate the Project into seperate directories")
     project_choices = []
@@ -119,11 +126,15 @@ def select_commons(project_choices):
     
 
 if __name__ == "__main__":
-    main(sys.argv[1])
-    try:
-        if sys.argv[2] == "-open":
-            os.system("explorer.exe " + OUTPUT)
-    except IndexError:
-        pass
+    make_save()
+    # main(sys.argv[1])
+    # try:
+    #     if "-open" in sys.argv:
+    #         os.system("explorer.exe " + OUTPUT)
+    #     elif "-check" in sys.argv:
+    #         os.system("")
+
+    # except IndexError:
+    #     pass
 
 
