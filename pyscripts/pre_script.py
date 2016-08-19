@@ -22,11 +22,16 @@ def build_webroles(webroles, commons):
     print("Building Web roles")
     for path, name in webroles:
         print("Building", name)
+        shutil.copytree(path, os.path.join(OUTPUT, 'webrole', name))
 
-def get_user_choice(project_choices):
+
+def get_user_choice(project_choices, auto=None):
     while True:
         try:
-            choice_indexes = [int(n) for n in input("Selection: ").split()]
+            if not auto:
+                choice_indexes = [int(n) for n in input("Selection: ").split()]
+            else:
+                choice_indexes = auto
             return [project_choices[index] for index in choice_indexes]
         except (ValueError, IndexError):
             print("Invalid selection")
@@ -37,7 +42,7 @@ def select_workerroles(project_choices, ignore):
     for i, choice in enumerate(project_choices):
         if choice not in ignore:
             print(i, "-", choice[1])
-    return get_user_choice(project_choices)
+    return get_user_choice(project_choices, [4])
 
 
 def select_webroles(project_choices, ignore):
@@ -45,14 +50,14 @@ def select_webroles(project_choices, ignore):
     for i, choice in enumerate(project_choices):
         if choice not in ignore:
             print(i, "-", choice[1])
-    return get_user_choice(project_choices)
+    return get_user_choice(project_choices, [3])
 
 
 def select_commons(project_choices):
     print("\nSelect which project to be packaged with all roles (seperated by spaces)")
     for i, project in enumerate(project_choices):
         print(i, "-", project[1])
-    return get_user_choice(project_choices)
+    return get_user_choice(project_choices, [1, 2])
 
     
 
