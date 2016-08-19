@@ -7,6 +7,12 @@ import shutil
 
 CURRENT_PATH = os.getcwd()
 
+def run_powershell(name, arguments):
+    arguments = " ".join(["-%s \"%s\"" % (key, value) for key, value in arguments.items()])
+    execute_this = "powershell -ExecutionPolicy Unrestricted -File \"%s\" %s" % (os.path.join(CURRENT_PATH, 'psscripts', name), arguments)
+    os.system(execute_this)
+
+
 def save_solution_data(project_guid, data):
     debug("Building save.json for", project_guid)
     try:
@@ -31,7 +37,7 @@ def get_zip_guid(project_guid):
     return "zip_" + project_guid[:4] + "_package.zip"
 
 
-def package_solution(project_name, solution):
+def package_solution(project_name, solution, keep=True):
     debug("Building", project_name)
     project_guid = name_to_guid(project_name, solution.solution_data)
     source_dir = os.path.join(CURRENT_PATH, '__save', 'vms', project_name)
@@ -39,11 +45,17 @@ def package_solution(project_name, solution):
     zip_path = os.path.join(dest_dir, get_zip_guid(project_guid))
     prelim_path = os.path.join(dest_dir, 'pkg')
     for project in os.listdir(source_dir):
-        debug("Copying %s.%s" % (project_name, project))
+        
         project_path = os.path.join(source_dir, project)
         if os.path.isdir(project_path) and project != 'packages' and not project.startswith('.'):
+            debug("Copying  %s.%s" % (project_name, project))
             shutil.copytree(project_path, os.path.join(prelim_path, project))
-
+        else:
+            debug("Ignoring %s.%s" % (project_name, project))
+    
+    run_powershell("zip.ps1", {"zipfilename": zip_path, "sourcedir": prelim_path})
+    if not keep:
+        shutil.rmtree(prelim_path)
 
 def main():
     solution = csa_parse.VSCloudService(project_path="C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\vms\\ContosoAdsWeb\\")
