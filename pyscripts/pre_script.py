@@ -7,10 +7,11 @@ OUTPUT = os.path.join(os.getcwd(), '__save', 'vms')
 
 def make_save():
     try:
-        os.mkdir(os.path.join(os.getcwd(), '__save'))
-    except FileExistsError:
-        shutil.rmtree(os.path.join(os.getcwd(), '__save'), ignore_errors=True)
-        os.mkdir(os.path.join(os.getcwd(), '__save'))
+        try:
+            os.mkdir(os.path.join(os.getcwd(), '__save'))
+        except FileExistsError:
+            shutil.rmtree(os.path.join(os.getcwd(), '__save'))
+            os.mkdir(os.path.join(os.getcwd(), '__save'))
     except PermissionError:
         print("\n\nInvalid Permissions. Try running as an administrator?")
         sys.exit(1)
@@ -27,6 +28,12 @@ def main(solution_path):
     workerroles = select_workerroles(project_choices, commons + webroles)
     build_roles(webroles, commons, "Web")
     build_roles(workerroles, commons, "Worker")
+    save_project_directory(solution_path)
+
+
+def save_project_directory(path):
+    with io.open(os.path.join(OUTPUT, ".source"), 'w') as context:
+        context.write(path)
 
 
 def clean_binaries(path, strict=False):
