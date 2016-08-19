@@ -235,10 +235,6 @@ class VSCloudService(object):
                     value = False if type(value) == str and value.lower() == "false" else value
                     value = True if type(value) == str and value.lower() == "true" else value
                     config_blob[tag][content["key"]] = value
-            # elif tag == "runtime":
-                # pass
-            # elif tag == "entityframework":
-                # pass
             else:
                 pass
         return config_blob
