@@ -162,6 +162,6 @@ if __name__ == "__main__":
         sys.exit(1)
     if "-open" in sys.argv:
         os.system("explorer.exe " + OUTPUT)
-    elif "-check" in sys.argv:
+    if "-check" in sys.argv:
         check()
 
