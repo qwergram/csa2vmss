@@ -9,8 +9,11 @@ def make_save():
     try:
         os.mkdir(os.path.join(os.getcwd(), '__save'))
     except FileExistsError:
-        shutil.rmtree(os.path.join(os.getcwd(), '__save'))
+        shutil.rmtree(os.path.join(os.getcwd(), '__save'), ignore_errors=True)
         os.mkdir(os.path.join(os.getcwd(), '__save'))
+    except PermissionError:
+        print("\n\nInvalid Permissions. Try running as an administrator?")
+        sys.exit(1)
 
 def main(solution_path):
     print("A tool to seperate the Project into seperate directories")
@@ -142,8 +145,13 @@ def check():
 
 
 if __name__ == "__main__":
-    make_save()
-    main(sys.argv[1])
+    try:
+        if not sys.argv[1].startswith("-"):
+            make_save()
+            main(sys.argv[1])
+    except IndexError:
+        print("You need to pass in at least one parameter")
+        sys.exit(1)
     try:
         if "-open" in sys.argv:
             os.system("explorer.exe " + OUTPUT)
