@@ -26,7 +26,7 @@ class VSCloudService(object):
         "2150E333-8FDC-42A3-9474-1A3956D46DE8": "powershell_project"
     }
 
-    def __init__(self, project_path, *args, **kwargs):
+    def __init__(self, project_path):
         debug("Initializing VSProject")
         self.project_path = project_path
         self.solution_data = {}
@@ -122,9 +122,6 @@ class VSCloudService(object):
         def clean(text):
             return text.replace("{http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition}", '').lower()
 
-        def mess(text):
-            return "{http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition}" + text
-
         parent_data = self.solution_data['parent']
         root = load_xml(parent_data['csdef'])
 
@@ -175,9 +172,6 @@ class VSCloudService(object):
                     break
 
     def _load_cloud_service_configs(self):
-
-        def clean(text):
-            return text.replace("{http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration}", '')
 
         def mess(text):
             return "{http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration}" + text
@@ -250,7 +244,6 @@ class VSCloudService(object):
 
     def _read_package_configs(self):
         for i, project in enumerate(self.solution_data['projects']):
-            folder = project['folder']
             packages = os.path.join(project['folder'], 'packages.config')
             if project.get('role_type') == 'webrole':
                 appconfig = os.path.join(project['folder'], 'Web.config')
@@ -265,7 +258,7 @@ class VSCloudService(object):
 
     def _get_worker_azure_requirements(self):
         "Get all Azure resources required"
-        for i, project in enumerate(self.solution_data['projects']):
+        for project in self.solution_data['projects']:
             if project.get('role_type') == 'workerrole':
                 folder = project['folder']
                 azure_requirements = []
