@@ -75,13 +75,15 @@ def main():
         for i, param in enumerate(sys.argv):  # get params
             param = parse(i, param)
             params[param[0]] = param[1]
-        for directory in os.listdir(params["Location"]):  # For every role in vsm that the user should've set up
+        for directory in os.listdir(params["Location"]):  # For every role in vm that the user should've set up
             location = os.path.join(params["Location"], directory)
-            solution = load_solution(location)  # load that solution
-            screenshot(solution)  # let future processess know what the project looks like
-            if params.get("skip_zip") != "True":  # zip the project if necessary
-                package_projects(solution)
-
+            if os.path.isdir(location):
+                solution = load_solution(location)  # load that solution
+                screenshot(solution)  # let future processess know what the project looks like
+                if params.get("skip_zip") != "True":  # zip the project if necessary
+                    package_projects(solution)
+            else:
+                pass
 
 if __name__ == "__main__":
     main()
