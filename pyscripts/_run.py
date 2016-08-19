@@ -17,14 +17,13 @@ def parse(enum, content):
         return enum, content
 
 
-def load_solution(params):
-    parsed = pyscripts.csa_parse.VSCloudService(params['Location'])
+def load_solution(params, location):
+    parsed = pyscripts.csa_parse.VSCloudService(location)
     parsed.load_solution()
     solution = parsed.solution_data
-    solution['origin'] = params['Location']
-    solution['sln'] = os.path.join(params['Location'], [f for f in os.listdir(params['Location']) if f.lower().endswith('.sln')][0])
+    solution['origin'] = location
+    solution['sln'] = os.path.join(location, [f for f in os.listdir(location) if f.lower().endswith('.sln')][0])
     print(json.dumps(solution, indent=2, sort_keys=True))
-    # import pdb; pdb.set_trace()
     return solution
 
 
@@ -71,15 +70,17 @@ def main():
     if os.path.isdir(os.path.join(CURRENT_PATH, '__save', 'screenshot.json')) and LAZY:
         pass
     else:
-        clean()
-        params = {}
-        for i, param in enumerate(sys.argv):
+        clean()  # Delete everything except the vms\
+        params = {"Location": os.path.join(CURRENT_PATH, "__save", "vms")} 
+        for i, param in enumerate(sys.argv):  # get params
             param = parse(i, param)
             params[param[0]] = param[1]
-        solution = load_solution(params)
-        screenshot(solution)
-        if params.get("skip_zip") != "True":
-            package_projects(solution)
+        for directory in params["Location"]:  # For every role in vsm that the user should've set up
+            location = os.path.join(params["Location"], directory)
+            solution = load_solution(params, location)  # load that solution
+            screenshot(solution)  # let future processess know what the project looks like
+            if params.get("skip_zip") != "True":  # zip the project if necessary
+                package_projects(solution)
 
 
 if __name__ == "__main__":
