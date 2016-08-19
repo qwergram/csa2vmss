@@ -5,7 +5,7 @@ import json
 
 CURRENT_PATH = os.getcwd()
 
-DEBUG = False
+DEBUG = True
 
 def debug(*args, **kwargs):
     if DEBUG:
@@ -346,8 +346,10 @@ class VSCloudService(object):
         debug("Loading solution")
         if self._is_valid_project():
             sln_data = self._read_sln_data()
+
             if self._is_valid_sln_data(sln_data):
                 self.solution_data = sln_data
+                import pdb; pdb.set_trace()
                 self._load_cloud_service_defs()
                 self._load_cloud_service_configs()
                 self._read_assembly_infos()
