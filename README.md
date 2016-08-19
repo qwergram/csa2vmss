@@ -9,9 +9,18 @@ all the new technologies that come out that they wouldn't normally get using the
 
 You will first need to use the pre-script to split the cloud app into seperate projects:
 
-```python.exe .\pyscripts\pre_script.py "C:\Path\To\Project" -open```
+```prescript.cmd "C:\Path\To\Project" -open```
 
 You will then need to open each project and make sure it can run on its own.
+Once you have made sure everything runs in Visual Studio, run a final check:
+
+```prescript.cmd -check```
+
+If there are issues compiling, they will be logged under `__save\vms\<name_of_role>\.errors`
+
+If your project compiles in Visual Studio and not with this script, you can skip this step by adding `.confirm`
+to the same directory and deleting `.errors`
+
 
 Once you have completed that, you can run:
 
