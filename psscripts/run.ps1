@@ -32,7 +32,7 @@ Param(
     [string] # VM Password
     $VMPassword = "Mar.Wed.17.2027",
     [bool] # run app in single window?
-    $singleWindow = $false
+    $singleWindow = $true
 )
 
 $PYSCRIPTS = ($pwd.Path + "\pyscripts")
@@ -46,21 +46,17 @@ Try {
     $RmSubscription = Get-AzureRmSubscription -ErrorAction Stop
 } Catch {
     Write-Verbose "Please Login"
-    $login = Login-AzureRmAccount
+    # $login = Login-AzureRmAccount
 }
 
 
 # This script parses the Visual Studio Solution and zips it
 Write-Output "Reading Cloud Service App and Packaging it"
-if ($SLNLocation.EndsWith("\") -and -not $SLNLocation.EndsWith("\\")){
-    $pythonlocation = $SLNLocation + "\"
-} else {
-    $pythonlocation = $SLNLocation
-}
+
 if ($singleWindow) {
-    python $PYSCRIPTS + "\_run.py"
+    python ($PYSCRIPTS + "\_run.py")
 } else {
-    start-process python -argument ($PYSCRIPTS + '\_run.py') -Wait
+    start-process python -argument ($PYSCRIPTS + '\_run.py -skipzip') -Wait
 }
 
 
