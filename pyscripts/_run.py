@@ -4,6 +4,7 @@ import io
 import json
 import pyscripts.csa_parse
 import pyscripts.build_bootstraper
+import shutil
 
 CURRENT_PATH = os.getcwd()
 LAZY = True
@@ -49,8 +50,14 @@ def package_projects(solution):
                 solution = pyscripts.build_bootstraper.main(project, solution, CURRENT_PATH, os.path.join(CURRENT_PATH, '__save', project['guid'], "zip_" + project['guid'][:4] + "_package.zip"))
 
 def clean():
-    os.system('rm -r %s' % os.path.join(CURRENT_PATH, '__save'))
-    os.mkdir(os.path.join(CURRENT_PATH, '__save'))
+    try:
+        for directory in os.listdir(os.path.join(CURRENT_PATH, '__save')):
+            path = os.path.join(CURRENT_PATH, '__save', directory)
+            if directory != "vms":
+                shutil.rmtree(path)
+    except FileNotFoundError:
+        print("Prescript has not been run!")
+        sys.exit(1)
 
 
 def screenshot(data):
