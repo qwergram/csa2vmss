@@ -2,11 +2,13 @@ import json
 import os
 import io
 import csa_parse
+from csa_parse import debug
 import shutil
 
 CURRENT_PATH = os.getcwd()
 
 def save_solution_data(project_guid, data):
+    debug("Building save.json for", project_guid)
     try:
         os.mkdir(os.path.join(CURRENT_PATH, '__save', project_guid))
     except FileExistsError:
@@ -30,15 +32,17 @@ def get_zip_guid(project_guid):
 
 
 def package_solution(project_name, solution):
-    project_guid = name_to_guid("ContosoAdsWeb", solution.solution_data)
+    debug("Building", project_name)
+    project_guid = name_to_guid(project_name, solution.solution_data)
     source_dir = os.path.join(CURRENT_PATH, '__save', 'vms', project_name)
     dest_dir = os.path.join(CURRENT_PATH, '__save', project_guid)
     zip_path = os.path.join(dest_dir, get_zip_guid(project_guid))
     prelim_path = os.path.join(dest_dir, 'pkg')
     for project in os.listdir(source_dir):
+        debug("Copying %s.%s" % (project_name, project))
         project_path = os.path.join(source_dir, project)
-        if os.path.isdir(project_path) and project != 'packages':
-            shutil.copytree(project_path, prelim_path)
+        if os.path.isdir(project_path) and project != 'packages' and not project.startswith('.'):
+            shutil.copytree(project_path, os.path.join(prelim_path, project))
 
 
 def main():
