@@ -1,10 +1,10 @@
-import sys
-import os
 import io
 import json
-import pyscripts.csa_parse
-import pyscripts.build_bootstraper
+import os
 import shutil
+import sys
+import build_bootstraper
+import csa_parse
 
 CURRENT_PATH = os.getcwd()
 LAZY = True
@@ -18,7 +18,7 @@ def parse(enum, content):
 
 
 def load_solution(location):
-    parsed = pyscripts.csa_parse.VSCloudService(location)
+    parsed = csa_parse.VSCloudService(location)
     parsed.load_solution()
     solution = parsed.solution_data
     solution['origin'] = location
@@ -46,7 +46,7 @@ def package_projects(solution):
             os.mkdir(os.path.join(CURRENT_PATH, '__save', project['guid']))
             with io.open(os.path.join(CURRENT_PATH, '__save', project['guid'], "meta.json"), 'w') as f:
                 f.write(json.dumps(project, indent=2))
-                solution = pyscripts.build_bootstraper.main(project, solution, CURRENT_PATH, os.path.join(CURRENT_PATH, '__save', project['guid'], "zip_" + project['guid'][:4] + "_package.zip"))
+                solution = build_bootstraper.main(project, solution, CURRENT_PATH, os.path.join(CURRENT_PATH, '__save', project['guid'], "zip_" + project['guid'][:4] + "_package.zip"))
 
 def clean():
     try:
