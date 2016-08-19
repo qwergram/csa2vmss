@@ -70,7 +70,7 @@ def main(worker, solution, current_path, zip_package_name):
     packaged_worker_sln = os.path.join(project_dest, solution['sln'].split("\\")[-1])
     shutil.copy(solution['sln'], packaged_worker_sln)
     reset_sln(packaged_worker_sln, to_remove)
-    os.system("%windir%\\Microsoft.NET\\Framework64\\v4.0.30319\\MSBuild.exe \"%s\"" % packaged_worker_sln)
+    os.system("%windir%\\Microsoft.NET\\Framework64\\v4.0.30319\\MSBuild.exe \"{}\"".format(packaged_worker_sln))
     
     bin_location = copy_compiled_code(project_dest)
     copy_schtask(bin_location)
