@@ -165,6 +165,7 @@ def check():
 
 
 def get_parent():
+    print("Getting Parent")
     with io.open(os.path.join(OUTPUT, ".source")) as context:
         path = context.read().strip()
     for project in os.listdir(path):
@@ -174,6 +175,18 @@ def get_parent():
             cscfg = len([f for f in os.listdir(project_path) if f.lower().endswith(".cscfg")]) >= 1
             if csdef and cscfg:
                 return project_path
+    print("Parent not found. Does it contain a .csdef and .cscfg file?")
+    sys.exit(1)
+
+
+def copy_parent(parent_path):
+    print("Copying Parent to each vm instance")
+    parent_name = parent_path.split("\\")[-1]
+    for vm in os.listdir(OUTPUT):
+        vm_path = os.path.join(OUTPUT, vm)
+        if os.path.isdir(vm_path):
+            print("Copying to", vm)
+            shutil.copytree(parent_path, os.path.join(vm_path, ".parent"))
 
 
 if __name__ == "__main__":
@@ -189,5 +202,6 @@ if __name__ == "__main__":
     if "-check" in sys.argv:
         check()
     if "-cscopy" in sys.argv:
-        get_parent()
+        parent = get_parent()
+        copy_parent(parent)
 
