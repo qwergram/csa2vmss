@@ -9,21 +9,22 @@ all the new technologies that come out that they wouldn't normally get using the
 
 You will first need to use the pre-script to split the cloud app into seperate projects:
 
-`python.exe .\pyscripts\pre_script.py "C:\Path\To\Project" -open`
+```python.exe .\pyscripts\pre_script.py "C:\Path\To\Project" -open```
 
 You will then need to open each project and make sure it can run on its own.
 
 Once you have completed that, you can run:
-`Powershell ./run.ps1 -SLNLocation "C:\Path\To\Project" -VMAdmin "Norton" -VMPassword "$3cur3P@$$w0rd"`
+
+```Powershell ./run.ps1 -SLNLocation "C:\Path\To\Project" -VMAdmin "Norton" -VMPassword "$3cur3P@$$w0rd"```
 
 And it will deploy a VM for each role required
 
 ## Params:
 
 ```
-    python.exe .\pyscripts\pre_script.py
-        <Path to project>
-        [-open (If -open it will open the location of the projects in explorer)]
+python.exe .\pyscripts\pre_script.py
+    <Path to project>
+    [-open (If -open it will open the location of the projects in explorer)]
 
 ```
 
