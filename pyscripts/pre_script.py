@@ -137,11 +137,14 @@ def check():
         path = os.path.join(OUTPUT, directory)
         clean_binaries(path)
         sln_file = os.path.join(path, [f for f in os.listdir(path) if f.lower().endswith('.sln')][0])
-        errors = os.system("%windir%\\Microsoft.NET\\Framework64\\v4.0.30319\\MSBuild.exe \"{}\"".format(sln_file))
-        if not errors:
+        output = os.popen("%windir%\\Microsoft.NET\\Framework64\\v4.0.30319\\MSBuild.exe \"{}\"".format(sln_file)).read()
+        if "0 Error(s)" in output:
             write_confirm(path)
+            print("Compiled", directory)
         else:
-            print("Error compiling", directory)
+            with io.open(os.path.join(path, ".errors"), 'w') as context:
+                context.write(output)
+            print("Error compiling", directory, "\nError Message saved in .errors")
 
 
 if __name__ == "__main__":
