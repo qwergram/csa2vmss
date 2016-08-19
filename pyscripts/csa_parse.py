@@ -327,6 +327,7 @@ class VSCloudService(object):
             debug("Not a visual studio project")
             sys.exit(1)
 
+
 if __name__ == "__main__":
     solution = VSCloudService(project_path="C:\\Users\\v-nopeng\\code\\msft2016\\Contoso")
     solution.load_solution()
