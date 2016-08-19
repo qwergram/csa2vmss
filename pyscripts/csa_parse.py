@@ -113,45 +113,9 @@ class VSCloudService(object):
     def sln_json(self):
         return json.dumps(self.solution_data, indent=2, sort_keys=True)
 
-    def json(self, *args, **kwargs):
-        return {}
-
     def _check_solution_loaded(self):
         debug("Check solution loaded")
         return bool(self.solution_data.get('projects', False) and self.solution_data.get('parent', False))
-
-
-    # XXX INCLUDE THIS SOMEHOW
-    def _load_csproj(self, project_json):
-        """Read xml of csproj"""
-        debug("Reading xml contents")
-
-        def mess(text):
-            return "{http://schemas.microsoft.com/developer/msbuild/2003}" + text
-
-        def clean(text):
-            return text.replace("{http://schemas.microsoft.com/developer/msbuild/2003}", "")
-
-        config_json = []
-        include_json = {}
-        csproj_location = project_json['csproj']
-        csproj = load_xml(csproj_location)
-        configurations = csproj.findall(mess("PropertyGroup"))
-        include = csproj.findall(mess("ItemGroup"))
-        debug("Loading PropertyGroup Data")
-        for config in configurations:
-            for child in config.getchildren():
-                config_json.append({
-                    "tag": clean(child.tag),
-                    "items": {key: value for (key, value) in child.items()},
-                    "text": child.text
-                })
-        project_json['PropertyGroups'] = config_json
-        debug("Loading ItemGroup Data")
-        for references in include:
-            for reference in references.getchildren():
-                print(clean(reference.tag), reference.items())
-        return project_json
 
     def _load_cloud_service_defs(self):
 
@@ -174,7 +138,6 @@ class VSCloudService(object):
             """
 
             attributes = {key: value for key, value in role.items()}
-            # if clean(role.tag) == "WebRole":
             projectname = attributes['name']
             role_settings = {}
 
