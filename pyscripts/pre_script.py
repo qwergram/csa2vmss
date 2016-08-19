@@ -32,6 +32,7 @@ def main(solution_path):
 
 
 def save_project_directory(path):
+    print("Saving Source under .source")
     with io.open(os.path.join(OUTPUT, ".source"), 'w') as context:
         context.write(path)
 
@@ -147,6 +148,8 @@ def check():
     print("\nChecking to see if build was succesful")
     for directory in os.listdir(OUTPUT):
         path = os.path.join(OUTPUT, directory)
+        if os.path.isfile(path):
+            continue
         clean_binaries(path)
         sln_file = os.path.join(path, [f for f in os.listdir(path) if f.lower().endswith('.sln')][0])
         output = os.popen("%windir%\\Microsoft.NET\\Framework64\\v4.0.30319\\MSBuild.exe \"{}\"".format(sln_file)).read()
