@@ -75,7 +75,7 @@ def main():
         for i, param in enumerate(sys.argv):  # get params
             param = parse(i, param)
             params[param[0]] = param[1]
-        for directory in params["Location"]:  # For every role in vsm that the user should've set up
+        for directory in os.listdir(params["Location"]):  # For every role in vsm that the user should've set up
             location = os.path.join(params["Location"], directory)
             solution = load_solution(location)  # load that solution
             screenshot(solution)  # let future processess know what the project looks like
