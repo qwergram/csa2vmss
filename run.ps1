@@ -2,7 +2,7 @@
 # These need to be params later...
 Param(
     [string] # Location of the Cloud Service App
-    $SLNLocation = "C:\Users\v-nopeng\Desktop\C#\",
+    $SLNLocation = "C:\Users\v-nopeng\code\msft2016\Contoso",
     [string] # The new Solution Name
     $SolutionName = "SysPrep39",
     [string] # Resource name = $ResourcePrefix + $SolutionName
@@ -37,39 +37,33 @@ Param(
     $singleWindow = $false
 )
 
-$msdeploy = '"%programfiles%\IIS\Microsoft Web Deploy V3\msdeploy.exe" '
-
 # Have the User Login
-Write-Host "Hello!"
+Write-Verbose "Cloud Service 2 VMss"
+Write-Verbose "(Send suggestions to v-nopeng@microsoft.com)"
+
 Try {
     $RmSubscription = Get-AzureRmSubscription -ErrorAction Stop
 } Catch {
+    Write-Verbose "Please Login"
     $login = Login-AzureRmAccount
 }
 
-Try {
-    $Subscription = Select-AzureSubscription $AzureProfile -ErrorAction Stop
-} Catch {
-    $add = Add-AzureAccount
-}
+
 
 # This script parses the Visual Studio Solution and zips it
-Write-Host "Reading Cloud Service App and Packaging it (Python Script)"
+Write-Verbose "Reading Cloud Service App and Packaging it (Python Script)"
+if ($SLNLocation.EndsWith("\") -and -not $SLNLocation.EndsWith("\\")){
+    $pythonlocation = $SLNLocation + "\"
+} else {
+    $pythonlocation = $SLNLocation
+}
 if ($singleWindow) {
-    if ($SLNLocation.EndsWith("\") -and -not $SLNLocation.EndsWith("\\")){
-        $pythonlocation = $SLNLocation + "\"
-    } else {
-        $pythonlocation = $SLNLocation
-    }
     python _run.py ('-Location="' + $pythonlocation + '"')
 } else {
-    if ($SLNLocation.EndsWith("\") -and -not $SLNLocation.EndsWith("\\")){
-        $pythonlocation = $SLNLocation + "\"
-    } else {
-        $pythonlocation = $SLNLocation
-    }
     start-process python -argument ('_run.py -Location="' + $pythonlocation + '"') -Wait
 }
+
+
 
 # Check to see if the specified ResourceGroup exists.
 Write-Host "Building Resource Group"
@@ -197,17 +191,17 @@ ForEach-Object {
     # There should be checking to see if $armtemplate and $paramtemplate is the right file
 
     Write-Host ("Building " + $zipfile)
-    $newdeployment = New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
+    # $newdeployment = New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
 
     # Enable Web Deploy ONLY if it's a Web role
-    if ($currentVmRole -eq "webrole"){
+    if ($currentVmRole -eq "webrole             a"){
 
         # Enable IIS, Webdeploy and Remote PowerShell
         Write-Host "Installing Web Role components"
         $newcustomscript = Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "webrole.ps1" -VMName $currentVmName -Run ("webrole.ps1 -urlcontainer https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $SolutionName.ToLower() + '/') -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
 
 
-    } elseif ($currentVmRole -eq "workerrole") {
+    } elseif ($currentVmRole -eq "workerrole    a") {
         Write-Host "Installing Worker Role components"
 
         # Enable Remote Powershell, Download packages as well
