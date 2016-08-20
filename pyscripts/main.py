@@ -64,6 +64,12 @@ def package_solution(project_name, solution, keep=True):
     dest_dir = os.path.join(CURRENT_PATH, '__save', project_guid)
     zip_path = os.path.join(dest_dir, get_zip_guid(project_guid))
     prelim_path = os.path.join(dest_dir, 'pkg')
+
+    if name_to_role(project_name, solution) == 'workerrole':
+        print("Copying scheduler for workerrole")
+        sch_xml = os.path.join(CURRENT_PATH, 'templates', 'schedule.xml')
+        shutil.copyfile(sch_xml, prelim_path)
+
     for project in os.listdir(source_dir):
         
         project_path = os.path.join(source_dir, project)
@@ -78,6 +84,7 @@ def package_solution(project_name, solution, keep=True):
     
     run_powershell("zip.ps1", {"zipfilename": zip_path, "sourcedir": prelim_path})
     if not keep:
+        print("Cleaning up mess")
         shutil.rmtree(prelim_path)
 
 
