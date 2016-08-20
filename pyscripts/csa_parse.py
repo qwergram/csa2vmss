@@ -52,6 +52,7 @@ class VSCloudService(object):
         sln = [file for file in os.listdir(self.project_path) if file.endswith('.sln')][0]
         sln_location = os.path.join(self.project_path, sln)
         stats = {"projects": [], "parent": {}}
+        parent_found = False
         with io.open(sln_location) as sln:
             for line in sln.readlines():
                 lower_line = line.lower()
@@ -72,11 +73,16 @@ class VSCloudService(object):
                             "csproj": os.path.join(self.project_path, parse[5]),
                         })
                     elif proj_type == "sln_dir": # Appears to be a parent
+                        parent_found = True
                         stats['parent'] = self._load_ccproj_dir(parse)
                     else:
                         debug("unknown file type: [%s]" % parse[5])
                         debug("Are you sure it's a Cloud Service Project?")
                         sys.exit(1)
+        if not parent_found:
+            debug("Parent not found or not included in .sln!")
+            debug("Did you run 'prescript.cmd -updatessln' ?")
+            sys.exit(1)
         return stats
 
     def _load_ccproj_dir(self, parse):
