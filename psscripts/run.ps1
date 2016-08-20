@@ -51,12 +51,15 @@ Try {
 
 
 # This script parses the Visual Studio Solution and zips it
-Write-Output "Reading Cloud Service App and Packaging it"
 
-if ($singleWindow) {
-    python ($PYSCRIPTS + "\main.py")
-} else {
-    start-process python -argument ($PYSCRIPTS + '\main.py') -Wait
+if (Test-Path ".\__save\.confirm_a") { } else {
+    Write-Output "Reading Cloud Service App and Packaging it"
+
+    if ($singleWindow) {
+        python ($PYSCRIPTS + "\main.py")
+    } else {
+        start-process python -argument ($PYSCRIPTS + '\main.py') -Wait
+    }
 }
 
 
@@ -101,7 +104,7 @@ Try {
 }
 
 # Okay, upload the files now
-Get-ChildItem ($pwd.Path + "\__save") -Exclude "cspkg", "vms" |
+Get-ChildItem ($pwd.Path + "\__save") -Exclude "cspkg", "vms", ".confirm*" |
 ForEach-Object {
     # Look for the zip file
     Get-ChildItem ($_.FullName + "\") -Filter "*.zip" |
