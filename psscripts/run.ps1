@@ -202,7 +202,7 @@ ForEach-Object {
         if (Test-Path -path (".\__save\.confirm_ext_" + $currentVmName)) { Write-Output "Extension already deployed" } else {
             Write-Output "Installing Web Role components"
             $newcustomscript = Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "webrole.ps1" -VMName $currentVmName -Run ("webrole.ps1 -urlcontainer " + $zip_location) -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
-            "true" | Out-File -FilePath ("webrole.ps1 -urlcontainer " + $zip_location) -Encoding ascii
+            "true" | Out-File -FilePath (".\__save\.confrim_ext_" + $currentVmName) -Encoding ascii
         }
 
     } elseif ($currentVmRole -eq "workerrole    a") {
