@@ -193,6 +193,7 @@ ForEach-Object {
     # There should be checking to see if $armtemplate and $paramtemplate is the right file
 
     Write-Output ("Building " + $zipfile + " (" + $currentVmRole + ")")
+    Write-Output "(This will take a while)"
     if (Test-Path -path (".\__save\.confirm_" + $currentVmName)) { Write-Output "Resource already deployed" } else {
         Write-Output "Checkout http://portal.azure.com/ to see it being deployed in live time!"
         $newdeployment = New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate

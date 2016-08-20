@@ -1,5 +1,7 @@
 # Cloud2VMSS
 
+NOTE: THIS PROJECT IS NOT COMPLETE YET
+
 The objective of this project is to specify a Solution directory and build Virtual Machine Scalable Sets out of it.
 
 The point of this is to convert the existing [Paas](https://en.wikipedia.org/wiki/Platform_as_a_service) to a [Iaas](https://en.wikipedia.org/wiki/Cloud_computing#Infrastructure_as_a_service_.28IaaS.29) so developers can take advantage of
@@ -74,6 +76,7 @@ Once you have completed prescript steps, you can run:
 And it will deploy a VM for each role you specified
 
 ### Provide Credentials
+Provide credentials you use to log into http://portal.azure.com
 
 ### Invoke main.py
 This script will package the script to individual directoriess with GUIDs as the directory
@@ -82,9 +85,42 @@ name. Inside will contain compiled versions of each project defined in `.\__save
 Once this step is complete, a file called `.confirm_a` will be created. Delete this
 file and directories with guid as their names if you want to re-run the packaging script again.
 
+### Get/Build Resource Group
 
+### Get/Build Storage + Container
+Will also create keys to access storage/container
 
+### Upload packages to storage/container
+All directories under GUID names will have a zip called `zip\_AB\_package.zip`.
+This file will be uploaded to the container to be deployed onto a VM
 
+### Save VM variables
+A csv will be creteated containing details about the VM to be created.
+
+### Generate Azure Resource Management Templates (arm templates)
+For each project guid under `.\__save\`, define a template for deployment
+The files `armtemplate.json` and `armtemplate.params.json` are then created.
+
+### Upload webrole script and workerrole script
+Custom scripts saved under `.\psscripts\` called `webrole.ps1` and `workerrole.ps1` are then saved
+to the cloud for the VMs to use.
+
+### Deploy VM
+This is the longest step, and it usually takes about 15 minutes per VM to deploy. 
+
+### Run custom extensions
+The scripts uploaded earlier will be run (webrole script/workerrole script)
+
+#### WebRole
+This script just install IIS components, downloads the zip package onto the VM
+and points IIS to serve out of it.
+
+#### WorkerRole
+This script downloads the workerrole package and sets the bootstrapper to run upon
+boot.
+
+### And more to come...
+The actual VMSS deployment has yet to come
 
 # Suggestions? Questions?
 You can reach me at v-nopeng@microsoft.com or npengra317@gmail.com.
