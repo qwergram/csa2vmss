@@ -66,14 +66,6 @@ Invoke-WebRequest -Uri http://go.microsoft.com/fwlink/?LinkId=255386 -OutFile We
 Invoke-WebRequest -Uri http://go.microsoft.com/fwlink/?LinkID=309497 -OutFile installer.msi
 Invoke-WebRequest -Uri http://go.microsoft.com/fwlink/?LinkId=209116 -OutFile wmsvc.msi
 
-msiexec /i WebInstaller.msi /quiet
-msiexec /i installer.msi /quiet ADDLOCAL=ALL
-msiexec /i wmsvc.msi /quiet ADDLOCAL=ALL
-
-cmd.exe /c '"%programfiles%\microsoft\web platform installer\WebpiCmd.exe" /Install /Products:ManagementService'
-cmd.exe /c "net start msdepsvc"
-cmd.exe /c "net start wmsvc"
-
 $scripts_location = '%programfiles%\IIS\Microsoft Web Deploy v2\Scripts\'
 $zipName = ("zip_" + $env:COMPUTERNAME.Substring(0, 4).ToUpper() + "_package.zip")
 
@@ -85,3 +77,11 @@ if (Test-Path -Path "C:\webrole") {
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 [System.IO.Compression.ZipFile]::ExtractToDirectory("project.zip", "C:\webrole\")
+
+msiexec /i WebInstaller.msi /quiet
+msiexec /i installer.msi /quiet ADDLOCAL=ALL
+msiexec /i wmsvc.msi /quiet ADDLOCAL=ALL
+
+cmd.exe /c '"%programfiles%\microsoft\web platform installer\WebpiCmd.exe" /Install /Products:ManagementService'
+cmd.exe /c "net start msdepsvc"
+cmd.exe /c "net start wmsvc"
