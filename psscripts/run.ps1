@@ -63,7 +63,6 @@ if (Test-Path ".\__save\.confirm_a") { } else {
 }
 
 
-
 # Check to see if the specified ResourceGroup exists.
 Write-Output "Building Resource Group"
 Try {
@@ -94,7 +93,7 @@ $key = (Get-AzureRmStorageAccountKey -ResourceGroupName ($ResourcePrefix + $Solu
 $blobContext = New-AzureStorageContext -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -StorageAccountKey $key
 
 
-# Build a container for it as well\
+# Build a container for it as well
 Write-Output "Building Storage container"
 Try {
     $getcontainer = Get-AzureStorageContainer -Name ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Context $blobContext -ErrorAction Stop
@@ -116,43 +115,39 @@ ForEach-Object {
     }
 }
 
-# # Okay now build a VM for each Project
-# Write-Output "Generalizing Variables"
-# $Settings = ("# This is a configuration file for building a ARM Template
-# storageAccountName," + $StoragePrefix.ToLower() + $SolutionName.ToLower() + $VMPrefix.ToLower() +"
-# sizeOfDiskInGB," + $VMVHDSize.ToString() + "
-# dataDisk1VhdName," + $VMPrefix.ToLower() + "vhd" + $SolutionName.ToLower() + "
-# OSDiskName," + $VMPrefix + "os" + $SolutionName + "
-# nicName," + $SolutionName + "nic
-# vmName," + $VMPrefix + $SolutionName + "
-# vmSize," + $VMSize)
-# $Settings | Out-File ($pwd.Path + "\__save\arm_vars.csv") -Encoding ascii
+# Okay now build a VM for each Project
+Write-Output "Generalizing Variables"
+$Settings = ("# This is a configuration file for building a ARM Template
+storageAccountName," + $StoragePrefix.ToLower() + $SolutionName.ToLower() + $VMPrefix.ToLower() +"
+sizeOfDiskInGB," + $VMVHDSize.ToString() + "
+dataDisk1VhdName," + $VMPrefix.ToLower() + "vhd" + $SolutionName.ToLower() + "
+OSDiskName," + $VMPrefix + "os" + $SolutionName + "
+nicName," + $SolutionName + "nic
+vmName," + $VMPrefix + $SolutionName + "
+vmSize," + $VMSize)
+$Settings | Out-File ($pwd.Path + "\__save\arm_vars.csv") -Encoding ascii
 
-# # Call the python script to actually do the generating
-# Write-Output "Buildling ARM Templates (Python Script)"
-# if ($singleWindow) {
-#     # Python Script input params: VMAdminn, VMPassword, DNSprefix
-#     python ($pwd.Path + "\pyscripts\generate_armt.py") $VMAdmin $VMPassword ($DNSPrefx.ToLower() + $SolutionName.ToLower())
-# } else {
-#     # Python Script input params: VMAdminn, VMPassword, DNSprefix
-#     start-process python -argument (($pwd.Path + "\pyscripts\generate_armt.py") +' ' + $VMAdmin + ' ' + $VMPassword + ' ' + ($DNSPrefx.ToLower() + $SolutionName.ToLower())) -ErrorAction Stop -Wait
-# }
+# Call the python script to actually do the generating
+Write-Output "Buildling ARM Templates (Python Script)"
+if ($singleWindow) {
+    # Python Script input params: VMAdminn, VMPassword, DNSprefix
+    python ($pwd.Path + "\pyscripts\generate_armt.py") $VMAdmin $VMPassword ($DNSPrefx.ToLower() + $SolutionName.ToLower())
+} else {
+    # Python Script input params: VMAdminn, VMPassword, DNSprefix
+    start-process python -argument (($pwd.Path + "\pyscripts\generate_armt.py") +' ' + $VMAdmin + ' ' + $VMPassword + ' ' + ($DNSPrefx.ToLower() + $SolutionName.ToLower())) -ErrorAction Stop -Wait
+}
 
-# # Create the IIS installation
-# # Resources:
-# # https://blogs.msdn.microsoft.com/powershell/2014/08/07/introducing-the-azure-powershell-dsc-desired-state-configuration-extension/
-# # https://msdn.microsoft.com/en-us/library/mt603660.aspx
-# # https://msdn.microsoft.com/en-us/library/mt603584.aspx
+# Create the IIS installation
+# Resources:
+# https://blogs.msdn.microsoft.com/powershell/2014/08/07/introducing-the-azure-powershell-dsc-desired-state-configuration-extension/
+# https://msdn.microsoft.com/en-us/library/mt603660.aspx
+# https://msdn.microsoft.com/en-us/library/mt603584.aspx
 
-# Write-Output "Uploading custom scripts to storage blob"
-# Write-Output "Uploading WebRole Script"
-# $uploadwebrole = Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\webrole.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "webrole.ps1" -Context $blobContext -Force
-# Write-Output "Uploading WorkerRole Script"
-# $uploadworkerrole = Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_rmps.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "rmps.ps1" -Context $blobContext -Force
-
-
-# # Package the cspkg and upload that too
-# .\psscripts\save_roles.ps1 -zipfilename ($pwd.Path + "\__save\cspkg.zip") -sourcedir ($pwd.Path + "\__save\cspkg\")
+Write-Output "Uploading custom scripts to storage blob"
+Write-Output "Uploading WebRole Script"
+$uploadwebrole = Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\webrole.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "webrole.ps1" -Context $blobContext -Force
+Write-Output "Uploading WorkerRole Script"
+$uploadworkerrole = Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\workerrole.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "rmps.ps1" -Context $blobContext -Force
 
 
 # # Build the VMs
