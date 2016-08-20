@@ -2,7 +2,7 @@
 # These need to be params later...
 Param(
     [string] # The new Solution Name
-    $SolutionName = "SysPrep42",
+    $SolutionName = "SysPrep43",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "ResGroup",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
@@ -28,9 +28,9 @@ Param(
     [string] # VM Size
     $VMSize = "Standard_D1",
     [string] # VM Admin username
-    $VMAdmin = "titan",
+    $VMAdmin = "Norton",
     [string] # VM Password
-    $VMPassword = "Mar.Wed.17.2027",
+    $VMPassword = "SecurePassword123",
     [bool] # run app in single window?
     $singleWindow = $true
 )
@@ -166,7 +166,7 @@ ForEach-Object {
     $zipfile = $null
     $projectid = $null
 
-    Get-ChildItem ($_.FullName + "\") |
+    Get-ChildItem ($foldername + "\") |
     ForEach-Object {
         if ($_.Name -eq "armtemplate.json") {
             $armtemplate = $_.FullName
@@ -204,13 +204,13 @@ ForEach-Object {
             $newcustomscript = Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "webrole.ps1" -VMName $currentVmName -Run ("webrole.ps1 -urlcontainer " + $zip_location) -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
             "true" | Out-File -FilePath (".\__save\.confrim_ext_" + $currentVmName) -Encoding ascii
         }
+    
+    } # elseif ($currentVmRole -eq "workerrole    a") {
+    #     Write-Output "Installing Worker Role components"
 
-    } elseif ($currentVmRole -eq "workerrole    a") {
-        Write-Output "Installing Worker Role components"
-
-        # Enable Remote Powershell, Download packages as well
-        $newcustomscript = Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run ("rmps.ps1 -urlcontainer " + $zip_location) -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
-    }
+    #     # Enable Remote Powershell, Download packages as well
+    #     $newcustomscript = Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run ("rmps.ps1 -urlcontainer " + $zip_location) -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
+    # }
 
     # Write-Output "Deploying VMSS!"
     # # only deal with worker role for now

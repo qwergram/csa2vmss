@@ -5,14 +5,14 @@ The objective of this project is to specify a Solution directory and build Virtu
 The point of this is to convert the existing [Paas](https://en.wikipedia.org/wiki/Platform_as_a_service) to a [Iaas](https://en.wikipedia.org/wiki/Cloud_computing#Infrastructure_as_a_service_.28IaaS.29) so developers can take advantage of
 all the new technologies that come out that they wouldn't normally get using the Cloud App Service ([Paas](https://en.wikipedia.org/wiki/Platform_as_a_service))
 
-## How to use this project
+# How to use this project
 
-### Using the Prescript to prime the project
+## Using the Prescript to prime the project
 
 Note: If you need to ever restart from scratch use the command ```prescript.cmd -clear```
 Note: Make sure that the directory name matches the role name defined in the .sln
 
-#### Copying the directories over
+### Copying the directories over
 
 You will first need to use the pre-script to split the cloud app into seperate projects:
 
@@ -26,7 +26,7 @@ Follow the instructions and select which projects are Common, Workerroles and we
 Keep in mind when re-coding: You are abandoning the Cloud Service App paradigm, anything that
 requires PaaSs will not work in the IaaS paradigm
 
-#### Running final checks
+### Running final checks
 
 You will then need to open each project and make sure it can run on its own.
 Once you have made sure everything runs in Visual Studio, run a final check:
@@ -47,7 +47,7 @@ If there are issues compiling, they will be logged under `__save\vms\<name_of_ro
 If your project compiles in Visual Studio and not with this script, you can skip this step by adding `.confirm`
 to the same directory and deleting `.errors`
 
-#### Preparing your projects for main.cmd
+### Preparing your projects for main.cmd
 
 If your check passes (or you are pleased with your current project), you will need to run
 
@@ -56,7 +56,7 @@ If your check passes (or you are pleased with your current project), you will ne
 This will then update the .sln file to include the directory ".\.parent\". Once you run this command,
 opening the project again in Visual Studio may mess it up.
 
-#### Starting over
+### Starting over
 
 If you would like to start over, you can either delete the __save directory or run
 
@@ -65,7 +65,7 @@ If you would like to start over, you can either delete the __save directory or r
 This will reset the project back to 0, and therefore you will need to go through this guide again.
 
 
-### Migrating Azure CSA to VMSS
+## Migrating Azure CSA to VMSS Operations
 
 Once you have completed prescript steps, you can run:
 
@@ -73,5 +73,18 @@ Once you have completed prescript steps, you can run:
 
 And it will deploy a VM for each role you specified
 
+### Provide Credentials
+
+### Invoke main.py
+This script will package the script to individual directoriess with GUIDs as the directory
+name. Inside will contain compiled versions of each project defined in `.\__save\vms\`.
+
+Once this step is complete, a file called `.confirm_a` will be created. Delete this
+file and directories with guid as their names if you want to re-run the packaging script again.
+
+
+
+
+
 # Suggestions? Questions?
-You can reach me v-nopeng@microsoft.com or npengra317@gmail.com.
+You can reach me at v-nopeng@microsoft.com or npengra317@gmail.com.
