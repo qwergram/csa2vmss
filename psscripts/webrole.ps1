@@ -32,21 +32,6 @@ Import-Module ServerManager
 # Installing IIS
 # --------------------------------------------------------------------
 Add-WindowsFeature -Name Web-Server -IncludeAllSubFeature
-# Add-WindowsFeature -Name Web-Common-Http -IncludeAllSubFeature
-# Add-WindowsFeature -Name Web-Asp-Net -IncludeAllSubFeature
-# Add-WindowsFeature -Name Web-Net-Ext -IncludeAllSubFeature
-# Add-WindowsFeature -Name Web-ISAPI-Ext -IncludeAllSubFeature
-# Add-WindowsFeature -Name Web-ISAPI-Filter -IncludeAllSubFeature
-# Add-WindowsFeature -Name Web-Http-Logging -IncludeAllSubFeature
-# Add-WindowsFeature -Name Web-Request-Monitor -IncludeAllSubFeature
-# Add-WindowsFeature -Name Web-Basic-Auth -IncludeAllSubFeature
-# Add-WindowsFeature -Name Web-Windows-Auth -IncludeAllSubFeature
-# Add-WindowsFeature -Name Web-Filtering -IncludeAllSubFeature
-# Add-WindowsFeature -Name Web-Performance -IncludeAllSubFeature
-# Add-WindowsFeature -Name Web-Mgmt-Console -IncludeAllSubFeature
-# Add-WindowsFeature -Name Web-Mgmt-Compat -IncludeAllSubFeature
-# Add-WindowsFeature -Name WAS -IncludeAllSubFeature
-
 
 # --------------------------------------------------------------------
 # Loading IIS Modules
@@ -97,5 +82,6 @@ ForEach-Object {
 
 # Add site to inetmgr
 Set-Location ($env:windir + "\system32\inetsrv\")
+.\appcmd.exe delete site /site.name:"webrole" # (if you run this script twice)
 .\appcmd.exe delete site /site.name:"Default Web Site"
 .\appcmd.exe add site /name:"webrole" /id:1 /bindings:http://*:80 /physicalPath:$webroledirectory
