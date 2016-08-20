@@ -183,6 +183,7 @@ if ($MODE -eq "vm") {
         $zipfile = $null
         $projectid = $null
 
+
         Get-ChildItem ($foldername + "\") |
         ForEach-Object {
             if ($_.Name -eq "armtemplate.json") {
@@ -220,7 +221,7 @@ if ($MODE -eq "vm") {
             if (Test-Path -path (".\__save\.confirm_ext_" + $currentVmName)) { Write-Output "Extension already deployed" } else {
                 Write-Output "Installing Web Role components"
                 $newcustomscript = Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "webrole.ps1" -VMName $currentVmName -Run ("webrole.ps1 -urlcontainer " + $zip_location) -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
-                "true" | Out-File -FilePath (".\__save\.confrim_ext_" + $currentVmName) -Encoding ascii
+                "true" | Out-File -FilePath (".\__save\.confirm_ext_" + $currentVmName) -Encoding ascii
             }
         
         } elseif ($currentVmRole -eq "workerrole") {
@@ -229,6 +230,7 @@ if ($MODE -eq "vm") {
             # Enable Remote Powershell, Download packages as well
             if (Test-Path -path (".\__save\.confirm_ext_" + $currentVmName)) { Write-Output "Extension already deployed" } else {
                 $newcustomscript = Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run ("rmps.ps1 -urlcontainer " + $zip_location) -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
+                "true" | Out-File -FilePath (".\__save\.confirm_ext_" + $currentVmName) -Encoding ascii
             }
         }
 
