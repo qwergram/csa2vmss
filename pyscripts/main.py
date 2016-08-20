@@ -14,24 +14,35 @@ def run_powershell(name, arguments):
     os.system(execute_this)
 
 
-def save_solution_data(project_guid, data):
-    debug("Building save.json for", project_guid)
+def save_solution_data(project_name, solution_object):
+    project_guid = name_to_guid(project_name, solution_object.solution_data)
+    debug("Building save.json for", project_name)
     try:
         os.mkdir(os.path.join(CURRENT_PATH, '__save', project_guid))
     except FileExistsError:
         pass
     
     with io.open(os.path.join(CURRENT_PATH, '__save', project_guid, "save.json"), 'w') as context:
-        context.write(json.dumps(data.solution_data, indent=2, sort_keys=True))
+        context.write(json.dumps(solution_object.solution_data, indent=2, sort_keys=True))
+
+    project = None
+    for project in solution_object.solution_data['projects']:
+        if project['name'] == project_name:
+            break
+    
+    if project is None:
+        raise FileNotFoundError("Project", project_name, project_guid, "Not Found")
+
+    with io.open(os.path.join(CURRENT_PATH, '__save', project_guid, "meta.json"), 'w') as context:
+        context.write(json.dumps(project, indent=2, sort_keys=True))
 
 
 def name_to_guid(project_name, solution, silent_fail=False):
     for project in solution['projects']:
         if project['name'] == project_name:
             return project['guid']
-    else:
-        if silent_fail: return None
-        raise FileNotFoundError(project_name, "not found")
+    if silent_fail: return None
+    raise FileNotFoundError(project_name, "not found")
 
 
 def get_zip_guid(project_guid):
@@ -52,7 +63,7 @@ def package_solution(project_name, solution, keep=True):
             debug("Copying  %s.%s" % (project_name, project))
             try:
                 shutil.copytree(project_path, os.path.join(prelim_path, project))
-            except shutil.Error:
+            except shutil.Error:  # Weird bug with shutil.copy on windows when the absolute filepath is too long
                 os.popen("xcopy \"{}\" \"{}\" /E".format(project_path, os.path.join(prelim_path, project)))
         else:
             debug("Ignoring %s.%s" % (project_name, project))
@@ -88,7 +99,7 @@ def main():
         if os.path.isfile(vm_path): continue
         solution = csa_parse.VSCloudService(project_path=vm_path)
         solution.load_solution()
-        save_solution_data(name_to_guid(vm_name, solution.solution_data), solution)
+        save_solution_data(vm_name, solution)
         package_solution(vm_name, solution)
     write_confirm()
 
