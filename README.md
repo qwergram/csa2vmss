@@ -7,56 +7,37 @@ all the new technologies that come out that they wouldn't normally get using the
 
 ## How to use this project
 
+### Using the Prescript to prime the project
 You will first need to use the pre-script to split the cloud app into seperate projects:
 
-```prescript.cmd "C:\Path\To\Project" -open```
+```prescript.cmd "C:\Path\To\Project" -open -cscopy```
+
+Follow the instructions and select which projects are Common, Workerroles and webroles.
 
 You will then need to open each project and make sure it can run on its own.
 Once you have made sure everything runs in Visual Studio, run a final check:
 
 ```prescript.cmd -check```
 
+This check will confirm that your connections strings are not using development storage
+and also make sure everything compiles properly.
+
 If there are issues compiling, they will be logged under `__save\vms\<name_of_role>\.errors`
 
 If your project compiles in Visual Studio and not with this script, you can skip this step by adding `.confirm`
 to the same directory and deleting `.errors`
 
+If your check passes, you will need to run
 
-Once you have completed that, you can run:
+```prescript.cmd -updatesln```
 
-```Powershell ./run.ps1 -SLNLocation "C:\Path\To\Project" -VMAdmin "Norton" -VMPassword "$3cur3P@$$w0rd"```
+This will then update the .sln file to include the directory ".parent". Once you run this command,
+opening the project again in Visual Studio may mess it up.
 
-And it will deploy a VM for each role required
+### Migrating Azure CSA to VMSS
 
-## Params:
+Once you have complited prescript steps, you can run:
 
-### pre_script.py
-```
-python.exe .\pyscripts\pre_script.py
-    <Path to project>
-    [-open (If -open it will open the location of the projects in explorer)]
+```main.cmd -VMAdmin "Norton" -VMPassword "$3cur3P@$$w0rd"```
 
-```
-
-### run.ps1
-```
-Powershell ./run.ps1
-    -SLNLocation
-    -VMAdmin
-    -VMPassword
-
-    [-SolutionName (Default:"SysPrep33")
-    -ResourcePrefix (Default:"ResGroup")
-    -StoragePrefix (Default:"storage")
-    -VMPrefix (Default:"VM")
-    -Location (Default:"West US")
-    -SkuName (Default:"Standard_LRS")
-    -containerPrefix (Default:"container")
-    -DNSPrefx (Default:"dns")
-    -DeploymentPrefix (Default:"deploy")
-    -scriptPrefix (Default:"script")
-    -AzureProfile (Default:"Free Trial")
-    -VMVHDSize (Default:100)
-    -VMSize (Default: Standard_D1)]
-    -singleWindow (Default: false)]
-```
+And it will deploy a VM for each role you specified
