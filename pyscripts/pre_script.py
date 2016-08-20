@@ -243,7 +243,11 @@ if __name__ == "__main__":
         print("You need to pass in at least one parameter")
         sys.exit(1)
     if "-clear" in sys.argv:
-        shutil.rmtree(os.path.join(OUTPUT))
+        print("Clearing .\\__save\\vms\\")
+        try:
+            shutil.rmtree(os.path.join(OUTPUT, ''))
+        except OSError:
+            shutil.rmtree(os.path.join(OUTPUT, ''))
     if "-open" in sys.argv:
         os.system("explorer.exe " + OUTPUT)
     if "-check" in sys.argv:

@@ -8,6 +8,10 @@ all the new technologies that come out that they wouldn't normally get using the
 ## How to use this project
 
 ### Using the Prescript to prime the project
+
+Note: If you need to ever restart from scratch use the command ```prescript.cmd -clear```
+Note: Make sure that the directory name matches the role name defined in the .sln
+
 You will first need to use the pre-script to split the cloud app into seperate projects:
 
 ```prescript.cmd "C:\Path\To\Project" -open -cscopy```
