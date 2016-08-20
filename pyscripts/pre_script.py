@@ -252,7 +252,7 @@ if __name__ == "__main__":
         except FileNotFoundError:
             print("Already cleared!")
     if "-check" in sys.argv:
-        if check_db_strings():
+        if check_db_strings() or "-ignoredb" in sys.argv:
             check()
     if "-cscopy" in sys.argv:
         parent = get_parent()
