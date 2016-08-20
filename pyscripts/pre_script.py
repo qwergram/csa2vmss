@@ -260,6 +260,7 @@ if __name__ == "__main__":
         copy_parent(parent)
     if "-updatesln" in sys.argv:
         update_sln()
+        print("You are now read to run `main.cmd -mode vm`")
     # Always open the directory last
     if "-open" in sys.argv:
         os.system("explorer.exe " + OUTPUT)
