@@ -220,6 +220,7 @@ def update_sln():
         path = os.path.join(OUTPUT, vm)
         parent_path = os.path.join(path, '.parent')
         if os.path.isfile(parent_path): continue
+        if os.path.isfile(path): continue
         if os.path.isdir(parent_path):
             sln = [os.path.join(path, sln) for sln in os.listdir(path) if sln.endswith('.sln')][0]
             ccproj = [ccproj for ccproj in os.listdir(parent_path) if ccproj.endswith('.ccproj')][0]
