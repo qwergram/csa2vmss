@@ -68,7 +68,7 @@ def package_solution(project_name, solution, keep=True):
     if name_to_role(project_name, solution.solution_data) == 'workerrole':
         print("Copying scheduler for workerrole")
         sch_xml = os.path.join(CURRENT_PATH, 'templates', 'schedule.xml')
-        shutil.copyfile(sch_xml, prelim_path)
+        shutil.copyfile(sch_xml, os.path.join(prelim_path, 'schedule.xml'))
 
     for project in os.listdir(source_dir):
         
