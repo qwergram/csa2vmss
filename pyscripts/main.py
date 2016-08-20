@@ -77,7 +77,7 @@ def clean():
 
 def write_confirm():
     with io.open(os.path.join(CURRENT_PATH, '__save', '.confirm_a'), 'w') as context:
-        context.write()
+        context.write("")
 
 
 def main():
