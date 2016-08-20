@@ -103,7 +103,7 @@ Try {
 
 # Okay, upload the files now
 if (Test-Path -Path ".\__save\.confirm_b") { Write-Output "Files already uploaded"} else {
-    Get-ChildItem ($pwd.Path + "\__save") -Exclude "cspkg", "vms", ".confirm*" |
+    Get-ChildItem ($pwd.Path + "\__save") -Exclude "cspkg", "vms", ".confirm*", "*.csv" |
     ForEach-Object {
         # Look for the zip file
         Get-ChildItem ($_.FullName + "\") -Filter "*.zip" |
@@ -152,83 +152,81 @@ Write-Output "Uploading WorkerRole Script"
 $uploadworkerrole = Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\workerrole.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "rmps.ps1" -Context $blobContext -Force
 
 
-# # Build the VMs
-# # Resrouces:
-# # http://weblogs.asp.net/scottgu/automating-deployment-with-microsoft-web-deploy
-# Write-Output "Building VMs"
-# Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.json', '*.csv', '*.zip', 'cspkg', 'vms' |
-# ForEach-Object {
-#     # Get the Json templates
+# Build the VMs
+# Resrouces:
+# http://weblogs.asp.net/scottgu/automating-deployment-with-microsoft-web-deploy
+Write-Output "Building VMs"
+Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.json', '*.csv', '*.zip', 'cspkg', 'vms', ".confirm*" |
+ForEach-Object {
+    # Get the Json templates
 
-#     $foldername = $_.FullName
-#     $armtemplate = $null
-#     $paramtemplate = $null
-#     $zipfile = $null
-#     $projectid = $null
+    $foldername = $_.FullName
+    $armtemplate = $null
+    $paramtemplate = $null
+    $zipfile = $null
+    $projectid = $null
 
-#     Get-ChildItem ($_.FullName + "\") |
-#     ForEach-Object {
-#         if ($_.Name -eq "armtemplate.json") {
-#             $armtemplate = $_.FullName
-#             $currentProjectTemplate = Get-Content $_.FullName | ConvertFrom-Json
-#             $currentVmName = $currentProjectTemplate.variables.vmName
-#         } elseif ($_.Name -eq "armtemplate.params.json") {
-#             $paramtemplate = $_.FullName
-#         } elseif ($_.Name.Endswith('.zip')) {
-#             $projectid = $_.Name.Split('_')[1]
-#             $zipfile = $_.FullName
-#         } elseif ($_.Name -eq "meta.json") {
-#             $metadata = $_.FullName
-#             $currentProjectMeta = Get-Content $_.FullName | ConvertFrom-Json
-#             $currentVmRole = $currentProjectMeta.role_type.ToLower()
-#         }
-#     }
+    Get-ChildItem ($_.FullName + "\") |
+    ForEach-Object {
+        if ($_.Name -eq "armtemplate.json") {
+            $armtemplate = $_.FullName
+            $currentProjectTemplate = Get-Content $_.FullName | ConvertFrom-Json
+            $currentVmName = $currentProjectTemplate.variables.vmName
+        } elseif ($_.Name -eq "armtemplate.params.json") {
+            $paramtemplate = $_.FullName
+        } elseif ($_.Name.Endswith('.zip')) {
+            $projectid = $_.Name.Split('_')[1]
+            $zipfile = $_.FullName
+        } elseif ($_.Name -eq "meta.json") {
+            $metadata = $_.FullName
+            $currentProjectMeta = Get-Content $_.FullName | ConvertFrom-Json
+            $currentVmRole = $currentProjectMeta.role_type.ToLower()
+        }
+    }
 
-#     # There should be checking to see if $armtemplate and $paramtemplate is the right file
+    # There should be checking to see if $armtemplate and $paramtemplate is the right file
 
-#     Write-Output ("Building " + $zipfile)
-#     # $newdeployment = New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
+    Write-Output ("Building " + $zipfile)
+    # $newdeployment = New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
 
-#     # Enable Web Deploy ONLY if it's a Web role
-#     if ($currentVmRole -eq "webrole             a"){
+    # Enable Web Deploy ONLY if it's a Web role
+    if ($currentVmRole -eq "webrole             a"){
 
-#         # Enable IIS, Webdeploy and Remote PowerShell
-#         Write-Output "Installing Web Role components"
-#         $newcustomscript = Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "webrole.ps1" -VMName $currentVmName -Run ("webrole.ps1 -urlcontainer https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $SolutionName.ToLower() + '/') -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
+        # Enable IIS, Webdeploy and Remote PowerShell
+        Write-Output "Installing Web Role components"
+        $newcustomscript = Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "webrole.ps1" -VMName $currentVmName -Run ("webrole.ps1 -urlcontainer https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $SolutionName.ToLower() + '/') -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
 
+    } elseif ($currentVmRole -eq "workerrole    a") {
+        Write-Output "Installing Worker Role components"
 
-#     } elseif ($currentVmRole -eq "workerrole    a") {
-#         Write-Output "Installing Worker Role components"
+        # Enable Remote Powershell, Download packages as well
+        $newcustomscript = Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run ("rmps.ps1 -urlcontainer https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $SolutionName.ToLower() + '/') -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
+    }
 
-#         # Enable Remote Powershell, Download packages as well
-#         $newcustomscript = Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run ("rmps.ps1 -urlcontainer https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $SolutionName.ToLower() + '/') -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
-
-#     }
-
-#     Write-Output "Deploying VMSS!"
-#     # only deal with worker role for now
-#     if ($currentVmRole -eq "workerroleasdf") {
+    # Write-Output "Deploying VMSS!"
+    # # only deal with worker role for now
+    # if ($currentVmRole -eq "workerroleasdf") {
         
-#         Write-Output "Stopping VM"
-#         # $stop = Stop-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Force
+    #     Write-Output "Stopping VM"
+    #     # $stop = Stop-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Force
 
-#         Write-Output "Marking VM as Generalized"
-#         # $mark = Set-AzureRmVm -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Generalized
+    #     Write-Output "Marking VM as Generalized"
+    #     # $mark = Set-AzureRmVm -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Generalized
 
-#         Write-Output "Getting WorkerRole Image"
-#         # $save = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $currentVmName -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
+    #     Write-Output "Getting WorkerRole Image"
+    #     # $save = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $currentVmName -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
 
-#         if ($singleWindow) {
-#             python ($pwd.Path + "\pyscripts\generate_vmss_armt.py") $currentVmName
-#         } else {
-#             start-process python -argument (($pwd.Path + "\pyscripts\generate_vmss_armt.py") + ' ' + $currentVmName) -ErrorAction Stop -Wait
-#         }
+    #     if ($singleWindow) {
+    #         python ($pwd.Path + "\pyscripts\generate_vmss_armt.py") $currentVmName
+    #     } else {
+    #         start-process python -argument (($pwd.Path + "\pyscripts\generate_vmss_armt.py") + ' ' + $currentVmName) -ErrorAction Stop -Wait
+    #     }
 
-#         Write-Output "Deploying VMSS"
-#         # New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_" + $currentVmName + "\vmss.json") -TemplateParameterFile ($pwd.Path + "\__save\vmss_" + $currentVmName + "\vmss.params.json")
+    #     Write-Output "Deploying VMSS"
+    #     # New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_" + $currentVmName + "\vmss.json") -TemplateParameterFile ($pwd.Path + "\__save\vmss_" + $currentVmName + "\vmss.params.json")
         
-#         Write-Output "Deleting old VM"
-#         # Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Force
-#     }
+    #     Write-Output "Deleting old VM"
+    #     # Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Force
+    # }
 
-# }
+}
