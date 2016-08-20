@@ -46,7 +46,7 @@ Try {
     $RmSubscription = Get-AzureRmSubscription -ErrorAction Stop
 } Catch {
     Write-Verbose "Please Login"
-    # $login = Login-AzureRmAccount
+    $login = Login-AzureRmAccount
 }
 
 
@@ -61,42 +61,42 @@ if ($singleWindow) {
 
 
 
-# # Check to see if the specified ResourceGroup exists.
-# Write-Host "Building Resource Group"
-# Try {
-#     # Get it
-#     $resource = Get-AzureRmResourceGroup -Name ($ResourcePrefix + $SolutionName) -Location $Location -ErrorAction Stop
-# } Catch {
-#     Write-Host "Resource Group Does not exist. Building it."
-#     # If it doesn't exist, build it.
-#     $resource = New-AzureRmResourceGroup -Name ($ResourcePrefix + $SolutionName) -Location $Location
-# }
+# Check to see if the specified ResourceGroup exists.
+Write-Output "Building Resource Group"
+Try {
+    # Get it
+    $resource = Get-AzureRmResourceGroup -Name ($ResourcePrefix + $SolutionName) -Location $Location -ErrorAction Stop
+} Catch {
+    Write-Output "Resource Group Does not exist. Building it."
+    # If it doesn't exist, build it.
+    $resource = New-AzureRmResourceGroup -Name ($ResourcePrefix + $SolutionName) -Location $Location
+}
 
-# # Upload each of the zipped files to online storage
-# Write-Host "Uploading to storage account"
+# Upload each of the zipped files to online storage
+Write-Output "Uploading to storage account"
 
-# # Check that the Storage Account actually exists before uploading
-# Try {
-#     $AzureStorage = Get-AzureRmStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ErrorAction Stop
-# } Catch {
-#     # Built it
-#     Write-Host "Storage Account doesn't exist! Building it."
-#     $newstorage = New-AzureRmStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -SkuName $SkuName -Location $Location
-#     $AzureStorage = Get-AzureRmStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower())
-# }
+# Check that the Storage Account actually exists before uploading
+Try {
+    $AzureStorage = Get-AzureRmStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ErrorAction Stop
+} Catch {
+    # Built it
+    Write-Output "Storage Account doesn't exist! Building it."
+    $newstorage = New-AzureRmStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -SkuName $SkuName -Location $Location
+    $AzureStorage = Get-AzureRmStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower())
+}
 
 # # Create a key for accessing storage
-# Write-Host "Building Storage Context"
+# Write-Output "Building Storage Context"
 # $key = (Get-AzureRmStorageAccountKey -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()))[0].Value
 # $blobContext = New-AzureStorageContext -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -StorageAccountKey $key
 
 
 # # Build a container for it as well\
-# Write-Host "Building Storage container"
+# Write-Output "Building Storage container"
 # Try {
 #     $getcontainer = Get-AzureStorageContainer -Name ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Context $blobContext -ErrorAction Stop
 # } Catch {
-#     Write-Host "Container doesn't exist! Building it."
+#     Write-Output "Container doesn't exist! Building it."
 #     $newcontainer = New-AzureStorageContainer ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Context $blobContext -Permission Blob
 # }
 
@@ -114,7 +114,7 @@ if ($singleWindow) {
 # }
 
 # # Okay now build a VM for each Project
-# Write-Host "Generalizing Variables"
+# Write-Output "Generalizing Variables"
 # $Settings = ("# This is a configuration file for building a ARM Template
 # storageAccountName," + $StoragePrefix.ToLower() + $SolutionName.ToLower() + $VMPrefix.ToLower() +"
 # sizeOfDiskInGB," + $VMVHDSize.ToString() + "
@@ -126,7 +126,7 @@ if ($singleWindow) {
 # $Settings | Out-File ($pwd.Path + "\__save\arm_vars.csv") -Encoding ascii
 
 # # Call the python script to actually do the generating
-# Write-Host "Buildling ARM Templates (Python Script)"
+# Write-Output "Buildling ARM Templates (Python Script)"
 # if ($singleWindow) {
 #     # Python Script input params: VMAdminn, VMPassword, DNSprefix
 #     python ($pwd.Path + "\pyscripts\generate_armt.py") $VMAdmin $VMPassword ($DNSPrefx.ToLower() + $SolutionName.ToLower())
@@ -141,10 +141,10 @@ if ($singleWindow) {
 # # https://msdn.microsoft.com/en-us/library/mt603660.aspx
 # # https://msdn.microsoft.com/en-us/library/mt603584.aspx
 
-# Write-Host "Uploading custom scripts to storage blob"
-# Write-Host "Uploading WebRole Script"
+# Write-Output "Uploading custom scripts to storage blob"
+# Write-Output "Uploading WebRole Script"
 # $uploadwebrole = Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\webrole.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "webrole.ps1" -Context $blobContext -Force
-# Write-Host "Uploading WorkerRole Script"
+# Write-Output "Uploading WorkerRole Script"
 # $uploadworkerrole = Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\enable_rmps.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "rmps.ps1" -Context $blobContext -Force
 
 
@@ -155,7 +155,7 @@ if ($singleWindow) {
 # # Build the VMs
 # # Resrouces:
 # # http://weblogs.asp.net/scottgu/automating-deployment-with-microsoft-web-deploy
-# Write-Host "Building VMs"
+# Write-Output "Building VMs"
 # Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.json', '*.csv', '*.zip', 'cspkg' |
 # ForEach-Object {
 #     # Get the Json templates
@@ -186,36 +186,36 @@ if ($singleWindow) {
 
 #     # There should be checking to see if $armtemplate and $paramtemplate is the right file
 
-#     Write-Host ("Building " + $zipfile)
+#     Write-Output ("Building " + $zipfile)
 #     # $newdeployment = New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
 
 #     # Enable Web Deploy ONLY if it's a Web role
 #     if ($currentVmRole -eq "webrole             a"){
 
 #         # Enable IIS, Webdeploy and Remote PowerShell
-#         Write-Host "Installing Web Role components"
+#         Write-Output "Installing Web Role components"
 #         $newcustomscript = Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "webrole.ps1" -VMName $currentVmName -Run ("webrole.ps1 -urlcontainer https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $SolutionName.ToLower() + '/') -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
 
 
 #     } elseif ($currentVmRole -eq "workerrole    a") {
-#         Write-Host "Installing Worker Role components"
+#         Write-Output "Installing Worker Role components"
 
 #         # Enable Remote Powershell, Download packages as well
 #         $newcustomscript = Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run ("rmps.ps1 -urlcontainer https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $SolutionName.ToLower() + '/') -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
 
 #     }
 
-#     Write-Host "Deploying VMSS!"
+#     Write-Output "Deploying VMSS!"
 #     # only deal with worker role for now
 #     if ($currentVmRole -eq "workerroleasdf") {
         
-#         Write-Host "Stopping VM"
+#         Write-Output "Stopping VM"
 #         # $stop = Stop-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Force
 
-#         Write-Host "Marking VM as Generalized"
+#         Write-Output "Marking VM as Generalized"
 #         # $mark = Set-AzureRmVm -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Generalized
 
-#         Write-Host "Getting WorkerRole Image"
+#         Write-Output "Getting WorkerRole Image"
 #         # $save = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $currentVmName -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
 
 #         if ($singleWindow) {
@@ -224,10 +224,10 @@ if ($singleWindow) {
 #             start-process python -argument (($pwd.Path + "\pyscripts\generate_vmss_armt.py") + ' ' + $currentVmName) -ErrorAction Stop -Wait
 #         }
 
-#         Write-Host "Deploying VMSS"
+#         Write-Output "Deploying VMSS"
 #         # New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_" + $currentVmName + "\vmss.json") -TemplateParameterFile ($pwd.Path + "\__save\vmss_" + $currentVmName + "\vmss.params.json")
         
-#         Write-Host "Deleting old VM"
+#         Write-Output "Deleting old VM"
 #         # Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Force
 #     }
 
