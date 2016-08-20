@@ -218,12 +218,14 @@ if ($MODE -eq "vm") {
                 "true" | Out-File -FilePath (".\__save\.confrim_ext_" + $currentVmName) -Encoding ascii
             }
         
-        } # elseif ($currentVmRole -eq "workerrole    a") {
-        #     Write-Output "Installing Worker Role components"
+        } elseif ($currentVmRole -eq "workerrole") {
+            Write-Output "Installing Worker Role components"
 
-        #     # Enable Remote Powershell, Download packages as well
-        #     $newcustomscript = Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run ("rmps.ps1 -urlcontainer " + $zip_location) -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
-        # }
+            # Enable Remote Powershell, Download packages as well
+            if (Test-Path -path (".\__save\.confirm_ext_" + $currentVmName)) { Write-Output "Extension already deployed" } else {
+                $newcustomscript = Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "rmps.ps1" -VMName $currentVmName -Run ("rmps.ps1 -urlcontainer " + $zip_location) -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
+            }
+        }
 
         # Write-Output "Deploying VMSS!"
         # # only deal with worker role for now
