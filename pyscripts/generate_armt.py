@@ -74,8 +74,8 @@ def load_arm_vars():
                 key, value = line.strip().split(',')
                 VARIABLES[key] = value
 
-def save_params_to_solution():
-    with io.open(os.path.join(CURRENT_PATH, "__save", "screenshot.json")) as context:
+def save_params_to_solution(project_name):
+    with io.open(os.path.join(CURRENT_PATH, "__save", project_name, "save.json")) as context:
         solution = json.loads(context.read())
 
     solution['vmparams'] = {
@@ -84,10 +84,10 @@ def save_params_to_solution():
         "dnslabel": sys.argv[3]
     }
 
-    with io.open(os.path.join(CURRENT_PATH, "__save", "screenshot.json"), 'w') as context:
+    with io.open(os.path.join(CURRENT_PATH, "__save", project_name, "save.json"), 'w') as context:
         context.write(json.dumps(solution, indent=2, sort_keys=True))
 
-def load_arm_params():
+def load_arm_params(project_name):
     global PARAM_TEMPLATE
     with io.open(os.path.join(CURRENT_PATH, 'templates', 'iis-vm.params.json')) as content:
         PARAM_TEMPLATE = json.loads(content.read())
@@ -95,7 +95,7 @@ def load_arm_params():
     PARAM_TEMPLATE['parameters']['adminUsername']['value'] = sys.argv[1]
     PARAM_TEMPLATE['parameters']['adminPassword']['value'] = sys.argv[2]
     PARAM_TEMPLATE['parameters']['dnsLabelPrefix']['value'] = sys.argv[3]
-    save_params_to_solution()
+    save_params_to_solution(project_name)
 
 def create_armt_from_meta():
     with io.open(os.path.join(CURRENT_PATH, "templates", "iis-vm.json")) as content:
@@ -103,9 +103,9 @@ def create_armt_from_meta():
     content['variables'] = VARIABLES
 
     for project in os.listdir(os.path.join(CURRENT_PATH, "__save")):
-        load_arm_vars()
-        load_arm_params()
         project_path = os.path.join(CURRENT_PATH, '__save', project)
+        load_arm_vars()
+        load_arm_params(project)
         if os.path.isdir(project_path):
             project_id = project[:4].lower()
             # Personalize each important variable to each project
@@ -138,6 +138,4 @@ def create_armt_from_meta():
 
 if __name__ == "__main__":
     assert len(sys.argv) == 4, len(sys.argv)
-    load_arm_vars()
-    load_arm_params()
     create_armt_from_meta()

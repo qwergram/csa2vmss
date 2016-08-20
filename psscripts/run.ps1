@@ -154,7 +154,7 @@ $uploadworkerrole = Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\w
 # # Resrouces:
 # # http://weblogs.asp.net/scottgu/automating-deployment-with-microsoft-web-deploy
 # Write-Output "Building VMs"
-# Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.json', '*.csv', '*.zip', 'cspkg' |
+# Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.json', '*.csv', '*.zip', 'cspkg', 'vms' |
 # ForEach-Object {
 #     # Get the Json templates
 
