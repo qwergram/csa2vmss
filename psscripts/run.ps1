@@ -114,6 +114,7 @@ if (Test-Path -Path ".\__save\.confirm_b") { Write-Output "Files already uploade
             ("https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $solutionName.ToLower() + "/" + $_.Name) | Out-File -FilePath ($_.Directory.ToString() + "\blob_location.txt") -Encoding ascii
         }
     }
+    "true" | Out-File -FilePath ".\__save\.confirm_b" -Encoding ascii
 }
 
 # Okay now build a VM for each Project
