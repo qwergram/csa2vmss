@@ -106,18 +106,13 @@ def write_confirm():
         context.write("")
 
 
-def build_paths(path):
-    if not os.path.isdir(path):
-        print("Building", path)
-        os.mkdir(path)
-
-
 def main():
     clean()
-    SAVE_PATH = os.path.join(CURRENT_PATH, "__save")
-    VM_PATH = os.path.join(SAVE_PATH, "vms")
-    build_paths(SAVE_PATH)
-    build_paths(VM_PATH)
+    VM_PATH = os.path.join(CURRENT_PATH, "__save", "vms")
+    if not os.path.isdir(VM_PATH):
+        print("VMs not found!")
+        print("Did you run the prescripts?")
+        sys.exit(1)
     for vm_name in os.listdir(VM_PATH):
         vm_path = os.path.join(VM_PATH, vm_name)
         if os.path.isfile(vm_path): continue
