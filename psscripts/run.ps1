@@ -52,7 +52,7 @@ Try {
 
 # This script parses the Visual Studio Solution and zips it
 
-if (Test-Path ".\__save\.confirm_a") { } else {
+if (Test-Path ".\__save\.confirm_a") { Write-Output "Service App already packaged" } else {
     Write-Output "Reading Cloud Service App and Packaging it"
 
     if ($singleWindow) {
@@ -64,7 +64,7 @@ if (Test-Path ".\__save\.confirm_a") { } else {
 
 
 # Check to see if the specified ResourceGroup exists.
-Write-Output "Building Resource Group"
+Write-Output "Getting Resource Group"
 Try {
     # Get it
     $resource = Get-AzureRmResourceGroup -Name ($ResourcePrefix + $SolutionName) -Location $Location -ErrorAction Stop
@@ -76,7 +76,6 @@ Try {
 
 # Upload each of the zipped files to online storage
 Write-Output "Uploading to storage account"
-
 # Check that the Storage Account actually exists before uploading
 Try {
     $AzureStorage = Get-AzureRmStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ErrorAction Stop
@@ -103,15 +102,17 @@ Try {
 }
 
 # Okay, upload the files now
-Get-ChildItem ($pwd.Path + "\__save") -Exclude "cspkg", "vms", ".confirm*" |
-ForEach-Object {
-    # Look for the zip file
-    Get-ChildItem ($_.FullName + "\") -Filter "*.zip" |
+if (Test-Path -Path ".\__save\.confirm_b") { Write-Output "Files already uploaded"} else {
+    Get-ChildItem ($pwd.Path + "\__save") -Exclude "cspkg", "vms", ".confirm*" |
     ForEach-Object {
-        $upload = Set-AzureStorageBlobContent -File $_.FullName -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob $_.Name -Context $blobContext -Force
+        # Look for the zip file
+        Get-ChildItem ($_.FullName + "\") -Filter "*.zip" |
+        ForEach-Object {
+            $upload = Set-AzureStorageBlobContent -File $_.FullName -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob $_.Name -Context $blobContext -Force
 
-        # https://storagesysprep25.blob.core.windows.net/containersysprep25/zip_92A80_package.zip <- Should look something like this
-        ("https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $solutionName.ToLower() + "/" + $_.Name) | Out-File -FilePath ($_.Directory.ToString() + "\blob_location.txt") -Encoding ascii
+            # https://storagesysprep25.blob.core.windows.net/containersysprep25/zip_92A80_package.zip <- Should look something like this
+            ("https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $solutionName.ToLower() + "/" + $_.Name) | Out-File -FilePath ($_.Directory.ToString() + "\blob_location.txt") -Encoding ascii
+        }
     }
 }
 
