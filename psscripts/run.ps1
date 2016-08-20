@@ -85,33 +85,33 @@ Try {
     $AzureStorage = Get-AzureRmStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower())
 }
 
-# # Create a key for accessing storage
-# Write-Output "Building Storage Context"
-# $key = (Get-AzureRmStorageAccountKey -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()))[0].Value
-# $blobContext = New-AzureStorageContext -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -StorageAccountKey $key
+# Create a key for accessing storage
+Write-Output "Building Storage Context"
+$key = (Get-AzureRmStorageAccountKey -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()))[0].Value
+$blobContext = New-AzureStorageContext -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -StorageAccountKey $key
 
 
-# # Build a container for it as well\
-# Write-Output "Building Storage container"
-# Try {
-#     $getcontainer = Get-AzureStorageContainer -Name ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Context $blobContext -ErrorAction Stop
-# } Catch {
-#     Write-Output "Container doesn't exist! Building it."
-#     $newcontainer = New-AzureStorageContainer ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Context $blobContext -Permission Blob
-# }
+# Build a container for it as well\
+Write-Output "Building Storage container"
+Try {
+    $getcontainer = Get-AzureStorageContainer -Name ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Context $blobContext -ErrorAction Stop
+} Catch {
+    Write-Output "Container doesn't exist! Building it."
+    $newcontainer = New-AzureStorageContainer ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Context $blobContext -Permission Blob
+}
 
-# # Okay, upload the files now
-# Get-ChildItem ($pwd.Path + "\__save") -Exclude "*.csv", "*.json" |
-# ForEach-Object {
-#     # Look for the zip file
-#     Get-ChildItem ($_.FullName + "\") -Filter "*.zip" |
-#     ForEach-Object {
-#         $upload = Set-AzureStorageBlobContent -File $_.FullName -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob $_.Name -Context $blobContext -Force
+# Okay, upload the files now
+Get-ChildItem ($pwd.Path + "\__save") -Exclude "cspkg", "vms" |
+ForEach-Object {
+    # Look for the zip file
+    Get-ChildItem ($_.FullName + "\") -Filter "*.zip" |
+    ForEach-Object {
+        $upload = Set-AzureStorageBlobContent -File $_.FullName -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob $_.Name -Context $blobContext -Force
 
-#         # https://storagesysprep25.blob.core.windows.net/containersysprep25/zip_92A80_package.zip <- Should look something like this
-#         ("https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $solutionName.ToLower() + "/" + $_.Name) | Out-File -FilePath ($_.Directory.ToString() + "\blob_location.txt") -Encoding ascii
-#     }
-# }
+        # https://storagesysprep25.blob.core.windows.net/containersysprep25/zip_92A80_package.zip <- Should look something like this
+        ("https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $solutionName.ToLower() + "/" + $_.Name) | Out-File -FilePath ($_.Directory.ToString() + "\blob_location.txt") -Encoding ascii
+    }
+}
 
 # # Okay now build a VM for each Project
 # Write-Output "Generalizing Variables"
