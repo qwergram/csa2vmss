@@ -41,3 +41,6 @@ Once you have complited prescript steps, you can run:
 ```main.cmd -VMAdmin "Norton" -VMPassword "$3cur3P@$$w0rd"```
 
 And it will deploy a VM for each role you specified
+
+# Suggestions? Questions?
+You can reach me v-nopeng@microsoft.com or npengra317@gmail.com.
