@@ -104,9 +104,9 @@ def create_armt_from_meta():
 
     for project in os.listdir(os.path.join(CURRENT_PATH, "__save")):
         project_path = os.path.join(CURRENT_PATH, '__save', project)
-        load_arm_vars()
-        load_arm_params(project)
-        if os.path.isdir(project_path):
+        if os.path.isdir(project_path) and project not in ["cspkg", "vms"]:
+            load_arm_vars()
+            load_arm_params(project)
             project_id = project[:4].lower()
             # Personalize each important variable to each project
             content['variables']['vmName'] = project_id + VARIABLES['vmName']
