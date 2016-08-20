@@ -92,7 +92,7 @@ def clean():
     try:
         for directory in os.listdir(os.path.join(CURRENT_PATH, '__save')):
             path = os.path.join(CURRENT_PATH, '__save', directory)
-            if directory != "vms":
+            if directory != "vms" or ".confirm" not in directory or ".csv" not in directory:
                 if os.path.isdir(path):
                     shutil.rmtree(path)
                 else:
