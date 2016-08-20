@@ -51,8 +51,13 @@ if ($MODE -eq "vm") {
     Try {
         $RmSubscription = Get-AzureRmSubscription -ErrorAction Stop
     } Catch {
-        Write-Verbose "Please Login"
-        $login = Login-AzureRmAccount
+        Write-Output "Please Login"
+        Try {
+            $login = Login-AzureRmAccount -ErrorAction Stop
+        } Catch {
+            Write-Output "You must have an azure subscription"
+            Exit
+        }
     }
 
 
