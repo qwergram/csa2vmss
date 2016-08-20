@@ -179,15 +179,18 @@ ForEach-Object {
             $zipfile = $_.FullName
         } elseif ($_.Name -eq "meta.json") {
             $metadata = $_.FullName
-            $currentProjectMeta = Get-Content $_.FullName | ConvertFrom-Json
+            $currentProjectMeta = Get-Content $metadata | ConvertFrom-Json
             $currentVmRole = $currentProjectMeta.role_type.ToLower()
         }
     }
 
     # There should be checking to see if $armtemplate and $paramtemplate is the right file
 
-    Write-Output ("Building " + $zipfile)
-    # $newdeployment = New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
+    Write-Output ("Building " + $zipfile + " (" + $currentVmRole + ")")
+    if (Test-Path -path (".\__save\.confirm_" + $currentVmName)) { Write-Output "Resource already deployed" } else {
+        $newdeployment = New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
+        "true" | Out-File -FilePath (".\__save\.confirm_" + $currentVmName) -Encoding ascii
+    }
 
     # Enable Web Deploy ONLY if it's a Web role
     if ($currentVmRole -eq "webrole             a"){
