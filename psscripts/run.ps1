@@ -57,8 +57,14 @@ if (Test-Path ".\__save\.confirm_a") { Write-Output "Service App already package
 
     if ($singleWindow) {
         python ($PYSCRIPTS + "\main.py")
+        if ($? -eq $false) {
+            Exit
+        } 
     } else {
-        start-process python -argument ($PYSCRIPTS + '\main.py') -Wait
+        $result = start-process python -argument ($PYSCRIPTS + '\main.py') -Wait -PassThru
+        if ($result.ExitCode -eq 1) {
+            Exit
+        }
     }
 }
 
