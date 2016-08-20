@@ -45,6 +45,14 @@ def name_to_guid(project_name, solution, silent_fail=False):
     raise FileNotFoundError(project_name, "not found")
 
 
+def name_to_role(project_name, solution, silent_fail=False):
+    for project in solution['projects']:
+        if project['name'] == project_name:
+            return project['role_type']
+    if silent_fail: return None
+    raise FileNotFoundError(project_name, "not found")
+
+
 def get_zip_guid(project_guid):
     return "zip_" + project_guid[:4] + "_package.zip"
 
