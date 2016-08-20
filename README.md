@@ -67,11 +67,11 @@ If you would like to start over, you can either delete the __save directory or r
 This will reset the project back to 0, and therefore you will need to go through this guide again.
 
 
-## Migrating Azure CSA to VMSS Operations
+## Migrating Azure CSA to VM Operations
 
 Once you have completed prescript steps, you can run:
 
-```main.cmd -VMAdmin "Norton" -VMPassword "$3cur3P@$$w0rd"```
+```main.cmd -mode vm -VMAdmin "Norton" -VMPassword "$3cur3P@$$w0rd"```
 
 And it will deploy a VM for each role you specified
 
@@ -119,8 +119,9 @@ and points IIS to serve out of it.
 This script downloads the workerrole package and sets the bootstrapper to run upon
 boot.
 
-### And more to come...
-The actual VMSS deployment has yet to come
+### Checkout each of the VMs
+To ensure that the script worked correctly, you will need to login to
+http://portal.azure.com and RDC into each VM to make sure it is configured properly.
 
 # Common Issues
 ## `No connection could be made because the target machine actively refused it 127.0.0.1:10000`
