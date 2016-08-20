@@ -4,6 +4,7 @@ import io
 import csa_parse
 from csa_parse import debug
 import shutil
+import sys
 
 CURRENT_PATH = os.getcwd()
 
@@ -61,7 +62,21 @@ def package_solution(project_name, solution, keep=True):
         shutil.rmtree(prelim_path)
 
 
+def clean():
+    try:
+        for directory in os.listdir(os.path.join(CURRENT_PATH, '__save')):
+            path = os.path.join(CURRENT_PATH, '__save', directory)
+            if directory != "vms":
+                if os.path.isdir(path):
+                    shutil.rmtree(path)
+                else:
+                    os.remove(path)
+    except FileNotFoundError:
+        pass
+
+
 def main():
+    clean()
     VM_PATH = os.path.join(CURRENT_PATH, "__save", "vms")
     for vm_name in os.listdir(VM_PATH):
         vm_path = os.path.join(VM_PATH, vm_name)
