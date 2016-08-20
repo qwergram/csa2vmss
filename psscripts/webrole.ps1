@@ -85,3 +85,8 @@ msiexec /i wmsvc.msi /quiet ADDLOCAL=ALL
 cmd.exe /c '"%programfiles%\microsoft\web platform installer\WebpiCmd.exe" /Install /Products:ManagementService'
 cmd.exe /c "net start msdepsvc"
 cmd.exe /c "net start wmsvc"
+
+# Add site to inetmgr
+Set-Location ($env:windir + "\system32\inetsrv\")
+.\appcmd.exe delete site /site.name:"Default Web Site"
+.\appcmd.exe add site /name:"webrole" /id:1 /bindings:http://*:80 /physicalPath:"C:\webrole\"
