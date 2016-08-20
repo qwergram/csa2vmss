@@ -251,8 +251,6 @@ if __name__ == "__main__":
                 shutil.rmtree(os.path.join(OUTPUT, ''))
         except FileNotFoundError:
             print("Already cleared!")
-    if "-open" in sys.argv:
-        os.system("explorer.exe " + OUTPUT)
     if "-check" in sys.argv:
         if check_db_strings():
             check()
@@ -261,4 +259,6 @@ if __name__ == "__main__":
         copy_parent(parent)
     if "-updatesln" in sys.argv:
         update_sln()
-    
+    # Always open the directory last
+    if "-open" in sys.argv:
+        os.system("explorer.exe " + OUTPUT)

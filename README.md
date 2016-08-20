@@ -14,7 +14,7 @@ Note: Make sure that the directory name matches the role name defined in the .sl
 
 You will first need to use the pre-script to split the cloud app into seperate projects:
 
-```prescript.cmd "C:\Path\To\Project" -open -cscopy```
+```prescript.cmd "C:\Path\To\Project\Directory" -open -cscopy```
 
 Follow the instructions and select which projects are Common, Workerroles and webroles.
 
