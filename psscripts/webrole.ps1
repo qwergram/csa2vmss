@@ -86,7 +86,16 @@ cmd.exe /c '"%programfiles%\microsoft\web platform installer\WebpiCmd.exe" /Inst
 cmd.exe /c "net start msdepsvc"
 cmd.exe /c "net start wmsvc"
 
+$webroledirectory = "C:\webrole\"
+Get-ChildItem "c:\Webrole\" |
+ForEach-Object {
+    $directory = $_.FullName
+    Get-ChildItem $directory -Filter "Views" | ForEach-Object {
+        $webroledirectory = $directory
+    }
+}
+
 # Add site to inetmgr
 Set-Location ($env:windir + "\system32\inetsrv\")
 .\appcmd.exe delete site /site.name:"Default Web Site"
-.\appcmd.exe add site /name:"webrole" /id:1 /bindings:http://*:80 /physicalPath:"C:\webrole\"
+.\appcmd.exe add site /name:"webrole" /id:1 /bindings:http://*:80 /physicalPath:$webroledirectory
