@@ -75,6 +75,11 @@ def clean():
         pass
 
 
+def write_confirm():
+    with io.open(os.path.join(CURRENT_PATH, '__save', '.confirm_a'), 'w') as context:
+        context.write()
+
+
 def main():
     clean()
     VM_PATH = os.path.join(CURRENT_PATH, "__save", "vms")
@@ -85,6 +90,7 @@ def main():
         solution.load_solution()
         save_solution_data(name_to_guid(vm_name, solution.solution_data), solution)
         package_solution(vm_name, solution)
+    write_confirm()
 
 if __name__ == "__main__":
     main()
