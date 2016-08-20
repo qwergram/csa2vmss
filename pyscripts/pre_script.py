@@ -152,6 +152,8 @@ def check():
             continue
         clean_binaries(path)
         sln_file = os.path.join(path, [f for f in os.listdir(path) if f.lower().endswith('.sln')][0])
+        # This is only specific to my computer, I think. I need to build some kind of searcher for the MSBuild
+        # or at least ask for user input
         output = os.popen("%windir%\\Microsoft.NET\\Framework64\\v4.0.30319\\MSBuild.exe \"{}\"".format(sln_file)).read()
         if "0 Error(s)" in output:
             write_confirm(path)
@@ -162,6 +164,27 @@ def check():
             with io.open(os.path.join(path, ".errors"), 'w') as context:
                 context.write(output)
             print("Error compiling", directory, "\nError Message saved in .errors")
+
+
+def check_db_strings():
+    print("Checking your db strings")
+    proper_db_string_in_all = True
+    for project in os.listdir(OUTPUT):
+        proper_db_string = True
+        project_path = os.path.join(OUTPUT, project)
+        if os.path.isdir(project_path):
+            local = os.path.join(project_path, '.parent', 'ServiceConfiguration.Local.cscfg')
+            cloud = os.path.join(project_path, '.parent', 'ServiceConfiguration.Cloud.cscfg')
+            with io.open(local) as context:
+                proper_db_string = not 'value="UseDevelopmentStorage=true"' in context.read() and proper_db_string
+            with io.open(cloud) as context:
+                proper_db_string = not 'value="UseDevelopmentStorate=true"' in context.read() and proper_db_string
+        if not proper_db_string:
+            print("Your connection strings aren't configured properly. Please check", project + "\\.parent\\ServiceConfiguration.*.cscfg and edit the ServiceConfiguration > Role > ConfigurationSettings > Setting'")
+            print("Compile check will not be run until this is resolved.")
+            print("To override this, read the README.md")
+            proper_db_string_in_all = False
+    return proper_db_string_in_all
 
 
 def get_parent():
@@ -224,7 +247,8 @@ if __name__ == "__main__":
     if "-open" in sys.argv:
         os.system("explorer.exe " + OUTPUT)
     if "-check" in sys.argv:
-        check()
+        if check_db_strings():
+            check()
     if "-cscopy" in sys.argv:
         parent = get_parent()
         copy_parent(parent)
