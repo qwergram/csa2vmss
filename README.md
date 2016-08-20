@@ -106,7 +106,7 @@ Custom scripts saved under `.\psscripts\` called `webrole.ps1` and `workerrole.p
 to the cloud for the VMs to use.
 
 ### Deploy VM
-This is the longest step, and it usually takes about 15 minutes per VM to deploy. 
+This is the longest step, and it usually takes about 15 minutes per VM to deploy.
 
 ### Run custom extensions
 The scripts uploaded earlier will be run (webrole script/workerrole script)
@@ -121,6 +121,13 @@ boot.
 
 ### And more to come...
 The actual VMSS deployment has yet to come
+
+# Common Issues
+## `No connection could be made because the target machine actively refused it 127.0.0.1:10000`
+If you run into this issue, it means your db connection strings are using "useDevelopmentStorage=true".
+Correct them and try re-uploading the packages.
+![Issue](http://imgur.com/4Ksrpk7.png)
+
 
 # Suggestions? Questions?
 You can reach me at v-nopeng@microsoft.com or npengra317@gmail.com.
