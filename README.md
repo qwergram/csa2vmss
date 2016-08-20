@@ -67,7 +67,7 @@ This will reset the project back to 0, and therefore you will need to go through
 
 ### Migrating Azure CSA to VMSS
 
-Once you have complited prescript steps, you can run:
+Once you have completed prescript steps, you can run:
 
 ```main.cmd -VMAdmin "Norton" -VMPassword "$3cur3P@$$w0rd"```
 
