@@ -92,7 +92,7 @@ def clean():
     try:
         for directory in os.listdir(os.path.join(CURRENT_PATH, '__save')):
             path = os.path.join(CURRENT_PATH, '__save', directory)
-            if directory != "vms" or ".confirm" not in directory or ".csv" not in directory:
+            if (directory != "vms") and (".confirm" not in directory) and (".csv" not in directory):
                 if os.path.isdir(path):
                     shutil.rmtree(path)
                 else:
@@ -106,9 +106,18 @@ def write_confirm():
         context.write("")
 
 
+def build_paths(path):
+    if not os.path.isdir(path):
+        print("Building", path)
+        os.mkdir(path)
+
+
 def main():
     clean()
-    VM_PATH = os.path.join(CURRENT_PATH, "__save", "vms")
+    SAVE_PATH = os.path.join(CURRENT_PATH, "__save")
+    VM_PATH = os.path.join(SAVE_PATH, "vms")
+    build_paths(SAVE_PATH)
+    build_paths(VM_PATH)
     for vm_name in os.listdir(VM_PATH):
         vm_path = os.path.join(VM_PATH, vm_name)
         if os.path.isfile(vm_path): continue
