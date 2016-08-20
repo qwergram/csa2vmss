@@ -188,6 +188,7 @@ ForEach-Object {
 
     Write-Output ("Building " + $zipfile + " (" + $currentVmRole + ")")
     if (Test-Path -path (".\__save\.confirm_" + $currentVmName)) { Write-Output "Resource already deployed" } else {
+        Write-Output "Checkout http://portal.azure.com/ to see it being deployed in live time!"
         $newdeployment = New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile $armtemplate -TemplateParameterFile $paramtemplate
         "true" | Out-File -FilePath (".\__save\.confirm_" + $currentVmName) -Encoding ascii
     }
@@ -195,11 +196,14 @@ ForEach-Object {
     $zip_location = "https://" + $StoragePrefix.ToLower() + $SolutionName.ToLower() + ".blob.core.windows.net/" + $containerPrefix.ToLower() + $SolutionName.ToLower() + '/'
 
     # Enable Web Deploy ONLY if it's a Web role
-    if ($currentVmRole -eq "webrole             a"){
+    if ($currentVmRole -eq "webrole") {
 
         # Enable IIS, Webdeploy and Remote PowerShell
-        Write-Output "Installing Web Role components"
-        $newcustomscript = Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "webrole.ps1" -VMName $currentVmName -Run ("webrole.ps1 -urlcontainer " + $zip_location) -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
+        if (Test-Path -path (".\__save\.confirm_ext_" + $currentVmName)) { Write-Output "Extension already deployed" } else {
+            Write-Output "Installing Web Role components"
+            $newcustomscript = Set-AzureRmVMCustomScriptExtension -ResourceGroupName ($ResourcePrefix + $SolutionName) -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -ContainerName ($containerPrefix.ToLower() + $SolutionName.ToLower()) -FileName "webrole.ps1" -VMName $currentVmName -Run ("webrole.ps1 -urlcontainer " + $zip_location) -StorageAccountKey $key -Name ($scriptPrefix + $SolutionName) -Location $Location -SecureExecution
+            "true" | Out-File -FilePath ("webrole.ps1 -urlcontainer " + $zip_location) -Encoding ascii
+        }
 
     } elseif ($currentVmRole -eq "workerrole    a") {
         Write-Output "Installing Worker Role components"
