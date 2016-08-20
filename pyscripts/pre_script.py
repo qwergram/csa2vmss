@@ -245,9 +245,12 @@ if __name__ == "__main__":
     if "-clear" in sys.argv:
         print("Clearing .\\__save\\vms\\")
         try:
-            shutil.rmtree(os.path.join(OUTPUT, ''))
-        except OSError:
-            shutil.rmtree(os.path.join(OUTPUT, ''))
+            try:
+                shutil.rmtree(os.path.join(OUTPUT, ''))
+            except OSError:
+                shutil.rmtree(os.path.join(OUTPUT, ''))
+        except FileNotFoundError:
+            print("Already cleared!")
     if "-open" in sys.argv:
         os.system("explorer.exe " + OUTPUT)
     if "-check" in sys.argv:
