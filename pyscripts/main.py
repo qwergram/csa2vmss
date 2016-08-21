@@ -57,9 +57,34 @@ def get_zip_guid(project_guid):
     return "zip_" + project_guid[:4] + "_package.zip"
 
 
-def worker_role_repackage(pkg_location):
+def worker_role_repackage(pkg_location, bootstrap_name="Bootstrap"):
     print("Repackaging workerrole")
     # Repackage everything from the /bin/ dir in worker role
+    projects = [(pkg, os.path.join(pkg_location, pkg)) for pkg in os.listdir(pkg_location)]
+    for package, location in projects:
+        if package == bootstrap_name and os.path.isdir(os.path.join(location, 'bin')):
+            debug = os.path.join(location, 'bin', 'Debug')
+            release = os.path.join(location, 'bin', 'Release')
+            if os.path.isdir(release):
+                bin_location = release
+            elif os.path.isdir(debug):
+                bin_location = debug
+            else:
+                print("Could not find binaries for Bootstrap")
+                print("Did you run `prescript.cmd -check`?")
+                sys.exit(1)
+            try:
+                shutil.copytree(bin_location, pkg_location)
+            except shutil.Error:  # see try/catch block below
+                os.popen("xcopy \"{}\" \"{}\" /E".format(bin_location, pkg_location))
+            print("Deleting source code (But not your original source code :)")
+            for src, src_location in projects:
+                shutil.rmtree(src_location)
+            break
+    else:
+        print("Could not find Bootstrap!")
+        print("Did you name the project dir 'Bootstrap'?")
+        sys.exit(1)
 
 
 def package_solution(project_name, solution, keep=True):
