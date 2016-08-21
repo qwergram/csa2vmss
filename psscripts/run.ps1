@@ -95,16 +95,15 @@ if ($MODE -eq "vmss") {
 
         # Stop the VM
         Write-Output "Stopping $vm_name"
-        Stop-AzureRmVM -ResourceGroupName ($ResourcePrefix + $solutionName) -Name $vm_name -Force
+        $stop = Stop-AzureRmVM -ResourceGroupName ($ResourcePrefix + $solutionName) -Name $vm_name -Force
 
         # Mark VM as generalized
-        # Write-Output "Marking VM as Generalized"
-        # $mark = Set-AzureRmVm -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Generalize
+        Write-Output "Marking VM as Generalized"
+        $mark = Set-AzureRmVm -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Generalize
 
         # # Save VHD location
-        # Write-Output "Adding VHD to Generalized Image list"
-        # Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
-
+        Write-Output "Adding VHD to Generalized Image list"
+        Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
     }
 
     # Run golden_image script
