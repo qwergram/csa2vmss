@@ -64,6 +64,7 @@ if ($MODE -eq "vmss") {
     Write-Output "Getting Resource Storage Context"
     # Source:
     # https://azure.microsoft.com/en-us/documentation/articles/virtual-machines-windows-classic-createupload-vhd/
+    # https://azure.microsoft.com/en-us/documentation/articles/virtual-machines-windows-upload-image/
 
     # Getting Storage Context
     # $key = (Get-AzureRmStorageAccountKey -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()))[0].Value
@@ -72,6 +73,8 @@ if ($MODE -eq "vmss") {
     # Upload golden_image script to server
     # $sysprepcmd = ($CMDSCRIPTS + "\creage_gold_vhd.cmd")
     # $upload = Set-AzureStorageBlobContent -File $sysprepcmd -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "golden.cmd" -Context $blobContext -Force
+
+    $storageAccount = Get-AzureStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower())
 
     # Get all the VMs built by this script
     Get-ChildItem -Path $SAVEPATH -Filter (".confirm_*VM" + $SolutionName) |
@@ -90,7 +93,9 @@ if ($MODE -eq "vmss") {
             Exit
         }
 
-        $thisVM
+        # Save VHD location
+        Write-Output "Adding VHD to Generalized Image list"
+        Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
 
     }
 
