@@ -80,11 +80,10 @@ def worker_role_repackage(pkg_location, bootstrap_name="Bootstrap"):
             print("Deleting source code (But not your original source code :)")
             for src, src_location in projects:
                 shutil.rmtree(src_location)
-            break
-    else:
-        print("Could not find Bootstrap!")
-        print("Did you name the project dir 'Bootstrap'?")
-        sys.exit(1)
+            return
+    print("Could not find Bootstrap!")
+    print("Did you name the project dir 'Bootstrap'?")
+    sys.exit(1)
 
 
 def package_solution(project_name, solution, keep=True):
