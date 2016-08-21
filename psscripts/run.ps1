@@ -80,11 +80,17 @@ if ($MODE -eq "vmss") {
         if ($vm_name.Contains("ext_")) { continue }
         Write-Output $vm_name
 
+        # Focus on one VM for now
+        if ($vm_name -eq "92a8VMSysPrep44") { } else { continue }
+
         try {
-            Get-AzureRmVM -Name $vm_name -ResourceGroupName ($ResourcePrefix + $solutionName) -ErrorAction Stop
+            $thisVM = Get-AzureRmVM -Name $vm_name -ResourceGroupName ($ResourcePrefix + $solutionName) -ErrorAction Stop
         } catch {
             Write-Output "Please confirm the .confirm_<vmname> files are acurate"
+            Exit
         }
+
+        $thisVM
 
     }
 
