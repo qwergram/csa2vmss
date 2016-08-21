@@ -1,0 +1,1 @@
+sysprep\sysprep.exe /audit /generalize /shutdown
