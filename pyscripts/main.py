@@ -77,7 +77,10 @@ def worker_role_repackage(pkg_location, bootstrap_name="Bootstrap"):
             debug("Deleting source code (But not your original source code :)")
             for src, src_location in projects:
                 if src != "schedule.xml":
-                    shutil.rmtree(src_location)
+                    try:
+                        shutil.rmtree(src_location)
+                    except (shutil.Error, OSError):
+                        os.popen("rmdir \"{}\" /S".format(src_location))
             return
     debug("Could not find Bootstrap!")
     debug("Did you name the project dir 'Bootstrap'?")
