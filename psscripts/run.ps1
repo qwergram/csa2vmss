@@ -6,7 +6,7 @@ Param(
     [string]
     $MODE,
     [string] # The new Solution Name
-    $SolutionName = "SysPrep44",
+    $SolutionName = "SysPrep45",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "ResGroup",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
@@ -43,17 +43,17 @@ Param(
 Write-Output "Cloud Service 2 VMss"
 Write-Output "(Send suggestions to v-nopeng@microsoft.com)"
 
-# Try {
-#     $RmSubscription = Get-AzureRmSubscription -ErrorAction Stop
-# } Catch {
-#     Write-Output "Please Login"
-#     Try {
-#         $login = Login-AzureRmAccount -ErrorAction Stop
-#     } Catch {
-#         Write-Output "You must have an azure subscription"
-#         Exit
-#     }
-# }
+Try {
+    $RmSubscription = Get-AzureRmSubscription -ErrorAction Stop
+} Catch {
+    Write-Output "Please Login"
+    Try {
+        $login = Login-AzureRmAccount -ErrorAction Stop
+    } Catch {
+        Write-Output "You must have an azure subscription"
+        Exit
+    }
+}
 
 $PYSCRIPTS = ($pwd.Path + "\pyscripts")
 $PSSCRIPTS = ($pwd.Path + "\psscripts")
@@ -104,12 +104,10 @@ if ($MODE -eq "vmss") {
         # # Save VHD location
         Write-Output "Adding VHD to Generalized Image list"
         $vmimage = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
+    
+        $simpleVm = "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-custom-image-new-storage-account/azuredeploy.json"
+        New-AzureRmResourceGroupDeployment -ResourceGroupName ("test" + $SolutionName) -TemplateParameterUri $simpleVm
     }
-
-    # Run golden_image script
-
-    # Save VHD location
-    # $save = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $currentVmName -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
 
     # generate_vmss_armt.py
     # new azure deployment as vmss
