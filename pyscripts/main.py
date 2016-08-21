@@ -57,36 +57,6 @@ def get_zip_guid(project_guid):
     return "zip_" + project_guid[:4] + "_package.zip"
 
 
-def worker_role_repackage(pkg_location, bootstrap_name="Bootstrap"):
-    debug("Repackaging workerrole")
-    # Repackage everything from the /bin/ dir in worker role
-    projects = [(pkg, os.path.join(pkg_location, pkg)) for pkg in os.listdir(pkg_location)]
-    for package, location in projects:
-        if package == bootstrap_name and os.path.isdir(os.path.join(location, 'bin')):
-            debug_bin = os.path.join(location, 'bin', 'Debug')
-            release = os.path.join(location, 'bin', 'Release')
-            if os.path.isdir(release):
-                bin_location = release
-            elif os.path.isdir(debug_bin):
-                bin_location = debug_bin
-            else:
-                debug("Could not find binaries for Bootstrap")
-                debug("Did you run `prescript.cmd -check`?")
-                sys.exit(1)
-            os.popen("xcopy \"{}\" \"{}\" /E".format(bin_location, pkg_location))
-            debug("Deleting source code (But not your original source code :)")
-            for src, src_location in projects:
-                if src != "schedule.xml":
-                    try:
-                        shutil.rmtree(src_location)
-                    except (shutil.Error, OSError):
-                        os.popen("rmdir \"{}\" /S".format(src_location))
-            return
-    debug("Could not find Bootstrap!")
-    debug("Did you name the project dir 'Bootstrap'?")
-    sys.exit(1)
-
-
 def package_solution(project_name, solution, keep=True):
     debug("Building", project_name)
     project_guid = name_to_guid(project_name, solution.solution_data)
@@ -96,26 +66,43 @@ def package_solution(project_name, solution, keep=True):
     prelim_path = os.path.join(dest_dir, 'pkg')
 
     os.mkdir(prelim_path)
-    for project in os.listdir(source_dir):
-        
-        project_path = os.path.join(source_dir, project)
-        if os.path.isdir(project_path) and project != 'packages' and not project.startswith('.'):
-            debug("Copying  %s.%s" % (project_name, project))
-            try:
-                shutil.copytree(project_path, os.path.join(prelim_path, project))
-            except shutil.Error:  # Weird bug with shutil.copy on windows when the absolute filepath is too long
-                os.popen("xcopy \"{}\" \"{}\" /E".format(project_path, os.path.join(prelim_path, project)))
-        else:
-            debug("Ignoring %s.%s" % (project_name, project))
-
-
     if name_to_role(project_name, solution.solution_data) == 'workerrole':
         debug("Copying scheduler for workerrole")
         sch_xml = os.path.join(CURRENT_PATH, 'templates', 'schedule.xml')
         shutil.copy(sch_xml, os.path.join(prelim_path, 'schedule.xml'))
-        
-        worker_role_repackage(prelim_path)
-
+        for project in os.listdir(source_dir):
+            if project.lower() == "bootstrap":
+                debug_bin = os.path.join(source_dir, project, 'bin', 'Debug')
+                release_bin = os.path.join(source_dir, project, 'bin', 'Release')
+                if os.path.isdir(release_bin):
+                    bin_location = release_bin
+                elif os.path.isdir(debug_bin):
+                    bin_location = release_bin
+                else:
+                    debug("Unable to find Bootstraper binaries for workerrole")
+                    debug("Did you run `prescript.cmd -check`?")
+                    sys.exit(1)
+                debug("Copying Bootstrapper")
+                try:
+                    shutil.copytree(bin_location, prelim_path)
+                except shutil.Error:
+                    os.popen("xcopy \"{}\" \"{}\" /E".format(bin_location, prelim_path))
+                break
+        else:
+            debug("Unable to locate Bootstrapper code")
+            debug("Did you name the bootstrapper project `Bootstrap`?")
+            sys.exit(1)
+    else:
+        for project in os.listdir(source_dir):
+            project_path = os.path.join(source_dir, project)
+            if os.path.isdir(project_path) and project != 'packages' and not project.startswith('.'):
+                debug("Copying  %s.%s" % (project_name, project))
+                try:
+                    shutil.copytree(project_path, os.path.join(prelim_path, project))
+                except shutil.Error:  # Weird bug with shutil.copy on windows when the absolute filepath is too long
+                    os.popen("xcopy \"{}\" \"{}\" /E".format(project_path, os.path.join(prelim_path, project)))
+            else:
+                debug("Ignoring %s.%s" % (project_name, project))
 
     run_powershell("zip.ps1", {"zipfilename": zip_path, "sourcedir": prelim_path})
     if not keep:
