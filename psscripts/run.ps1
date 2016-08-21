@@ -39,27 +39,30 @@ Param(
     $singleWindow = $true
 )
 
-if ($MODE -eq "vm") {
+# Have the User Login
+Write-Output "Cloud Service 2 VMss"
+Write-Output "(Send suggestions to v-nopeng@microsoft.com)"
+
+Try {
+    $RmSubscription = Get-AzureRmSubscription -ErrorAction Stop
+} Catch {
+    Write-Output "Please Login"
+    Try {
+        $login = Login-AzureRmAccount -ErrorAction Stop
+    } Catch {
+        Write-Output "You must have an azure subscription"
+        Exit
+    }
+}
+
+if ($MODE -eq "vmss") {
+    Write-Output "Funny story... This doesn't actually exist yet."
+
+
+} elseif ($MODE -eq "vm") {
 
     $PYSCRIPTS = ($pwd.Path + "\pyscripts")
     $PSSCRIPTS = ($pwd.Path + "\psscripts")
-
-    # Have the User Login
-    Write-Output "Cloud Service 2 VMss"
-    Write-Output "(Send suggestions to v-nopeng@microsoft.com)"
-
-    Try {
-        $RmSubscription = Get-AzureRmSubscription -ErrorAction Stop
-    } Catch {
-        Write-Output "Please Login"
-        Try {
-            $login = Login-AzureRmAccount -ErrorAction Stop
-        } Catch {
-            Write-Output "You must have an azure subscription"
-            Exit
-        }
-    }
-
 
     # This script parses the Visual Studio Solution and zips it
 
@@ -234,6 +237,10 @@ if ($MODE -eq "vm") {
             }
         }
 
+        Write-Output "Built VMs! Go to your portal and RDC to them."
+        Write-Output "Once you have confirmed everything is correctly built, you can launch this"
+        Write-Output "script again with the flag -mode vmss"
+
         # Write-Output "Deploying VMSS!"
         # # only deal with worker role for now
         # if ($currentVmRole -eq "workerroleasdf") {
@@ -261,6 +268,4 @@ if ($MODE -eq "vm") {
         # }
 
     }
-} elseif ($MODE -eq "vmss") {
-    Write-Output "Funny story... This doesn't actually exist yet."
-}
+} 
