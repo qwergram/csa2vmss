@@ -57,7 +57,30 @@ Try {
 
 if ($MODE -eq "vmss") {
     Write-Output "Funny story... This doesn't actually exist yet."
+    # Source:
+    # https://azure.microsoft.com/en-us/documentation/articles/virtual-machines-windows-classic-createupload-vhd/
 
+    # Getting Storage Context
+    $key = (Get-AzureRmStorageAccountKey -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()))[0].Value
+    $blobContext = New-AzureStorageContext -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -StorageAccountKey $key
+
+    # Upload golden_image script to server
+    $upload = Set-AzureStorageBlobContent -File $_.FullName -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob $_.Name -Context $blobContext -Force
+
+    # Run golden_image script
+
+    # Mark VM as Generalized
+    # Write-Output "Marking VM as Generalized"
+    # $mark = Set-AzureRmVm -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Generalized
+
+    # Save VHD location
+    # $save = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $currentVmName -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
+
+    # generate_vmss_armt.py
+    # new azure deployment as vmss
+
+    # Delete old VM
+    # Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Force
 
 } elseif ($MODE -eq "vm") {
 
@@ -241,31 +264,7 @@ if ($MODE -eq "vmss") {
         Write-Output "Once you have confirmed everything is correctly built, you can launch this"
         Write-Output "script again with the flag -mode vmss"
 
-        # Write-Output "Deploying VMSS!"
-        # # only deal with worker role for now
-        # if ($currentVmRole -eq "workerroleasdf") {
-            
-        #     Write-Output "Stopping VM"
-        #     # $stop = Stop-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Force
-
-        #     Write-Output "Marking VM as Generalized"
-        #     # $mark = Set-AzureRmVm -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Generalized
-
-        #     Write-Output "Getting WorkerRole Image"
-        #     # $save = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $currentVmName -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
-
-        #     if ($singleWindow) {
-        #         python ($pwd.Path + "\pyscripts\generate_vmss_armt.py") $currentVmName
-        #     } else {
-        #         start-process python -argument (($pwd.Path + "\pyscripts\generate_vmss_armt.py") + ' ' + $currentVmName) -ErrorAction Stop -Wait
-        #     }
-
-        #     Write-Output "Deploying VMSS"
-        #     # New-AzureRmResourceGroupDeployment -Name ($DeploymentPrefix + $SolutionName) -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_" + $currentVmName + "\vmss.json") -TemplateParameterFile ($pwd.Path + "\__save\vmss_" + $currentVmName + "\vmss.params.json")
-            
-        #     Write-Output "Deleting old VM"
-        #     # Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Force
-        # }
+       
 
     }
 } 
