@@ -67,19 +67,17 @@ def worker_role_repackage(pkg_location, bootstrap_name="Bootstrap"):
             release = os.path.join(location, 'bin', 'Release')
             if os.path.isdir(release):
                 bin_location = release
-            elif os.path.isdir(debug):
+            elif os.path.isdir(debug_bin):
                 bin_location = debug_bin
             else:
                 debug("Could not find binaries for Bootstrap")
                 debug("Did you run `prescript.cmd -check`?")
                 sys.exit(1)
-            try:
-                shutil.copytree(bin_location, pkg_location)
-            except shutil.Error:  # see try/catch block below
-                os.popen("xcopy \"{}\" \"{}\" /E".format(bin_location, pkg_location))
+            os.popen("xcopy \"{}\" \"{}\" /E".format(bin_location, pkg_location))
             debug("Deleting source code (But not your original source code :)")
             for src, src_location in projects:
-                shutil.rmtree(src_location)
+                if src != "schedule.xml":
+                    shutil.rmtree(src_location)
             return
     debug("Could not find Bootstrap!")
     debug("Did you name the project dir 'Bootstrap'?")
@@ -133,6 +131,10 @@ def clean():
                     os.remove(path)
     except FileNotFoundError:
         pass
+    except OSError:
+        print("Can't delete the directory!'")
+        print("Is it open in another program?")
+        sys.exit(1)
 
 
 def write_confirm():
