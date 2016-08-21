@@ -43,17 +43,17 @@ Param(
 Write-Output "Cloud Service 2 VMss"
 Write-Output "(Send suggestions to v-nopeng@microsoft.com)"
 
-Try {
-    $RmSubscription = Get-AzureRmSubscription -ErrorAction Stop
-} Catch {
-    Write-Output "Please Login"
-    Try {
-        $login = Login-AzureRmAccount -ErrorAction Stop
-    } Catch {
-        Write-Output "You must have an azure subscription"
-        Exit
-    }
-}
+# Try {
+#     $RmSubscription = Get-AzureRmSubscription -ErrorAction Stop
+# } Catch {
+#     Write-Output "Please Login"
+#     Try {
+#         $login = Login-AzureRmAccount -ErrorAction Stop
+#     } Catch {
+#         Write-Output "You must have an azure subscription"
+#         Exit
+#     }
+# }
 
 $PYSCRIPTS = ($pwd.Path + "\pyscripts")
 $PSSCRIPTS = ($pwd.Path + "\psscripts")
@@ -76,10 +76,16 @@ if ($MODE -eq "vmss") {
     # Get all the VMs built by this script
     Get-ChildItem -Path $SAVEPATH -Filter (".confirm_*VM" + $SolutionName) |
     ForEach-Object {
-        if ($_.FullName.Contains("_ext_")) { } else {
-            Write-Output $_.FullName
+        $vm_name = $_.Name.Replace(".confirm_", "")
+        if ($vm_name.Contains("ext_")) { continue }
+        Write-Output $vm_name
+
+        try {
+            Get-AzureRmVM -Name $vm_name -ResourceGroupName ($ResourcePrefix + $solutionName) -ErrorAction Stop
+        } catch {
+            Write-Output "Please confirm the .confirm_<vmname> files are acurate"
         }
-        
+
     }
 
     # Run golden_image script
