@@ -6,7 +6,7 @@ Param(
     [string]
     $MODE,
     [string] # The new Solution Name
-    $SolutionName = "SysPrep43",
+    $SolutionName = "SysPrep44",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "ResGroup",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
