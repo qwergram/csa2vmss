@@ -124,7 +124,7 @@ To ensure that the script worked correctly, you will need to login to
 http://portal.azure.com and RDC into each VM to make sure it is configured properly.
 
 # Common Issues
-## `No connection could be made because the target machine actively refused it 127.0.0.1:10000`
+## `No connection could be made because the target machine actively refused it`
 If you run into this issue, it means your db connection strings are using "useDevelopmentStorage=true".
 Correct them and try re-uploading the packages.
 ![Issue](http://imgur.com/4Ksrpk7.png)
