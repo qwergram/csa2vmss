@@ -107,7 +107,7 @@ def package_solution(project_name, solution, keep=True):
 
 
     if name_to_role(project_name, solution.solution_data) == 'workerrole':
-        print("Copying scheduler for workerrole")
+        debug("Copying scheduler for workerrole")
         sch_xml = os.path.join(CURRENT_PATH, 'templates', 'schedule.xml')
         shutil.copy(sch_xml, os.path.join(prelim_path, 'schedule.xml'))
         
@@ -116,7 +116,7 @@ def package_solution(project_name, solution, keep=True):
 
     run_powershell("zip.ps1", {"zipfilename": zip_path, "sourcedir": prelim_path})
     if not keep:
-        print("Cleaning up mess")
+        debug("Cleaning up mess")
         shutil.rmtree(prelim_path)
 
 
@@ -132,8 +132,8 @@ def clean():
     except FileNotFoundError:
         pass
     except OSError:
-        print("Can't delete the directory!'")
-        print("Is it open in another program?")
+        debug("Can't delete the directory!'")
+        debug("Is it open in another program?")
         sys.exit(1)
 
 
@@ -146,8 +146,8 @@ def main():
     clean()
     VM_PATH = os.path.join(CURRENT_PATH, "__save", "vms")
     if not os.path.isdir(VM_PATH):
-        print("VMs not found!")
-        print("Did you run the prescripts?")
+        debug("VMs not found!")
+        debug("Did you run the prescripts?")
         sys.exit(1)
     for vm_name in os.listdir(VM_PATH):
         vm_path = os.path.join(VM_PATH, vm_name)
