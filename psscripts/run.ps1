@@ -55,17 +55,32 @@ Try {
     }
 }
 
+$PYSCRIPTS = ($pwd.Path + "\pyscripts")
+$PSSCRIPTS = ($pwd.Path + "\psscripts")
+$CMDSCRIPTS = ($pwd.Path + "\cmdscripts")
+$SAVEPATH = ($pwd.Path + "\__save")
+
 if ($MODE -eq "vmss") {
-    Write-Output "Funny story... This doesn't actually exist yet."
+    Write-Output "Getting Resource Storage Context"
     # Source:
     # https://azure.microsoft.com/en-us/documentation/articles/virtual-machines-windows-classic-createupload-vhd/
 
     # Getting Storage Context
-    $key = (Get-AzureRmStorageAccountKey -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()))[0].Value
-    $blobContext = New-AzureStorageContext -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -StorageAccountKey $key
+    # $key = (Get-AzureRmStorageAccountKey -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()))[0].Value
+    # $blobContext = New-AzureStorageContext -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -StorageAccountKey $key
 
     # Upload golden_image script to server
-    $upload = Set-AzureStorageBlobContent -File $_.FullName -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob $_.Name -Context $blobContext -Force
+    # $sysprepcmd = ($CMDSCRIPTS + "\creage_gold_vhd.cmd")
+    # $upload = Set-AzureStorageBlobContent -File $sysprepcmd -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "golden.cmd" -Context $blobContext -Force
+
+    # Get all the VMs built by this script
+    Get-ChildItem -Path $SAVEPATH -Filter (".confirm_*VM" + $SolutionName) |
+    ForEach-Object {
+        if ($_.FullName.Contains("_ext_")) { } else {
+            Write-Output $_.FullName
+        }
+        
+    }
 
     # Run golden_image script
 
@@ -83,9 +98,7 @@ if ($MODE -eq "vmss") {
     # Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Force
 
 } elseif ($MODE -eq "vm") {
-
-    $PYSCRIPTS = ($pwd.Path + "\pyscripts")
-    $PSSCRIPTS = ($pwd.Path + "\psscripts")
+    Write-Output "Running in VM mode"
 
     # This script parses the Visual Studio Solution and zips it
 
