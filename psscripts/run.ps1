@@ -74,7 +74,7 @@ if ($MODE -eq "vmss") {
     # $sysprepcmd = ($CMDSCRIPTS + "\creage_gold_vhd.cmd")
     # $upload = Set-AzureStorageBlobContent -File $sysprepcmd -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "golden.cmd" -Context $blobContext -Force
 
-    $storageAccount = Get-AzureStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower())
+    $storageAccount = Get-AzureRmStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower())
 
     # Get all the VMs built by this script
     Get-ChildItem -Path $SAVEPATH -Filter (".confirm_*VM" + $SolutionName) |
@@ -87,15 +87,15 @@ if ($MODE -eq "vmss") {
         if ($vm_name -eq "92a8VMSysPrep44") { } else { continue }
 
         try {
-            $thisVM = Get-AzureRmVM -Name $vm_name -ResourceGroupName ($ResourcePrefix + $solutionName) -ErrorAction Stop
+            $thisVM = Get-AzureRmVM -Name $vm_name -ResourceName ($ResourcePrefix + $solutionName) -ErrorAction Stop
         } catch {
-            Write-Output "Please confirm the .confirm_<vmname> files are acurate"
+            Write-Output "Please confirm the .confirm_<vmname> files are accurate"
             Exit
         }
 
         # Save VHD location
         Write-Output "Adding VHD to Generalized Image list"
-        Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
+        # Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
 
     }
 
