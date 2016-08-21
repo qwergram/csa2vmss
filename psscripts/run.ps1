@@ -103,7 +103,7 @@ if ($MODE -eq "vmss") {
 
         # # Save VHD location
         Write-Output "Adding VHD to Generalized Image list"
-        Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
+        $vmimage = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
     }
 
     # Run golden_image script
@@ -116,6 +116,8 @@ if ($MODE -eq "vmss") {
 
     # Delete old VM
     # Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Force
+
+    Write-Output "Script complete! You now have a VMss"
 
 } elseif ($MODE -eq "vm") {
     Write-Output "Running in VM mode"
