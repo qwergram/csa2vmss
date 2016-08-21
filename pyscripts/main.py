@@ -67,9 +67,7 @@ def package_solution(project_name, solution, keep=True):
 
     os.mkdir(prelim_path)
     if name_to_role(project_name, solution.solution_data) == 'workerrole':
-        debug("Copying scheduler for workerrole")
-        sch_xml = os.path.join(CURRENT_PATH, 'templates', 'schedule.xml')
-        shutil.copy(sch_xml, os.path.join(prelim_path, 'schedule.xml'))
+        debug("Copying workerrole binaries")
         for project in os.listdir(source_dir):
             if project.lower() == "bootstrap":
                 debug_bin = os.path.join(source_dir, project, 'bin', 'Debug')
@@ -77,21 +75,21 @@ def package_solution(project_name, solution, keep=True):
                 if os.path.isdir(release_bin):
                     bin_location = release_bin
                 elif os.path.isdir(debug_bin):
-                    bin_location = release_bin
+                    bin_location = debug_bin
                 else:
                     debug("Unable to find Bootstraper binaries for workerrole")
                     debug("Did you run `prescript.cmd -check`?")
                     sys.exit(1)
                 debug("Copying Bootstrapper")
-                try:
-                    shutil.copytree(bin_location, prelim_path)
-                except shutil.Error:
-                    os.popen("xcopy \"{}\" \"{}\" /E".format(bin_location, prelim_path))
+                os.popen("xcopy \"{}\" \"{}\" /E".format(bin_location, prelim_path))
                 break
         else:
             debug("Unable to locate Bootstrapper code")
             debug("Did you name the bootstrapper project `Bootstrap`?")
             sys.exit(1)
+        debug("Copying scheduler for workerrole")
+        sch_xml = os.path.join(CURRENT_PATH, 'templates', 'schedule.xml')
+        shutil.copy(sch_xml, os.path.join(prelim_path, ''))
     else:
         for project in os.listdir(source_dir):
             project_path = os.path.join(source_dir, project)
