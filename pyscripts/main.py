@@ -57,6 +57,11 @@ def get_zip_guid(project_guid):
     return "zip_" + project_guid[:4] + "_package.zip"
 
 
+def worker_role_repackage(pkg_location):
+    print("Repackaging workerrole")
+    # Repackage everything from the /bin/ dir in worker role
+
+
 def package_solution(project_name, solution, keep=True):
     debug("Building", project_name)
     project_guid = name_to_guid(project_name, solution.solution_data)
@@ -66,11 +71,6 @@ def package_solution(project_name, solution, keep=True):
     prelim_path = os.path.join(dest_dir, 'pkg')
 
     os.mkdir(prelim_path)
-    if name_to_role(project_name, solution.solution_data) == 'workerrole':
-        print("Copying scheduler for workerrole")
-        sch_xml = os.path.join(CURRENT_PATH, 'templates', 'schedule.xml')
-        shutil.copy(sch_xml, os.path.join(prelim_path, 'schedule.xml'))
-
     for project in os.listdir(source_dir):
         
         project_path = os.path.join(source_dir, project)
@@ -82,7 +82,16 @@ def package_solution(project_name, solution, keep=True):
                 os.popen("xcopy \"{}\" \"{}\" /E".format(project_path, os.path.join(prelim_path, project)))
         else:
             debug("Ignoring %s.%s" % (project_name, project))
-    
+
+
+    if name_to_role(project_name, solution.solution_data) == 'workerrole':
+        print("Copying scheduler for workerrole")
+        sch_xml = os.path.join(CURRENT_PATH, 'templates', 'schedule.xml')
+        shutil.copy(sch_xml, os.path.join(prelim_path, 'schedule.xml'))
+        
+        worker_role_repackage(prelim_path)
+
+
     run_powershell("zip.ps1", {"zipfilename": zip_path, "sourcedir": prelim_path})
     if not keep:
         print("Cleaning up mess")
