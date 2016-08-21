@@ -81,29 +81,33 @@ if ($MODE -eq "vmss") {
     ForEach-Object {
         $vm_name = $_.Name.Replace(".confirm_", "")
         if ($vm_name.Contains("ext_")) { continue }
-        Write-Output $vm_name
+        Write-Output "Processing $vm_name"
 
         # Focus on one VM for now
         if ($vm_name -eq "92a8VMSysPrep44") { } else { continue }
 
         try {
-            $thisVM = Get-AzureRmVM -Name $vm_name -ResourceName ($ResourcePrefix + $solutionName) -ErrorAction Stop
+            $thisVM = Get-AzureRmVM -Name $vm_name -ResourceGroupName ($ResourcePrefix + $solutionName) -ErrorAction Stop
         } catch {
             Write-Output "Please confirm the .confirm_<vmname> files are accurate"
             Exit
         }
 
-        # Save VHD location
-        Write-Output "Adding VHD to Generalized Image list"
+        # Stop the VM
+        Write-Output "Stopping $vm_name"
+        Stop-AzureRmVM -ResourceGroupName ($ResourcePrefix + $solutionName) -Name $vm_name -Force
+
+        # Mark VM as generalized
+        # Write-Output "Marking VM as Generalized"
+        # $mark = Set-AzureRmVm -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Generalize
+
+        # # Save VHD location
+        # Write-Output "Adding VHD to Generalized Image list"
         # Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
 
     }
 
     # Run golden_image script
-
-    # Mark VM as Generalized
-    # Write-Output "Marking VM as Generalized"
-    # $mark = Set-AzureRmVm -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Generalized
 
     # Save VHD location
     # $save = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $currentVmName -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
