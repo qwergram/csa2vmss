@@ -65,6 +65,8 @@ if ($MODE -eq "vmss") {
     # Source:
     # https://azure.microsoft.com/en-us/documentation/articles/virtual-machines-windows-classic-createupload-vhd/
     # https://azure.microsoft.com/en-us/documentation/articles/virtual-machines-windows-upload-image/
+    # http://www.codeisahighway.com/how-to-capture-your-own-custom-virtual-machine-image-under-azure-resource-manager-api/
+    # http://www.codeisahighway.com/how-to-use-azure-powershell-v1-0-x-to-capture-your-own-custom-virtual-machine-image-under-azure-resource-manager/
 
     # Getting Storage Context
     # $key = (Get-AzureRmStorageAccountKey -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()))[0].Value
@@ -84,7 +86,7 @@ if ($MODE -eq "vmss") {
         Write-Output "Processing $vm_name"
 
         # Focus on one VM for now
-        if ($vm_name -eq "92a8VMSysPrep44") { } else { continue }
+        if ($vm_name -eq "92a8VMSysPrep45") { } else { continue }
 
         try {
             $thisVM = Get-AzureRmVM -Name $vm_name -ResourceGroupName ($ResourcePrefix + $solutionName) -ErrorAction Stop
@@ -99,14 +101,14 @@ if ($MODE -eq "vmss") {
 
         # Mark VM as generalized
         Write-Output "Marking VM as Generalized"
-        $mark = Set-AzureRmVm -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Generalize
+        $mark = Set-AzureRmVm -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Generalized
 
         # # Save VHD location
         Write-Output "Adding VHD to Generalized Image list"
         $vmimage = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
     
         $simpleVm = "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-custom-image-new-storage-account/azuredeploy.json"
-        New-AzureRmResourceGroupDeployment -ResourceGroupName ("test" + $SolutionName) -TemplateParameterUri $simpleVm
+        New-AzureRmResourceGroupDeployment -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateUri $simpleVm
     }
 
     # generate_vmss_armt.py
@@ -294,10 +296,8 @@ if ($MODE -eq "vmss") {
         }
 
         Write-Output "Built VMs! Go to your portal and RDC to them."
-        Write-Output "Once you have confirmed everything is correctly built, you can launch this"
+        Write-Output "Once you have confirmed everything is correctly built,"
+        Write-Output "run `sysprep_me.cmd` on the VM's desktop and then you can launch this"
         Write-Output "script again with the flag -mode vmss"
-
-       
-
     }
 } 
