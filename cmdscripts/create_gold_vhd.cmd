@@ -1,1 +1,1 @@
-sysprep\sysprep.exe /audit /generalize /shutdown
+%sysprep%\sysprep.exe /generalize /oobe /shutdown
