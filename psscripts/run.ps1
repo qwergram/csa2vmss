@@ -6,7 +6,7 @@ Param(
     [string]
     $MODE,
     [string] # The new Solution Name
-    $SolutionName = "SysPrep45",
+    $SolutionName = "SysPrep46",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "ResGroup",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
@@ -105,7 +105,7 @@ if ($MODE -eq "vmss") {
 
         # # Save VHD location
         Write-Output "Adding VHD to Generalized Image list"
-        $vmimage = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vhd.json") -Overwrite
+        $vmimage = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vmss_template.json") -Overwrite
     
         $simpleVm = "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-custom-image-new-storage-account/azuredeploy.json"
         New-AzureRmResourceGroupDeployment -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateUri $simpleVm
