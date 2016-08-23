@@ -6,7 +6,7 @@ Param(
     [string]
     $MODE,
     [string] # The new Solution Name
-    $SolutionName = "SysPrep46",
+    $SolutionName = "SysPrep47",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "ResGroup",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
@@ -299,9 +299,9 @@ if ($MODE -eq "vmss") {
         Get-AzureRmPublicIpAddress | ForEach-Object {
             $dns = $_.DnsSettings.Fqdn
             (
-                "full address:s:$dns" + ":3389\n",
-                "prompt for credentials:i:1\n",
-                "administrative session:i:1\n",
+                "full address:s:$dns" + ":3389`r`n",
+                "prompt for credentials:i:1`r`n",
+                "administrative session:i:1`r`n",
                 "username:s:$dns\$VMAdmin"
             ) | Out-File -FilePath ".\__save\$dns.rdp" -Encoding ascii
 
