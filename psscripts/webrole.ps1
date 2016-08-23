@@ -85,3 +85,8 @@ Set-Location ($env:windir + "\system32\inetsrv\")
 .\appcmd.exe delete site /site.name:"webrole" # (if you run this script twice)
 .\appcmd.exe delete site /site.name:"Default Web Site"
 .\appcmd.exe add site /name:"webrole" /id:1 /bindings:http://*:80 /physicalPath:$webroledirectory
+
+
+
+# Download SysPrep cmd
+Invoke-WebRequest -uri ($urlcontainer + "Golden.cmd") -OutFile "C:\sysprepme.cmd"
