@@ -228,8 +228,8 @@ if ($MODE -eq "vmss") {
     $uploadwebrole = Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\webrole.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "webrole.ps1" -Context $blobContext -Force
     Write-Output "Uploading WorkerRole Script"
     $uploadworkerrole = Set-AzureStorageBlobContent -File ($pwd.Path + "\psscripts\workerrole.ps1") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "rmps.ps1" -Context $blobContext -Force
-    Write-Ouput "Uploading Sysprep Script"
-    $uploadsysprep = Set-AzureStorageAccount -File ($CMDSCRIPTS + "\create_gold_vhd.cmd") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "Golden.cmd" -Context $blobContext -Force
+    Write-Output "Uploading Sysprep Script"
+    $uploadsysprep = Set-AzureStorageBlobContent -File ($CMDSCRIPTS + "\create_gold_vhd.cmd") -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "Golden.cmd" -Context $blobContext -Force
 
     # Build the VMs
     # Resrouces:
