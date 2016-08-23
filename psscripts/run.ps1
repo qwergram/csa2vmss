@@ -1,5 +1,3 @@
-
-# These need to be params later...
 Param(
     # Parameter help description
     [Parameter(Mandatory=$true)]
@@ -86,7 +84,7 @@ if ($MODE -eq "vmss") {
         Write-Output "Processing $vm_name"
 
         # Focus on one VM for now
-        if ($vm_name -eq "92a8VMSysPrep45") { } else { continue }
+        if ($vm_name -eq "92a8VMSysPrep47") { } else { continue }
 
         try {
             $thisVM = Get-AzureRmVM -Name $vm_name -ResourceGroupName ($ResourcePrefix + $solutionName) -ErrorAction Stop
@@ -107,8 +105,22 @@ if ($MODE -eq "vmss") {
         Write-Output "Adding VHD to Generalized Image list"
         $vmimage = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vmss_template.json") -Overwrite
     
-        $simpleVm = "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-custom-image-new-storage-account/azuredeploy.json"
-        New-AzureRmResourceGroupDeployment -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateUri $simpleVm
+        # $simpleVm = "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-custom-image-new-storage-account/azuredeploy.json"
+        Write-Output "Rebuilding ARM Template"
+
+        if ($singleWindow) {
+            python ($PYSCRIPTS + "\rebuild_arm.py")
+            if ($? -eq $false) {
+                Exit
+            } 
+        } else {
+            $result = start-process python -argument ($PYSCRIPTS + '\rebuild_arm.py') -Wait -PassThru
+            if ($result.ExitCode -eq 1) {
+                Exit
+            }
+        }
+        $nicid = "/subscriptions/8add057c-baae-4d42-8007-ffae155c9638/resourceGroups/ResGroupSysPrep47/providers/Microsoft.Network/networkInterfaces/dupenic"
+        New-AzureRmResourceGroupDeployment -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_template.json") -vmName "dupe" -adminUserName $VMAdmin -adminPassword (ConvertTo-SecureString $VMPassword -asplaintext -force) -networkInterfaceId $nicid  
     }
 
     # generate_vmss_armt.py
