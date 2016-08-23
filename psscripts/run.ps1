@@ -295,6 +295,20 @@ if ($MODE -eq "vmss") {
             }
         }
 
+        Write-Output "Generating RDP files"
+        Get-AzureRmPublicIpAddress | ForEach-Object {
+            $dns = $_.DnsSettings.Fqdn
+            (
+                "full address:s:$dns" + ":3389\n",
+                "prompt for credentials:i:1\n",
+                "administrative session:i:1\n",
+                "username:s:$dns\$VMAdmin"
+            ) | Out-File -FilePath ".\__save\$dns.rdp" -Encoding ascii
+
+        }
+        
+
+
         Write-Output "Built VMs! Go to your portal and RDC to them."
         Write-Output "Once you have confirmed everything is correctly built,"
         Write-Output "run `sysprep_me.cmd` on the VM's desktop and then you can launch this"
