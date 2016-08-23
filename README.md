@@ -123,6 +123,11 @@ boot.
 To ensure that the script worked correctly, you will need to login to
 http://portal.azure.com and RDC into each VM to make sure it is configured properly.
 
+
+### Run get\_golden\_image.cmd
+While you're connected to the remote, run C:\sysprepme.cmd to run sysprep and shut the vm down. Once you have
+done that, you can run the same script with a vmss flag.
+
 # Common Issues
 ## `No connection could be made because the target machine actively refused it`
 If you run into this issue, it means your db connection strings are using "useDevelopmentStorage=true".
