@@ -26,6 +26,17 @@ def set_vmss_params(vmss_params):
     params = parse_params()
     vmss_params['parameters'] = {}
     for param, value in params.items():
+        if value.isdigit():
+            value = int(value)
+        elif value == "true":
+            value = True
+        elif value == "false":
+            value = False
+        elif value.replace('.', '').isdigit():
+            value = float(value)
+        elif value.startswith("{") and value.endswith("}"):
+            value = json.loads(value)
+            
         vmss_params['parameters'][param] = {"value": value}
 
 
