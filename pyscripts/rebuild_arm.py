@@ -22,7 +22,7 @@ def get_storage_profile(vm_json):
 
 
 def replace_storage_profile(vmss_json, storage_profile):
-    for i, resource in vmss_json["resources"]:
+    for i, resource in enumerate(vmss_json["resources"]):
         if resource['type'] == "Microsoft.Compute/virtualMachineScaleSets":
             vmss_json['resouces'][i]['properties']['virtualMachineProfile']['storageProfile'] = storage_profile
             return vmss_json
@@ -48,8 +48,6 @@ def main():
     storage_profile = get_storage_profile(imaged_vm)
     replace_storage_profile(vmss_to_deploy, storage_profile)
     save_new_vmss(vmss_to_deploy)
-
-
 
 
 if __name__ == "__main__":
