@@ -4,7 +4,7 @@ Param(
     [string]
     $MODE,
     [string] # The new Solution Name
-    $SolutionName = "SysPrep48",
+    $SolutionName = "SysPrep49",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "ResGroup",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
@@ -111,27 +111,22 @@ if ($MODE -eq "vmss") {
 
         } 
 
-        # http://stackoverflow.com/questions/34535174/using-azure-cli-vmss-json-template-doesnt-create-vmss-with-datadisk
-        # ^ explains why this won't work ^
-
         Write-Output "Rebuilding ARM Template"
         $dns = $solutionName.ToLower()
-        $result = start-process python -argument ($PYSCRIPTS + "\rebuild_arm.py"),  "-vmSSName=vmss$solutionName -instanceCount=1 -vmSize=Standard_D1 -dnsNamePrefix=$dns -adminUsername=$VMAdmin -adminPassword=$VMPassword -solutionName=$solutionName" -Wait -PassThru
+        $result = start-process python -argument ($PYSCRIPTS + "\rebuild_arm.py"),  "-vmSSName=v$solutionName -instanceCount=1 -vmSize=Standard_D1 -dnsNamePrefix=$dns -adminUsername=$VMAdmin -adminPassword=$VMPassword -solutionName=$solutionName" -Wait -PassThru
         if ($result.ExitCode -eq 1) {
             Exit
         }
 
-        Write-Output "Deleting Seed VM"
-        Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Force
-
         Write-Output "Building VMSS!"
         New-AzureRmResourceGroupDeployment -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_template_patched.json") -TemplateParameterFile ($pwd.Path + "\__save\vmss_template_patched.params.json")  
 
-        Write-Output "Vmss Created. Thanks for using my script!"
+        Write-Output "Deleting Seed VM"
+        Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Force
         
     }
 
-    Write-Output "Script complete! You now have a VMss"
+    Write-Output "Vmss Created. Thanks for using my script!"
 
 } elseif ($MODE -eq "vm") {
     Write-Output "Running in VM mode"
