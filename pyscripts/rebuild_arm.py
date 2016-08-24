@@ -24,7 +24,7 @@ def get_storage_profile(vm_json):
 def replace_storage_profile(vmss_json, storage_profile):
     for i, resource in enumerate(vmss_json["resources"]):
         if resource['type'] == "Microsoft.Compute/virtualMachineScaleSets":
-            vmss_json['resouces'][i]['properties']['virtualMachineProfile']['storageProfile'] = storage_profile
+            vmss_json['resources'][i]['properties']['virtualMachineProfile']['storageProfile'] = storage_profile
             return vmss_json
 
 

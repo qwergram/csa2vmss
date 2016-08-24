@@ -119,9 +119,9 @@ if ($MODE -eq "vmss") {
                 Exit
             }
         }
-        
-        $nicid = "/subscriptions/8add057c-baae-4d42-8007-ffae155c9638/resourceGroups/ResGroupSysPrep47/providers/Microsoft.Network/networkInterfaces/dupenic"
-        New-AzureRmResourceGroupDeployment -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_template.json") -vmName "dupe" -adminUserName $VMAdmin -adminPassword (ConvertTo-SecureString $VMPassword -asplaintext -force) -networkInterfaceId $nicid  
+
+        # $nicid = "/subscriptions/8add057c-baae-4d42-8007-ffae155c9638/resourceGroups/ResGroupSysPrep47/providers/Microsoft.Network/networkInterfaces/dupenic"
+        # New-AzureRmResourceGroupDeployment -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_template.json") -vmName "dupe" -adminUserName $VMAdmin -adminPassword (ConvertTo-SecureString $VMPassword -asplaintext -force) -networkInterfaceId $nicid  
     }
 
     # generate_vmss_armt.py
