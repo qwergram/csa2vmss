@@ -22,6 +22,18 @@ def read_vmss_params():
         return json.loads(context.read())
 
 
+def set_vmss_params(vmss_params):
+    params = parse_params()
+    vmss_params['parameters'] = {}
+    for param, value in params:
+        vmss_params['parameters'][param] = {"value": value}
+
+
+def save_new_vmss_params(vmss_params):
+    with io.open(os.path.join(CURRENT_PATH, "__save", "vmss_template_patched.params.json"), 'w') as context:
+        context.write(json.dumps(vmss_params, indent=2, sort_keys=True))
+
+
 def get_storage_profile(vm_json):
     return vm_json["resources"][0]["properties"]["storageProfile"]
 
@@ -51,6 +63,8 @@ def main():
     imaged_vm = read_current_vm_template()
     vmss_to_deploy = read_vmss_template()
     vmss_params = read_vmss_params()
+    set_vmss_params(vmss_params)
+    save_new_vmss_params(vmss_params)
     storage_profile = get_storage_profile(imaged_vm)
     replace_storage_profile(vmss_to_deploy, storage_profile)
     save_new_vmss(vmss_to_deploy)
