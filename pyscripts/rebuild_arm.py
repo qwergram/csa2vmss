@@ -17,6 +17,11 @@ def read_vmss_template():
         return json.loads(context.read())
 
 
+def read_vmss_params():
+    with io.open(os.path.join(CURRENT_PATH, "templates", "vmss.parameters.json")) as context:
+        return json.loads(context.read())
+
+
 def get_storage_profile(vm_json):
     return vm_json["resources"][0]["properties"]["storageProfile"]
 
@@ -45,6 +50,7 @@ def save_new_vmss(json_blob):
 def main():
     imaged_vm = read_current_vm_template()
     vmss_to_deploy = read_vmss_template()
+    vmss_params = read_vmss_params()
     storage_profile = get_storage_profile(imaged_vm)
     replace_storage_profile(vmss_to_deploy, storage_profile)
     save_new_vmss(vmss_to_deploy)
