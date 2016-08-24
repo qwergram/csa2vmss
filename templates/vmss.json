@@ -246,12 +246,12 @@
           "networkProfile": {
             "networkInterfaceConfigurations": [
               {
-                "name": "nic1",
+                "name": "[concat(parameters('solutionName'), 'vmssnic')]",
                 "properties": {
                   "primary": "true",
                   "ipConfigurations": [
                     {
-                      "name": "ip1",
+                      "name": "[concat(parameters('solutionName'), 'vmssip')]",
                       "properties": {
                         "subnet": {
                           "id": "[variables('subnetRef')]"
