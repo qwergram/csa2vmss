@@ -131,9 +131,6 @@ if ($MODE -eq "vmss") {
         
     }
 
-    # Delete old VM
-    
-
     Write-Output "Script complete! You now have a VMss"
 
 } elseif ($MODE -eq "vm") {
