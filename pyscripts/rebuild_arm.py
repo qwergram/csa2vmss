@@ -18,7 +18,7 @@ def read_vmss_template():
 
 
 def read_vmss_params():
-    with io.open(os.path.join(CURRENT_PATH, "templates", "vmss.parameters.json")) as context:
+    with io.open(os.path.join(CURRENT_PATH, "templates", "iis-vm.params.json")) as context:
         return json.loads(context.read())
 
 
