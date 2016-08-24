@@ -46,7 +46,9 @@ def save_new_vmss_params(vmss_params):
 
 
 def get_storage_profile(vm_json):
-    return vm_json["resources"][0]["properties"]["storageProfile"]
+    storage_profile = vm_json["resources"][0]["properties"]["storageProfile"]
+    del storage_profile['dataDisks']
+    return storage_profile
 
 
 def replace_storage_profile(vmss_json, storage_profile):
