@@ -116,7 +116,7 @@ if ($MODE -eq "vmss") {
         Write-Output "Rebuilding ARM Template"
 
         if ($singleWindow) {
-            python ($PYSCRIPTS + "\rebuild_arm.py")
+            python ($PYSCRIPTS + "\rebuild_arm.py -vmSSName=vmss$solutionName -instanceCount=2 -vmSize=Standard_D1 -dnsNamePrefix=$solutionName -adminUsername=$VMAdmin -adminPassword=$VMPassword") 
             if ($? -eq $false) {
                 Exit
             } 
