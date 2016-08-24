@@ -87,24 +87,31 @@ if ($MODE -eq "vmss") {
         if ($vm_name -eq "92a8VMSysPrep47") { } else { continue }
 
         try {
-            $thisVM = Get-AzureRmVM -Name $vm_name -ResourceGroupName ($ResourcePrefix + $solutionName) -ErrorAction Stop
+            $thisVM = Get-AzureRmVM -Name $vm_name -ResourceGroupName ($ResourcePrefix + $solutionName) -Status -ErrorAction Stop
         } catch {
             Write-Output "Please confirm the .confirm_<vmname> files are accurate"
             Exit
         }
 
         # Stop the VM
-        Write-Output "Stopping $vm_name"
-        $stop = Stop-AzureRmVM -ResourceGroupName ($ResourcePrefix + $solutionName) -Name $vm_name -Force
+        if ($thisVM.Statuses[$thisVM.Statuses.Count - 1].Code -eq "PowerState/deallocated") { } else {
 
-        # Mark VM as generalized
-        Write-Output "Marking VM as Generalized"
-        $mark = Set-AzureRmVm -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Generalized
+            Write-Output "Stopping $vm_name"
+            $stop = Stop-AzureRmVM -ResourceGroupName ($ResourcePrefix + $solutionName) -Name $vm_name -Force
 
-        # # Save VHD location
-        Write-Output "Adding VHD to Generalized Image list"
-        $vmimage = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vmss_template.json") -Overwrite
-    
+            # TODO: This is a lot to assume just because the VM is off
+
+            # Mark VM as generalized
+            Write-Output "Marking VM as Generalized"
+            $mark = Set-AzureRmVm -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Generalized
+
+            # # Save VHD location
+            Write-Output "Adding VHD to Generalized Image list"
+            $vmimage = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vmss_template.json") -Overwrite
+
+        } 
+
+
         # $simpleVm = "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-custom-image-new-storage-account/azuredeploy.json"
         Write-Output "Rebuilding ARM Template"
 
