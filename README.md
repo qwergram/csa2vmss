@@ -128,6 +128,13 @@ http://portal.azure.com and RDC into each VM to make sure it is configured prope
 While you're connected to the remote, run C:\sysprepme.cmd to run sysprep and shut the vm down. Once you have
 done that, you can run the same script with a vmss flag.
 
+## Migrating Azure VM to VMss Operations
+Once you have set up your VMs and sysprepped them, you can now run
+
+```main.cmd -mode vmss```
+
+This will create VMSS out of your VMs.
+
 # Common Issues
 ## `No connection could be made because the target machine actively refused it`
 If you run into this issue, it means your db connection strings are using "useDevelopmentStorage=true".
