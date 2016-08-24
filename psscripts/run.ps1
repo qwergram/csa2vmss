@@ -121,6 +121,9 @@ if ($MODE -eq "vmss") {
             Exit
         }
 
+        Write-Output "Deleting Seed VM"
+        Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Force
+
         Write-Output "Building VMSS!"
         New-AzureRmResourceGroupDeployment -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_template_patched.json") -TemplateParameterFile ($pwd.Path + "\__save\vmss_template_patched.params.json")  
 
@@ -129,7 +132,7 @@ if ($MODE -eq "vmss") {
     }
 
     # Delete old VM
-    # Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Force
+    
 
     Write-Output "Script complete! You now have a VMss"
 
