@@ -95,8 +95,14 @@
 			"metadata": {
 				"description": "The path used for the load balancer health probe"
 			},
-			"defaultValue": "/iisstart.htm"
-		}
+			"defaultValue": "/"
+		},
+    "solutionName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of your solution"
+      }
+    }
 	},
 	"variables": {
 		"addressPrefix": "10.0.0.0/16",
@@ -107,7 +113,7 @@
 		"subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
 		"publicIPAddressName": "publicip1",
 		"publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]",
-		"nicName": "networkInterface1",
+		"nicName": "[parameters('solutionName')]",
 		"nicId": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]",
 		"lbName": "loadBalancer1",
 		"lbID": "[resourceId('Microsoft.Network/loadBalancers',variables('lbName'))]",
@@ -116,13 +122,11 @@
 		"lbBEAddressPool": "loadBalancerBEAddressPool",
 		"lbFEIPConfigID": "[concat(variables('lbID'),'/frontendIPConfigurations/',variables('lbFEName'))]",
 		"lbBEAddressPoolID": "[concat(variables('lbID'),'/backendAddressPools/',variables('lbBEAddressPool'))]",
-		"lbWebProbeID": "[concat(variables('lbID'),'/probes/',variables('lbWebProbeName'))]",
-        "networkApi": "2016-03-30",
-        "computeApi": "2016-03-30"
+		"lbWebProbeID": "[concat(variables('lbID'),'/probes/',variables('lbWebProbeName'))]"
 	},
 	"resources": [
     {
-      "apiVersion": "[variables('networkApi')]",
+      "apiVersion": "2016-03-30",
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[variables('virtualNetworkName')]",
       "location": "[resourceGroup().location]",
@@ -143,7 +147,7 @@
       }
     },
     {
-      "apiVersion": "[variables('networkApi')]",
+      "apiVersion": "2016-03-30",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIPAddressName')]",
       "location": "[resourceGroup().location]",
@@ -155,7 +159,7 @@
       }
     },
     {
-      "apiVersion": "[variables('networkApi')]",
+      "apiVersion": "2016-03-30",
       "name": "[variables('lbName')]",
       "type": "Microsoft.Network/loadBalancers",
       "location": "[resourceGroup().location]",
@@ -214,7 +218,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachineScaleSets",
-      "apiVersion": "[variables('computeApi')]",
+      "apiVersion": "2016-03-30",
       "name": "[parameters('vmSSName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
@@ -233,17 +237,7 @@
           "mode": "Manual"
         },
         "virtualMachineProfile": {
-          "storageProfile": {
-            "osDisk": {
-              "name": "vmssosdisk",
-              "caching": "ReadOnly",
-              "createOption": "FromImage",
-              "osType": "Windows",
-              "image": {
-                "uri": "[parameters('sourceImageVhdUri')]"
-              }
-            }
-          },
+          "storageProfile": null,
           "osProfile": {
             "computerNamePrefix": "[parameters('vmSSName')]",
             "adminUsername": "[parameters('adminUsername')]",
