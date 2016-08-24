@@ -4,7 +4,7 @@ Param(
     [string]
     $MODE,
     [string] # The new Solution Name
-    $SolutionName = "SysPrep47",
+    $SolutionName = "SysPrep48",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "ResGroup",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
@@ -84,7 +84,7 @@ if ($MODE -eq "vmss") {
         Write-Output "Processing $vm_name"
 
         # Focus on one VM for now
-        if ($vm_name -eq "92a8VMSysPrep47") { } else { continue }
+        if ($vm_name -eq "92a8VMSysPrep48") { } else { continue }
 
         try {
             $thisVM = Get-AzureRmVM -Name $vm_name -ResourceGroupName ($ResourcePrefix + $solutionName) -Status -ErrorAction Stop
@@ -119,7 +119,7 @@ if ($MODE -eq "vmss") {
 
         Write-Output "Rebuilding ARM Template"
         $dns = $solutionName.ToLower()
-        $result = start-process python -argument ($PYSCRIPTS + "\rebuild_arm.py"),  "-vmSSName=vmss$solutionName -instanceCount=2 -vmSize=Standard_D1 -dnsNamePrefix=$dns -adminUsername=$VMAdmin -adminPassword=$VMPassword -solutionName=$solutionName" -Wait -PassThru
+        $result = start-process python -argument ($PYSCRIPTS + "\rebuild_arm.py"),  "-vmSSName=vmss$solutionName -instanceCount=1 -vmSize=Standard_D1 -dnsNamePrefix=$dns -adminUsername=$VMAdmin -adminPassword=$VMPassword -solutionName=$solutionName" -Wait -PassThru
         if ($result.ExitCode -eq 1) {
             Exit
         }
