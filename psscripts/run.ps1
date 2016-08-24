@@ -83,9 +83,6 @@ if ($MODE -eq "vmss") {
         if ($vm_name.Contains("ext_")) { continue }
         Write-Output "Processing $vm_name"
 
-        # Focus on one VM for now
-        if ($vm_name -eq "92a8VMSysPrep48") { } else { continue }
-
         try {
             $thisVM = Get-AzureRmVM -Name $vm_name -ResourceGroupName ($ResourcePrefix + $solutionName) -Status -ErrorAction Stop
         } catch {
