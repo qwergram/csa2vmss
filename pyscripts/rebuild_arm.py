@@ -15,8 +15,22 @@ def read_vmss_template():
         return json.loads(context.read())
 
 
+def parse_params():
+    params = {}
+    for item in sys.argv[1:]:
+        if item.startswith('-') and "=" in item:
+            key, value = item[1:].split('=', 1)
+            params[key] = value
+    return params
+
+
 def main():
-    pass
+    imaged_vm = read_current_vm_template()
+    vmss_to_deploy = read_vmss_template()
+
+
+
 
 if __name__ == "__main__":
+    PARAMS = parse_params()
     main()
