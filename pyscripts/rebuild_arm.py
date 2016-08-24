@@ -25,7 +25,7 @@ def read_vmss_params():
 def set_vmss_params(vmss_params):
     params = parse_params()
     vmss_params['parameters'] = {}
-    for param, value in params:
+    for param, value in params.items():
         vmss_params['parameters'][param] = {"value": value}
 
 
