@@ -37,11 +37,17 @@ def parse_params():
     return params
 
 
+def save_new_vmss(json_blob):
+    with io.open(os.path.join(CURRENT_PATH, "__save", "vmss_template_patched.json"), 'w') as context:
+        context.write(json.dumps(json_blob, indent=2, sort_keys=True))
+
+
 def main():
     imaged_vm = read_current_vm_template()
     vmss_to_deploy = read_vmss_template()
     storage_profile = get_storage_profile(imaged_vm)
     replace_storage_profile(vmss_to_deploy, storage_profile)
+    save_new_vmss(vmss_to_deploy)
 
 
 
