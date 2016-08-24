@@ -121,7 +121,7 @@ if ($MODE -eq "vmss") {
                 Exit
             } 
         } else {
-            $result = start-process python -argument ($PYSCRIPTS + '\rebuild_arm.py') -Wait -PassThru
+            $result = start-process python -argument ($PYSCRIPTS + "\rebuild_arm.py -vmSSName=vmss$solutionName -instanceCount=2 -vmSize=Standard_D1 -dnsNamePrefix=$solutionName -adminUsername=$VMAdmin -adminPassword=$VMPassword") -Wait -PassThru
             if ($result.ExitCode -eq 1) {
                 Exit
             }
