@@ -100,6 +100,9 @@ if ($MODE -eq "vmss") {
             $stop = Stop-AzureRmVM -ResourceGroupName ($ResourcePrefix + $solutionName) -Name $vm_name -Force
 
             # TODO: This is a lot to assume just because the VM is off
+            # I lied. deallocated means it's switched off from azure
+            # stopped means sysprep shut it down. We're safe for now.
+            # Still need a better implementation of this though.
 
             # Mark VM as generalized
             Write-Output "Marking VM as Generalized"
@@ -110,9 +113,6 @@ if ($MODE -eq "vmss") {
             $vmimage = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vmss_template.json") -Overwrite
 
         } 
-
-
-        # $simpleVm = "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-custom-image-new-storage-account/azuredeploy.json"
         Write-Output "Rebuilding ARM Template"
 
         if ($singleWindow) {
@@ -126,9 +126,8 @@ if ($MODE -eq "vmss") {
                 Exit
             }
         }
-
         # $nicid = "/subscriptions/8add057c-baae-4d42-8007-ffae155c9638/resourceGroups/ResGroupSysPrep47/providers/Microsoft.Network/networkInterfaces/dupenic"
-        # New-AzureRmResourceGroupDeployment -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_template.json") -vmName "dupe" -adminUserName $VMAdmin -adminPassword (ConvertTo-SecureString $VMPassword -asplaintext -force) -networkInterfaceId $nicid  
+        New-AzureRmResourceGroupDeployment -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_template_patch.json") -TemplateParameterFile ($pwd.Path + "\__save\vmss_template_patch.params.json")  
     }
 
     # generate_vmss_armt.py
