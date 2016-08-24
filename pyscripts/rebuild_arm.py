@@ -6,13 +6,19 @@ import shutil
 
 CURRENT_PATH = os.getcwd()
 
+
 def read_current_vm_template():
     with io.open(os.path.join(CURRENT_PATH, "__save", "vmss_template.json")) as context:
         return json.loads(context.read())
 
+
 def read_vmss_template():
     with io.open(os.path.join(CURRENT_PATH, "templates", "vmss.json")) as context:
         return json.loads(context.read())
+
+
+def get_storage_profile(vm_json):
+    return vm_json["resources"][0]["properties"]["storageProfile"]
 
 
 def parse_params():
