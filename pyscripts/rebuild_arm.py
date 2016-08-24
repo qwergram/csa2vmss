@@ -21,6 +21,13 @@ def get_storage_profile(vm_json):
     return vm_json["resources"][0]["properties"]["storageProfile"]
 
 
+def replace_storage_profile(vmss_json, storage_profile):
+    for i, resource in vmss_json["resources"]:
+        if resource['type'] == "Microsoft.Compute/virtualMachineScaleSets":
+            vmss_json['resouces'][i]['properties']['virtualMachineProfile']['storageProfile'] = storage_profile
+            return vmss_json
+
+
 def parse_params():
     params = {}
     for item in sys.argv[1:]:
@@ -33,6 +40,8 @@ def parse_params():
 def main():
     imaged_vm = read_current_vm_template()
     vmss_to_deploy = read_vmss_template()
+    storage_profile = get_storage_profile(imaged_vm)
+    replace_storage_profile(vmss_to_deploy, storage_profile)
 
 
 
