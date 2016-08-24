@@ -47,7 +47,10 @@ def save_new_vmss_params(vmss_params):
 
 def get_storage_profile(vm_json):
     storage_profile = vm_json["resources"][0]["properties"]["storageProfile"]
-    del storage_profile['dataDisks']
+    try:
+        del storage_profile['dataDisks']
+    except KeyError:
+        pass # It's already been deleted
     return storage_profile
 
 
