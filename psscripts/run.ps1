@@ -113,25 +113,23 @@ if ($MODE -eq "vmss") {
             $vmimage = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vmss_template.json") -Overwrite
 
         } 
+
+        # http://stackoverflow.com/questions/34535174/using-azure-cli-vmss-json-template-doesnt-create-vmss-with-datadisk
+        # ^ explains why this won't work ^
+
         Write-Output "Rebuilding ARM Template"
-
-        if ($singleWindow) {
-            python ($PYSCRIPTS + "\rebuild_arm.py -vmSSName=vmss$solutionName -instanceCount=2 -vmSize=Standard_D1 -dnsNamePrefix=$solutionName -adminUsername=$VMAdmin -adminPassword=$VMPassword") 
-            if ($? -eq $false) {
-                Exit
-            } 
-        } else {
-            $result = start-process python -argument ($PYSCRIPTS + "\rebuild_arm.py -vmSSName=vmss$solutionName -instanceCount=2 -vmSize=Standard_D1 -dnsNamePrefix=$solutionName -adminUsername=$VMAdmin -adminPassword=$VMPassword") -Wait -PassThru
-            if ($result.ExitCode -eq 1) {
-                Exit
-            }
+        $dns = $solutionName.ToLower()
+        $result = start-process python -argument ($PYSCRIPTS + "\rebuild_arm.py"),  "-vmSSName=vmss$solutionName -instanceCount=2 -vmSize=Standard_D1 -dnsNamePrefix=$dns -adminUsername=$VMAdmin -adminPassword=$VMPassword -solutionName=$solutionName" -Wait -PassThru
+        if ($result.ExitCode -eq 1) {
+            Exit
         }
-        # $nicid = "/subscriptions/8add057c-baae-4d42-8007-ffae155c9638/resourceGroups/ResGroupSysPrep47/providers/Microsoft.Network/networkInterfaces/dupenic"
-        New-AzureRmResourceGroupDeployment -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_template_patch.json") -TemplateParameterFile ($pwd.Path + "\__save\vmss_template_patch.params.json")  
-    }
 
-    # generate_vmss_armt.py
-    # new azure deployment as vmss
+        Write-Output "Building VMSS!"
+        New-AzureRmResourceGroupDeployment -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_template_patched.json") -TemplateParameterFile ($pwd.Path + "\__save\vmss_template_patched.params.json")  
+
+        Write-Output "Vmss Created. Thanks for using my script!"
+        
+    }
 
     # Delete old VM
     # Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $currentVmName -Force
