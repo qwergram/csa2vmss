@@ -1,5 +1,5 @@
 __pycache__/
-__save/
+*__save/
 autogen.*
 .vs*/
 bin/
