@@ -76,7 +76,7 @@ class VSCloudService(object):
                         parent_found = True
                         stats['parent'] = self._load_ccproj_dir(parse)
                     else:
-                        debug("unknown file type: [%s]" % parse[5])
+                        debug("unknown file type: [%s] (%s)" % (parse[5], parse[1][1:-1]))
                         debug("Are you sure it's a Cloud Service Project?")
                         sys.exit(1)
         if not parent_found:
