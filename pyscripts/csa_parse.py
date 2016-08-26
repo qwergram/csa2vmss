@@ -76,6 +76,9 @@ class VSCloudService(object):
                     elif proj_type == "sln_dir": # Appears to be a parent
                         parent_found = True
                         stats['parent'] = self._load_ccproj_dir(parse)
+                    elif proj_type == "python_project":
+                        parent_found = True # Kinda maybe sorta a lie
+                        stats['parent'] = None
                     else:
                         debug("unknown file type: [%s] (%s)" % (parse[5], parse[1][1:-1]))
                         debug("Are you sure it's a Cloud Service Project?")
