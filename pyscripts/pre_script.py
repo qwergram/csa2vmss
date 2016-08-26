@@ -191,7 +191,7 @@ def get_parent():
     print("Getting Parent")
     with io.open(os.path.join(OUTPUT, ".source")) as context:
         path = context.read().strip()
-    for project in os.listdir(path):
+    for project in os.listdir(path) + [path]:
         project_path = os.path.join(path, project)
         if os.path.isdir(project_path):
             csdef = len([f for f in os.listdir(project_path) if f.lower().endswith(".csdef")]) >= 1
