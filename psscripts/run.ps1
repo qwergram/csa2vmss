@@ -4,7 +4,7 @@ Param(
     [string]
     $MODE,
     [string] # The new Solution Name
-    $SolutionName = "SysPrep49",
+    $SolutionName = "SysPrep50",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "ResGroup",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
@@ -41,17 +41,17 @@ Param(
 Write-Output "Cloud Service 2 VMss"
 Write-Output "(Send suggestions to v-nopeng@microsoft.com)"
 
-Try {
-    $RmSubscription = Get-AzureRmSubscription -ErrorAction Stop
-} Catch {
-    Write-Output "Please Login"
-    Try {
-        $login = Login-AzureRmAccount -ErrorAction Stop
-    } Catch {
-        Write-Output "You must have an azure subscription"
-        Exit
-    }
-}
+# Try {
+#     $RmSubscription = Get-AzureRmSubscription -ErrorAction Stop
+# } Catch {
+#     Write-Output "Please Login"
+#     Try {
+#         $login = Login-AzureRmAccount -ErrorAction Stop
+#     } Catch {
+#         Write-Output "You must have an azure subscription"
+#         Exit
+#     }
+# }
 
 $PYSCRIPTS = ($pwd.Path + "\pyscripts")
 $PSSCRIPTS = ($pwd.Path + "\psscripts")
@@ -119,8 +119,12 @@ if ($MODE -eq "vmss") {
         }
 
         Write-Output "Building VMSS!"
-        New-AzureRmResourceGroupDeployment -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_template_patched.json") -TemplateParameterFile ($pwd.Path + "\__save\vmss_template_patched.params.json")  
-
+        try {
+            New-AzureRmResourceGroupDeployment -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_template_patched.json") -TemplateParameterFile ($pwd.Path + "\__save\vmss_template_patched.params.json") -ErrorAction Stop    
+        } catch {
+            Exit
+        }
+          
         Write-Output "Deleting Seed VM"
         Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Force
         
