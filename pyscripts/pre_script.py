@@ -117,7 +117,7 @@ def select_workerroles(project_choices, ignore):
     for i, choice in enumerate(project_choices):
         if choice not in ignore:
             print(i, "-", choice[1])
-    return get_user_choice(project_choices, [4])
+    return get_user_choice(project_choices)
 
 
 def select_webroles(project_choices, ignore):
@@ -125,14 +125,14 @@ def select_webroles(project_choices, ignore):
     for i, choice in enumerate(project_choices):
         if choice not in ignore:
             print(i, "-", choice[1])
-    return get_user_choice(project_choices, [3])
+    return get_user_choice(project_choices)
 
 
 def select_commons(project_choices):
     print("\nSelect which project to be packaged with all roles (seperated by spaces)")
     for i, project in enumerate(project_choices):
         print(i, "-", project[1])
-    return get_user_choice(project_choices, [1, 2])
+    return get_user_choice(project_choices)
 
 
 def write_confirm(location):
