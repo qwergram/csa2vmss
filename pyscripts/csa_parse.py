@@ -24,7 +24,8 @@ class VSCloudService(object):
     guid_dir = {
         "FAE04EC0-301F-11D3-BF4B-00C04F79EFBC": "c#_project",
         "CC5FD16D-436D-48AD-A40C-5A424C6E3E79": "sln_dir",
-        "2150E333-8FDC-42A3-9474-1A3956D46DE8": "powershell_project"
+        "2150E333-8FDC-42A3-9474-1A3956D46DE8": "powershell_project",
+        "888888A0-9F3D-457C-B088-3A5042F75D52": "python_project",
     }
 
     def __init__(self, project_path):
