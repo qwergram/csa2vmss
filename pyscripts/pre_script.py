@@ -208,7 +208,11 @@ def copy_parent(parent_path):
         vm_path = os.path.join(OUTPUT, vm)
         if os.path.isdir(vm_path):
             print("Copying to", vm)
-            shutil.copytree(parent_path, os.path.join(vm_path, ".parent"))
+            os.mkdir(os.path.join(vm_path, '.parent'))
+            for file in os.listdir(parent_path):
+                path = os.path.join(parent_path, file)
+                if file.lower().split('.')[-1] in ('ccproj', 'user', 'cscfg', 'csdef') or (os.path.isdir(path) and path == "bin"):
+                    shutil.copy(path, os.path.join(vm_path, ".parent"))
     print("If the cloud service app is already in the vm directory, delete `.parent`")
     print("When you made the adjustments you need, run this again with `-updatesln`")
 
