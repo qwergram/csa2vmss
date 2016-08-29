@@ -70,8 +70,9 @@ class VSCloudService(object):
                         stats['projects'].append({
                             "proj_type": {"guid": parse[1][1:-1], "type": proj_type},
                             "guid": parse[7][1:-1],
-                            "folder": os.path.join(self.project_path, parse[3]),
+                            "folder": os.path.join(self.project_path, parse[5].split('\\')[0]),
                             "csproj": os.path.join(self.project_path, parse[5]),
+                            "title": parse[3],
                         })
                     elif proj_type == "sln_dir": # Appears to be a parent
                         parent_found = True
@@ -90,7 +91,9 @@ class VSCloudService(object):
         """Load important files from the ccproj directory"""
         debug("Loading csdef and cscfg files")
         parent_data = {}
-        parent_data['folder'] = os.path.join(self.project_path, parse[3])
+        input(parse)
+        parent_data['title'] = parse[3]
+        parent_data['folder'] = os.path.join(self.project_path, parse[5].split('\\')[0])
         parent_data['proj_type_guid'] = "sln_dir"
         parent_data['guid'] = parse[7][1:-1]
         parent_data['ccproj'] = os.path.join(self.project_path, parse[5])
