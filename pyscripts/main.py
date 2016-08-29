@@ -60,7 +60,7 @@ def get_zip_guid(project_guid):
 def requires_compilation(project_name, solution):
     for project in solution['projects']:
         if project['name'] == project_name:
-            return project['compliation']
+            return project['compiled_lang']
 
 
 def package_solution(project_name, solution, keep=True):

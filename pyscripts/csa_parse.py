@@ -28,6 +28,8 @@ class VSCloudService(object):
         "888888A0-9F3D-457C-B088-3A5042F75D52": "python_project",
     }
 
+    compiled_langs = [None, "c#_project"] # Assume all projects are compiled (None)
+
     def __init__(self, project_path):
         debug("Initializing VSProject")
         self.project_path = project_path
@@ -66,6 +68,7 @@ class VSCloudService(object):
                 elif lower_line.startswith("project("): # Parse these lines...
                     parse = line.split('\"')
                     proj_type = self.guid_dir.get(parse[1][1:-1], parse[1][1:-1])
+                    self.solution_data['projects'][i]['compiled_lang'] = proj_type in self.compiled_langs 
                     if proj_type in ["c#_project", "python_project"]: # Standard csproj
                         stats['projects'].append({
                             "proj_type": {"guid": parse[1][1:-1], "type": proj_type},
