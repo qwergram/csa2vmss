@@ -174,7 +174,7 @@ class VSCloudService(object):
                             role_settings[clean(setting.tag)].append(value)
 
             for i, project in enumerate(self.solution_data['projects']):
-                if project['name'] == projectname:
+                if project['title'] == projectname or project['name'] == projectname:
                     self.solution_data['projects'][i]['role_type'] = clean(role.tag)
                     for key, value in role_settings.items():
                         self.solution_data['projects'][i][key.lower()] = value
