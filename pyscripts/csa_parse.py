@@ -266,16 +266,19 @@ class VSCloudService(object):
             if project.get('role_type') == 'workerrole':
                 folder = project['folder']
                 azure_requirements = []
-                for cs_file in [os.path.join(folder, item) for item in os.listdir(folder) if item.endswith('.cs')]:
-                    with io.open(cs_file) as handle:
-                        for line in handle.readlines():
-                            line = line.strip()
-                            if (
-                                (len(line.split(' ')) == 3) and
-                                (line.split(' ')[0].isalpha()) and
-                                (line.split(' ')[1].isalpha()) and
-                                (line.endswith(";"))
-                               ): azure_requirements.append(line[:-1].split()[1])
+                try:
+                    for cs_file in [os.path.join(folder, item) for item in os.listdir(folder) if item.endswith('.cs')]:
+                        with io.open(cs_file) as handle:
+                            for line in handle.readlines():
+                                line = line.strip()
+                                if (
+                                    (len(line.split(' ')) == 3) and
+                                    (line.split(' ')[0].isalpha()) and
+                                    (line.split(' ')[1].isalpha()) and
+                                    (line.endswith(";"))
+                                ): azure_requirements.append(line[:-1].split()[1])
+                        self.solution_data['worker_requirements'] = azure_requirements
+                except FileNotFoundError:
                     self.solution_data['worker_requirements'] = azure_requirements
 
     def _get_cloud_service_package(self):
