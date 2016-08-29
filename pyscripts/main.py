@@ -47,7 +47,7 @@ def name_to_guid(project_name, solution, silent_fail=False):
 
 def name_to_role(project_name, solution, silent_fail=False):
     for project in solution['projects']:
-        if project['name'] == project_name == project_name:
+        if project['name'] == project_name:
             return project['role_type']
     if silent_fail: return None
     raise FileNotFoundError(project_name, "not found")
@@ -55,6 +55,12 @@ def name_to_role(project_name, solution, silent_fail=False):
 
 def get_zip_guid(project_guid):
     return "zip_" + project_guid[:4] + "_package.zip"
+
+
+def requires_compilation(project_name, solution):
+    for project in solution['projects']:
+        if project['name'] == project_name:
+            return project['compliation']
 
 
 def package_solution(project_name, solution, keep=True):
@@ -72,14 +78,18 @@ def package_solution(project_name, solution, keep=True):
             if project.lower() == "bootstrap":
                 debug_bin = os.path.join(source_dir, project, 'bin', 'Debug')
                 release_bin = os.path.join(source_dir, project, 'bin', 'Release')
+                source = os.path.join(source_dir, project)
                 if os.path.isdir(release_bin):
                     bin_location = release_bin
                 elif os.path.isdir(debug_bin):
                     bin_location = debug_bin
-                else:
+                elif requires_compilation(project_name, solution):
                     debug("Unable to find Bootstraper binaries for workerrole")
                     debug("Did you run `prescript.cmd -check`?")
                     sys.exit(1)
+                else:
+                    debug("Binaries not found. Using source code")
+                    bin_location = source
                 debug("Copying Bootstrapper")
                 os.popen("xcopy \"{}\" \"{}\" /E".format(bin_location, prelim_path))
                 break
