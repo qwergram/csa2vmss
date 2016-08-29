@@ -65,6 +65,10 @@ def package_solution(project_name, solution, keep=True):
     zip_path = os.path.join(dest_dir, get_zip_guid(project_guid))
     prelim_path = os.path.join(dest_dir, 'pkg')
 
+    if os.path.isdir(dest_dir):
+        print("Project guid already exists!")
+        return
+
     os.mkdir(prelim_path)
     if name_to_role(project_name, solution.solution_data) == 'workerrole':
         debug("Copying workerrole binaries")
