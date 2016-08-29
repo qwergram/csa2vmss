@@ -106,7 +106,7 @@
 		"virtualNetworkName": "[concat(variables('solutionName')]",
 		"vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
 		"subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
-		"publicIPAddressName": "[concat(variables('solutionName'),'pip']",
+		"publicIPAddressName": "[concat(variables('solutionName'),'pip')]",
 		"publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]",
 		"nicName": "[concat(variables('solutionName'),'nic')]",
 		"nicId": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]",
