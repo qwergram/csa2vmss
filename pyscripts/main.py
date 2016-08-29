@@ -133,7 +133,7 @@ def clean_roots(vm_path):
     debug("Cleansing", vm_path)
     for item in os.listdir(vm_path):
         item_path = os.path.join(vm_path, item)
-        if os.path.isdir(item_path):
+        if os.path.isdir(item_path) and item != '.parent':
             for subdir in os.listdir(item_path):
                 subdir_path = os.path.join(item_path, subdir)
                 if subdir.lower() in ('env', 'bin', 'obj', 'csx', 'ecf'):
