@@ -211,8 +211,10 @@ def copy_parent(parent_path):
             os.mkdir(os.path.join(vm_path, '.parent'))
             for file in os.listdir(parent_path):
                 path = os.path.join(parent_path, file)
-                if file.lower().split('.')[-1] in ('ccproj', 'user', 'cscfg', 'csdef') or (os.path.isdir(path) and path == "bin"):
+                if file.lower().split('.')[-1] in ('ccproj', 'user', 'cscfg', 'csdef'):
                     shutil.copy(path, os.path.join(vm_path, ".parent"))
+                if os.path.isdir(path) and file == "bin":
+                    shutil.copytree(path, os.path.join(vm_path, '.parent', 'bin'))
     print("If the cloud service app is already in the vm directory, delete `.parent`")
     print("When you made the adjustments you need, run this again with `-updatesln`")
 
@@ -246,6 +248,7 @@ if __name__ == "__main__":
             main(sys.argv[1])
     except IndexError:
         print("You need to pass in at least one parameter")
+        print("(or -clear, -check, -cscopy, -updatesln, -open)")
         sys.exit(1)
     if "-clear" in sys.argv:
         print("Clearing .\\__save\\vms\\")
