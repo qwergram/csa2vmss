@@ -41,17 +41,17 @@ Param(
 Write-Output "Cloud Service 2 VMss"
 Write-Output "(Send suggestions to v-nopeng@microsoft.com)"
 
-# Try {
-#     $RmSubscription = Get-AzureRmSubscription -ErrorAction Stop
-# } Catch {
-#     Write-Output "Please Login"
-#     Try {
-#         $login = Login-AzureRmAccount -ErrorAction Stop
-#     } Catch {
-#         Write-Output "You must have an azure subscription"
-#         Exit
-#     }
-# }
+Try {
+    $RmSubscription = Get-AzureRmSubscription -ErrorAction Stop
+} Catch {
+    Write-Output "Please Login"
+    Try {
+        $login = Login-AzureRmAccount -ErrorAction Stop
+    } Catch {
+        Write-Output "You must have an azure subscription"
+        Exit
+    }
+}
 
 $PYSCRIPTS = ($pwd.Path + "\pyscripts")
 $PSSCRIPTS = ($pwd.Path + "\psscripts")
