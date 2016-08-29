@@ -65,7 +65,7 @@ def package_solution(project_name, solution, keep=True):
     zip_path = os.path.join(dest_dir, get_zip_guid(project_guid))
     prelim_path = os.path.join(dest_dir, 'pkg')
 
-    if os.path.isdir(dest_dir):
+    if os.path.isdir(dest_dir) and os.path.isdir(prelim_path):
         print("Project guid already exists!")
         return
 
