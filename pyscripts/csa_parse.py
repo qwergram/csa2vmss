@@ -68,7 +68,6 @@ class VSCloudService(object):
                 elif lower_line.startswith("project("): # Parse these lines...
                     parse = line.split('\"')
                     proj_type = self.guid_dir.get(parse[1][1:-1], parse[1][1:-1])
-                    self.solution_data['projects'][i]['compiled_lang'] = proj_type in self.compiled_langs 
                     if proj_type in ["c#_project", "python_project"]: # Standard csproj
                         stats['projects'].append({
                             "proj_type": {"guid": parse[1][1:-1], "type": proj_type},
@@ -76,6 +75,7 @@ class VSCloudService(object):
                             "folder": os.path.join(self.project_path, parse[5].split('\\')[0]),
                             "csproj": os.path.join(self.project_path, parse[5]),
                             "name": parse[3],
+                            "compiled_lang": proj_type in self.compiled_langs,
                         })
                     elif proj_type == "sln_dir": # Appears to be a parent
                         parent_found = True
