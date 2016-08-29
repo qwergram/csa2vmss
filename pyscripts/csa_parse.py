@@ -91,7 +91,6 @@ class VSCloudService(object):
         """Load important files from the ccproj directory"""
         debug("Loading csdef and cscfg files")
         parent_data = {}
-        input(parse)
         parent_data['title'] = parse[3]
         parent_data['folder'] = os.path.join(self.project_path, parse[5].split('\\')[0])
         parent_data['proj_type_guid'] = "sln_dir"
