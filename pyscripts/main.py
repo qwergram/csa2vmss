@@ -65,10 +65,6 @@ def package_solution(project_name, solution, keep=True):
     zip_path = os.path.join(dest_dir, get_zip_guid(project_guid))
     prelim_path = os.path.join(dest_dir, 'pkg')
 
-    if os.path.isdir(dest_dir) and os.path.isdir(prelim_path):
-        print("Project guid already exists!")
-        return
-
     os.mkdir(prelim_path)
     if name_to_role(project_name, solution.solution_data) == 'workerrole':
         debug("Copying workerrole binaries")
@@ -131,8 +127,17 @@ def clean():
 
 def write_confirm():
     with io.open(os.path.join(CURRENT_PATH, '__save', '.confirm_a'), 'w') as context:
-        context.write("")
+        context.write("true")
 
+def clean_roots(vm_path):
+    debug("Cleansing", vm_path)
+    for item in os.listdir(vm_path):
+        item_path = os.path.join(vm_path, item)
+        if os.path.isdir(item_path):
+            for subdir in os.listdir(item_path):
+                subdir_path = os.path.join(item_path, subdir)
+                if subdir.lower() in ('env', 'bin', 'obj', 'csx', 'ecf'):
+                    shutil.rmtree(subdir_path)
 
 def main():
     clean()
@@ -144,6 +149,7 @@ def main():
     for vm_name in os.listdir(VM_PATH):
         vm_path = os.path.join(VM_PATH, vm_name)
         if os.path.isfile(vm_path): continue
+        clean_roots(vm_path)
         solution = csa_parse.VSCloudService(project_path=vm_path)
         solution.load_solution()
         save_solution_data(vm_name, solution)
