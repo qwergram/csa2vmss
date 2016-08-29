@@ -72,7 +72,7 @@ class VSCloudService(object):
                             "guid": parse[7][1:-1],
                             "folder": os.path.join(self.project_path, parse[5].split('\\')[0]),
                             "csproj": os.path.join(self.project_path, parse[5]),
-                            "title": parse[3],
+                            "name": parse[3],
                         })
                     elif proj_type == "sln_dir": # Appears to be a parent
                         parent_found = True
@@ -91,7 +91,7 @@ class VSCloudService(object):
         """Load important files from the ccproj directory"""
         debug("Loading csdef and cscfg files")
         parent_data = {}
-        parent_data['title'] = parse[3]
+        parent_data['name'] = parse[3]
         parent_data['folder'] = os.path.join(self.project_path, parse[5].split('\\')[0])
         parent_data['proj_type_guid'] = "sln_dir"
         parent_data['guid'] = parse[7][1:-1]
@@ -135,9 +135,6 @@ class VSCloudService(object):
         parent_data = self.solution_data['parent']
         root = load_xml(parent_data['csdef'])
 
-        for i, project in enumerate(self.solution_data['projects']):
-            self.solution_data['projects'][i]['name'] = project['folder'].split("\\")[-1]
-
         for role in root.getchildren():
             """
             The commons file should not be treated as a role... it includes files that should be found on
@@ -174,7 +171,7 @@ class VSCloudService(object):
                             role_settings[clean(setting.tag)].append(value)
 
             for i, project in enumerate(self.solution_data['projects']):
-                if project['title'] == projectname or project['name'] == projectname:
+                if project['name'] == projectname:
                     self.solution_data['projects'][i]['role_type'] = clean(role.tag)
                     for key, value in role_settings.items():
                         self.solution_data['projects'][i][key.lower()] = value
