@@ -137,7 +137,10 @@ def clean_roots(vm_path):
             for subdir in os.listdir(item_path):
                 subdir_path = os.path.join(item_path, subdir)
                 if subdir.lower() in ('env', 'bin', 'obj', 'csx', 'ecf'):
-                    shutil.rmtree(subdir_path)
+                    try:
+                        shutil.rmtree(subdir_path)
+                    except OSError:
+                        os.popen("rmdir /S /Q \"{}\"".format(subdir_path))
 
 def main():
     clean()
