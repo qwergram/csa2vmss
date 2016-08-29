@@ -83,7 +83,7 @@ def package_solution(project_name, solution, keep=True):
                     bin_location = release_bin
                 elif os.path.isdir(debug_bin):
                     bin_location = debug_bin
-                elif requires_compilation(project_name, solution):
+                elif requires_compilation(project_name, solution.solution_data):
                     debug("Unable to find Bootstraper binaries for workerrole")
                     debug("Did you run `prescript.cmd -check`?")
                     sys.exit(1)
