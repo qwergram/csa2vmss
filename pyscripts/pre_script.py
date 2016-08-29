@@ -208,7 +208,11 @@ def copy_parent(parent_path):
         vm_path = os.path.join(OUTPUT, vm)
         if os.path.isdir(vm_path):
             print("Copying to", vm)
-            os.mkdir(os.path.join(vm_path, '.parent'))
+            try:
+                os.mkdir(os.path.join(vm_path, '.parent'))
+            except FileExistsError:
+                print("Parent already exists, skipping.")
+                continue
             for file in os.listdir(parent_path):
                 path = os.path.join(parent_path, file)
                 if file.lower().split('.')[-1] in ('ccproj', 'user', 'cscfg', 'csdef'):
