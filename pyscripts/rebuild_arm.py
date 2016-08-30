@@ -35,7 +35,10 @@ def set_vmss_params(vmss_params):
         elif value.replace('.', '').isdigit():
             value = float(value)
         elif value.startswith("{") and value.endswith("}"):
-            value = json.loads(value)
+            try:
+                value = json.loads(value)
+            except json.JSONDecodeError:
+                pass
             
         vmss_params['parameters'][param] = {"value": value}
 
@@ -80,6 +83,7 @@ def main():
     vmss_to_deploy = read_vmss_template()
     vmss_params = read_vmss_params()
     set_vmss_params(vmss_params)
+    input(vmss_params)
     save_new_vmss_params(vmss_params)
     storage_profile = get_storage_profile(imaged_vm)
     replace_storage_profile(vmss_to_deploy, storage_profile)
