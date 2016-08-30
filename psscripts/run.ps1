@@ -111,20 +111,6 @@ if ($MODE -eq "vmss") {
 
         } 
 
-
-
-        Write-Output "Marking Blob Storage as public"
-
-        # Write-Output "Rebuilding ARM Template"
-        # $dns = $solutionName.ToLower()
-        # $result = start-process python -argument ($PYSCRIPTS + "\rebuild_arm.py"),  "-vmSSName=v$solutionName -instanceCount=1 -vmSize=Standard_D1 -dnsNamePrefix=$dns -adminUsername=$VMAdmin -adminPassword=$VMPassword -solutionName=$solutionName" -Wait -PassThru
-        # if ($result.ExitCode -eq 1) {
-        #      Exit
-        # }
-
-        # image: https://02bdstoragesysprep50vm.blob.core.windows.net/system/Microsoft.Compute/Images/containersysprep50/vhd-osDisk.3d81091c-014a-4b87-8e83-e4aeb53c2c51.vhd
-        # vhd: https://02bdstoragesysprep50vm.blob.core.windows.net/vmcontainer/da22f981-a857-4370-9e9b-81d17c246567/osDisk.da22f981-a857-4370-9e9b-81d17c246567.vhd
-
         Write-Output "Building VMSS!"
         #try {
         # New-AzureRmResourceGroupDeployment -TemplateUri https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vmss-windows-customimage/azuredeploy.json -ResourceGroupName ($ResourcePrefix + $solutionName)
@@ -331,7 +317,9 @@ if ($MODE -eq "vmss") {
         
         Write-Output "Built VMs! Go to your portal and RDC to them."
         Write-Output "Once you have confirmed everything is correctly built,"
-        Write-Output "run `sysprep_me.cmd` on the VM's desktop and then you can launch this"
+        Write-Output "run `sysprep_me.cmd` on the VM's desktop."
+        Write-Output "Then, goto to https://portal.azure.com and make sure you mark the containers generated as public (http://i.imgur.com/4430lqG.png) "
+        Write-Output " and then you can launch this"
         Write-Output "script again with the flag -mode vmss"
     }
 } 
