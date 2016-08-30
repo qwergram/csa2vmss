@@ -4,11 +4,11 @@ Param(
     [string]
     $MODE,
     [string] # The new Solution Name
-    $SolutionName = "SysPrep50",
+    $SolutionName = "SP52",
     [string] # Resource name = $ResourcePrefix + $SolutionName
-    $ResourcePrefix = "ResGroup",
+    $ResourcePrefix = "RG",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
-    $StoragePrefix = "storage",
+    $StoragePrefix = "stg",
     [string] # VM prefix to mark VM related resources
     $VMPrefix = "VM",
     [string] # Location for servers
@@ -20,9 +20,9 @@ Param(
     [string] # DNS prefix to mark dns related resources
     $DNSPrefx = "dns",
     [string] # Deployment resource name
-    $DeploymentPrefix = "deploy",
+    $DeploymentPrefix = "dply",
     [string] # script resource name
-    $scriptPrefix = "script",
+    $scriptPrefix = "scrpt",
     [string] # Which subscription to use
     $AzureProfile = "Free Trial",
     [int] # Size in GB of VM VHD
@@ -32,7 +32,7 @@ Param(
     [string] # VM Admin username
     $VMAdmin = "Norton",
     [string] # VM Password
-    $VMPassword = "SecurePassword123",
+    $VMPassword = "SecurePassword123!",
     [bool] # run app in single window?
     $singleWindow = $true
 )
@@ -112,22 +112,26 @@ if ($MODE -eq "vmss") {
         } 
 
         Write-Output "Rebuilding ARM Template"
-        $dns = $solutionName.ToLower()
-        $result = start-process python -argument ($PYSCRIPTS + "\rebuild_arm.py"),  "-vmSSName=v$solutionName -instanceCount=1 -vmSize=Standard_D1 -dnsNamePrefix=$dns -adminUsername=$VMAdmin -adminPassword=$VMPassword -solutionName=$solutionName" -Wait -PassThru
-        if ($result.ExitCode -eq 1) {
-            Exit
-        }
+        # $dns = $solutionName.ToLower()
+        # $result = start-process python -argument ($PYSCRIPTS + "\rebuild_arm.py"),  "-vmSSName=v$solutionName -instanceCount=1 -vmSize=Standard_D1 -dnsNamePrefix=$dns -adminUsername=$VMAdmin -adminPassword=$VMPassword -solutionName=$solutionName" -Wait -PassThru
+        # if ($result.ExitCode -eq 1) {
+        #     Exit
+        # }
+
+        # image: https://02bdstoragesysprep50vm.blob.core.windows.net/system/Microsoft.Compute/Images/containersysprep50/vhd-osDisk.3d81091c-014a-4b87-8e83-e4aeb53c2c51.vhd
+        # vhd: https://02bdstoragesysprep50vm.blob.core.windows.net/vmcontainer/da22f981-a857-4370-9e9b-81d17c246567/osDisk.da22f981-a857-4370-9e9b-81d17c246567.vhd
 
         Write-Output "Building VMSS!"
-        try {
-            New-AzureRmResourceGroupDeployment -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_template_patched.json") -TemplateParameterFile ($pwd.Path + "\__save\vmss_template_patched.params.json") -ErrorAction Stop    
-        } catch {
-            Exit
-        }
+        #try {
+        # New-AzureRmResourceGroupDeployment -TemplateUri https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vmss-windows-customimage/azuredeploy.json -ResourceGroupName ($ResourcePrefix + $solutionName)
+        New-AzureRmResourceGroupDeployment -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_template_patched.json") -TemplateParameterFile ($pwd.Path + "\__save\vmss_template_patched.params.json") -ErrorAction Stop -Verbose    
+        #} catch {
+        #    Exit
+        #}
           
-        Write-Output "Deleting Seed VM"
-        Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Force
-        
+        # Write-Output "Deleting Seed VM"
+        # Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Force
+        Exit
     }
 
     Write-Output "Vmss Created. Thanks for using my script!"
@@ -248,7 +252,7 @@ if ($MODE -eq "vmss") {
     # Resrouces:
     # http://weblogs.asp.net/scottgu/automating-deployment-with-microsoft-web-deploy
     Write-Output "Building VMs"
-    Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.json', '*.csv', '*.zip', 'cspkg', 'vms', ".confirm*" |
+    Get-ChildItem ($pwd.Path + "\__save") -Exclude '*.json', '*.csv', '*.zip', 'cspkg', 'vms', ".confirm*", "*.rdp" |
     ForEach-Object {
         # Get the Json templates
 
