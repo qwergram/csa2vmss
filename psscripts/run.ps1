@@ -110,15 +110,10 @@ if ($MODE -eq "vmss") {
             $vmimage = Save-AzureRmVMImage -DestinationContainerName ($containerPrefix + $SolutionName.ToLower()) -Name $vm_name -ResourceGroupName ($ResourcePrefix + $SolutionName) -VHDNamePrefix vhd -Path ($pwd.Path + "\__save\vmss_template.json") -Overwrite
 
         } 
-
+        $vhdurl = (Get-Content ($pwd.Path + "\__save\vmss_template.json") | ConvertFrom-Json).resources[0].properties.storageProfile.osDisk.image.uri
         Write-Output "Building VMSS!"
-        #try {
-        # New-AzureRmResourceGroupDeployment -TemplateUri https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vmss-windows-customimage/azuredeploy.json -ResourceGroupName ($ResourcePrefix + $solutionName)
-        New-AzureRmResourceGroupDeployment -ResourceGroupName ($ResourcePrefix + $SolutionName) -TemplateFile ($pwd.Path + "\__save\vmss_template_patched.json") -TemplateParameterFile ($pwd.Path + "\__save\vmss_template_patched.params.json") -ErrorAction Stop -Verbose    
-        #} catch {
-        #    Exit
-        #}
-          
+        New-AzureRmResourceGroupDeployment -TemplateUri https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vmss-windows-customimage/azuredeploy.json -ResourceGroupName ($vmname) -sourceImageVhdUri $vhdurl -adminUsername $VMAdmin -adminPassword $VMPassword -dnsNamePrefix ($vm_name.ToLower()) -vmSize "Standard_D1" -instanceCount 1  
+
         # Write-Output "Deleting Seed VM"
         # Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Force
         Exit
