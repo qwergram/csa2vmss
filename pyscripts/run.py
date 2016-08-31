@@ -25,6 +25,8 @@ def build_vm():
         print("Service App already packaged")
     else:
         util.clean()
+        for vm_name, vm_path in util.list_vms():
+            print(vm_name)
 
 
 
