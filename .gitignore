@@ -4,3 +4,4 @@ autogen.*
 .vs*/
 bin/
 obj/
+.cache/
