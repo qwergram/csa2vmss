@@ -9,6 +9,8 @@ PYSCRIPTS = os.path.join(os.getcwd(), "pyscripts")
 PSSCRIPTS = os.path.join(os.getcwd(), "psscripts")
 CMDSCRIPTS = os.path.join(os.getcwd(), "cmdscripts")
 VMPATH = os.path.join(SAVE_DIR, "vms")
+POST_TEST_ENV = os.path.join(os.getcwd(), 'tests', 'test_env', 'post')
+PRE_TEST_ENV = os.path.join(os.getcwd(), 'test', 'test_env', 'pre')
 
 DEBUG = True
 
