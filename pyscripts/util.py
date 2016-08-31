@@ -47,3 +47,8 @@ def cmdscript(file):
     path = os.path.join(CMDSCRIPTS, file)
     assert test_path(path, "f")
     return path
+
+def savefile(file):
+    path = os.path.join(SAVE_DIR, file)
+    assert test_path(path, "a")
+    return path
