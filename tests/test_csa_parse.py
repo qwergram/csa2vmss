@@ -13,11 +13,16 @@ def test_csa_init():
         assert test_unit.solution_data == {}
         assert test_unit.write_privs is False
 
-def test_cs__get_sln_path():
+def test_csa__get_sln_path():
     from pyscripts.util import VMPATH
     for test_unit in get_test_units():
         assert test_unit._get_sln_path().endswith('.sln')
         assert VMPATH in test_unit._get_sln_path()
+
+
+def test_csa__get_sln_contents():
+    for test_unit in get_test_units():
+        assert "Microsoft Visual Studio Solution File" in str(test_unit._get_sln_contents(test_unit._get_sln_path()))
 
 
 def test_csa__is_valid_solution():
@@ -25,4 +30,3 @@ def test_csa__is_valid_solution():
     from pyscripts.util import POST_TEST_ENV
     for test_unit in get_test_units():
         sln_data = test_unit._read_sln_data()
-        

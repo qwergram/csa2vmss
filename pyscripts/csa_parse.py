@@ -41,6 +41,10 @@ class VSCloudService(object):
         sln_location = os.path.join(self.project_path, sln)
         return sln_location
 
+    def _get_sln_contents(self, path):
+        with io.open(path) as context:
+            return [[line.lower(), line] for line in context.readlines()]
+
     def _read_sln_data(self):
         """Convert the SLN into JSON for parsing.
         Find these lines:
@@ -53,34 +57,33 @@ class VSCloudService(object):
 
         stats = {"projects": [], "parent": {}}
         parent_found = False
-        with io.open(sln_location) as sln:
-            for line in sln.readlines():
-                lower_line = line.lower()
-                if lower_line.startswith("microsoft visual studio solution file"):
-                    stats['sln_version'] = lower_line.replace('microsoft visual studio solution file, format version ', '').strip()
-                elif lower_line.startswith("minimumvisualstudioversion"):
-                    stats['min_vs_version'] = lower_line.split('=')[-1].strip()
-                elif lower_line.startswith("visualstudioversion"):
-                    stats['vs_version'] = lower_line.split('=')[-1].strip()
-                elif lower_line.startswith("project("): # Parse these lines...
-                    parse = line.split('\"')
-                    proj_type = self.guid_dir.get(parse[1][1:-1], parse[1][1:-1])
-                    if proj_type in ["c#_project", "python_project"]: # Standard csproj
-                        stats['projects'].append({
-                            "proj_type": {"guid": parse[1][1:-1], "type": proj_type},
-                            "guid": parse[7][1:-1],
-                            "folder": os.path.join(self.project_path, parse[5].split('\\')[0]),
-                            "csproj": os.path.join(self.project_path, parse[5]),
-                            "name": parse[3],
-                            "compiled_lang": proj_type in self.compiled_langs,
-                        })
-                    elif proj_type == "sln_dir": # Appears to be a parent
-                        parent_found = True
-                        stats['parent'] = self._load_parent_dir(parse)
-                    else:
-                        debug("unknown file type: [%s] (%s)" % (parse[5], parse[1][1:-1]))
-                        debug("Are you sure it's a Cloud Service Project?")
-                        sys.exit(1)
+        
+        for lower_line, line in self._get_sln_contents(sln_location):
+            if lower_line.startswith("microsoft visual studio solution file"):
+                stats['sln_version'] = lower_line.replace('microsoft visual studio solution file, format version ', '').strip()
+            elif lower_line.startswith("minimumvisualstudioversion"):
+                stats['min_vs_version'] = lower_line.split('=')[-1].strip()
+            elif lower_line.startswith("visualstudioversion"):
+                stats['vs_version'] = lower_line.split('=')[-1].strip()
+            elif lower_line.startswith("project("): # Parse these lines...
+                parse = line.split('\"')
+                proj_type = self.guid_dir.get(parse[1][1:-1], parse[1][1:-1])
+                if proj_type in ["c#_project", "python_project"]: # Standard csproj
+                    stats['projects'].append({
+                        "proj_type": {"guid": parse[1][1:-1], "type": proj_type},
+                        "guid": parse[7][1:-1],
+                        "folder": os.path.join(self.project_path, parse[5].split('\\')[0]),
+                        "csproj": os.path.join(self.project_path, parse[5]),
+                        "name": parse[3],
+                        "compiled_lang": proj_type in self.compiled_langs,
+                    })
+                elif proj_type == "sln_dir": # Appears to be a parent
+                    parent_found = True
+                    stats['parent'] = self._load_parent_dir(parse)
+                else:
+                    debug("unknown file type: [%s] (%s)" % (parse[5], parse[1][1:-1]))
+                    debug("Are you sure it's a Cloud Service Project?")
+                    sys.exit(1)
         if not parent_found:
             debug("Parent not found or not included in .sln!")
             debug("Did you run 'prescript.cmd -updatessln' ?")
