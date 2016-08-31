@@ -10,8 +10,15 @@ except ImportError:
     import solution_parser
 
 
+def get_solution_data(location):
+    solution = solution_parser.SolutionParser(location)
+    solution.parse()
+    return solution.data
+
+
 def main(location):
-    pass
+    jsonblob = get_solution_data(location)
+
 
 
 if __name__ == "__main__":
