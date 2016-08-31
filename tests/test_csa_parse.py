@@ -1,14 +1,23 @@
-
+def get_test_units():
+    from pyscripts.csa_parse import VSCloudService
+    from pyscripts.util import list_vms
+    for unit in list_vms():
+        x = VSCloudService(project_path=unit[1])
+        assert x.project_path == unit[1]
+        x.write_privs = False
+        yield x
 
 def test_csa_init():
+    for test_unit in get_test_units():
+        assert test_unit.guid_dir
+        assert test_unit.solution_data == {}
+        assert test_unit.write_privs is False
+
+def test_csa__is_valid_solution():
     from pyscripts.csa_parse import VSCloudService
     from pyscripts.util import POST_TEST_ENV
     import os
-    for language in os.listdir(POST_TEST_ENV):
-        for test_unit in os.path.join(POST_TEST_ENV, language):
-            x = VSCloudService(project_path=os.path.join(POST_TEST_ENV, language, test_unit))
-            assert x.guid_dir
-            assert x.solution_data == {}
-            assert x.project_path == os.path.join(POST_TEST_ENV, language, test_unit)
-            assert x.write_privs
-            x.write_privs = False
+    for test_unit in get_test_units():
+        sln_data = test_unit._read_sln_data()
+        assert 0, sln_data
+        assert len(sln_data['projects']) >= 1

@@ -44,9 +44,7 @@ class VSCloudService(object):
         and grab the important data.
         """
         debug("Reading .sln file")
-        return self.project_path
-        sln = [file for file in os.listdir(self.project_path) if file.endswith('.sln')]
-        return sln
+        sln = [file for file in os.listdir(self.project_path) if file.endswith('.sln')][0]
         sln_location = os.path.join(self.project_path, sln)
         return sln_location
 
