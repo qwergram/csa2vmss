@@ -73,3 +73,12 @@ class SolutionParser(object):
                     "guid": guid[1:-1],
                     "location": location,
                 })
+
+    def update_csdef(self, csdef):
+        pass
+
+    def update_cscfg(self, cscfg):
+        pass
+
+    def update_proj(self, proj):
+        pass

@@ -138,6 +138,7 @@ def test_proj_parser_parse_one():
     assert isinstance(proj.xml.xml, list)
     assert proj.data == []
     
+
 def test_proj_parser_parse_one_2():
     from pyscripts.proj_parser import ProjParser
     from pyscripts.pre_script import get_solution_data
