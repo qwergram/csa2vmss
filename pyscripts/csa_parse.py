@@ -36,6 +36,11 @@ class VSCloudService(object):
         # TODO: Check for files that only appear in Cloud apps
         return is_vs_project and contains_sln_file
 
+    def _get_sln_path(self):
+        sln = [file for file in os.listdir(self.project_path) if file.endswith('.sln')][0]
+        sln_location = os.path.join(self.project_path, sln)
+        return sln_location
+
     def _read_sln_data(self):
         """Convert the SLN into JSON for parsing.
         Find these lines:
@@ -44,9 +49,7 @@ class VSCloudService(object):
         and grab the important data.
         """
         debug("Reading .sln file")
-        sln = [file for file in os.listdir(self.project_path) if file.endswith('.sln')][0]
-        sln_location = os.path.join(self.project_path, sln)
-        return sln_location
+        sln_location = self._get_sln_path()
 
         stats = {"projects": [], "parent": {}}
         parent_found = False
