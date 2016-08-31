@@ -114,8 +114,6 @@ def test_csdefp_parse_content():
 
 def test_prescript_parse_csdef():
     from pyscripts.pre_script import get_csdef_data, get_solution_data
-    from pyscripts.solution_parser import SolutionParser
-    from pyscripts.cloudservicedef_parser import CSDefinitionParser
     sln = get_solution_data("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
     csdef = get_csdef_data(sln)
     assert csdef.data['FaceAPIWebRole']['vmsize'] == 'Small'

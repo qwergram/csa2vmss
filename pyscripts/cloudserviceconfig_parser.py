@@ -1,8 +1,10 @@
 try:
     from pyscripts import util
+    from pyscripts import solution_parser
 except ImportError:
     import util
-import io
+    import solution_parser
+
 
 class CSConfigParser(object):
 

@@ -4,7 +4,6 @@ try:
 except ImportError:
     import util
     import solution_parser
-import io
 
 
 def clean_xml_tag(text):
