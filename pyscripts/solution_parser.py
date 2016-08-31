@@ -80,10 +80,15 @@ class SolutionParser(object):
                 for key, value in csdef.data[project['name']].items():
                     self.data['projects'][i][key] = value
             except KeyError:
-                self.data['projects'][i] = None
+                pass
 
     def update_cscfg(self, cscfg):
-        cscfg.data
+        for i, project in enumerate(self.data['projects']):
+            try:
+                for key, value in cscfg.data[project['name']].items():
+                    self.data['projects'][i][key] = value
+            except KeyError:
+                pass
 
     def update_proj(self, proj):
         proj.data
