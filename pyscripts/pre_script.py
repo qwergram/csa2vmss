@@ -48,6 +48,8 @@ def main(location):
     solution.update_csdef(csdef)
     solution.update_cscfg(cscfg)
     solution.update_proj(proj)
+    jsonblob = solution.data
+    
 
 
 
