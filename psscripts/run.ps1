@@ -4,7 +4,7 @@ Param(
     [string]
     $MODE,
     [string] # The new Solution Name
-    $SolutionName = "SP52",
+    $SolutionName = "SP53",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "RG",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
@@ -111,12 +111,18 @@ if ($MODE -eq "vmss") {
 
         } 
         $vhdurl = (Get-Content ($pwd.Path + "\__save\vmss_template.json") | ConvertFrom-Json).resources[0].properties.storageProfile.osDisk.image.uri
+        Write-Output $vhdurl
+
         Write-Output "Building VMSS!"
-        New-AzureRmResourceGroupDeployment -TemplateUri https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vmss-windows-customimage/azuredeploy.json -ResourceGroupName ($vmname) -sourceImageVhdUri $vhdurl -adminUsername $VMAdmin -adminPassword $VMPassword -dnsNamePrefix ($vm_name.ToLower()) -vmSize "Standard_D1" -instanceCount 1  
+
+        $dns = ("p" + $vm_name.ToLower().replace("vm", ""))
+        $newrg = New-AzureRmResourceGroup -Name $vm_name -Location $Location -Force
+        New-AzureRmResourceGroupDeployment -TemplateUri "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vmss-windows-customimage/azuredeploy.json" -probeRequestPath "/" -ResourceGroupName ($vm_name) -sourceImageVhdUri $vhdurl -adminUsername $VMAdmin -dnsNamePrefix $dns
+
 
         # Write-Output "Deleting Seed VM"
         # Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Force
-        Exit
+        
     }
 
     Write-Output "Vmss Created. Thanks for using my script!"
