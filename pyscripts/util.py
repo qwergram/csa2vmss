@@ -8,6 +8,7 @@ PSSCRIPTS = os.path.join(os.getcwd(), "psscripts")
 CMDSCRIPTS = os.path.join(os.getcwd(), "cmdscripts")
 VMPATH = os.path.join(SAVE_DIR, "vms")
 
+
 def parse_input(defaults=None):
     if defaults is None: defaults = {}
     for item in sys.argv[1:]:
@@ -19,6 +20,7 @@ def parse_input(defaults=None):
             elif value.lower() == "false": value = False
             defaults[key] = value
     return defaults
+
 
 def test_path(path, mode="any"):
     isdir = os.path.isdir(path)
@@ -68,3 +70,7 @@ def clean():
         path = os.path.join(SAVE_DIR, directory)
         if (directory != "vms"):
             rmtree(path)
+
+
+def list_vms():
+    return [(dir_name, os.path.join(VMPATH, dir_name)) for dir_name in os.listdir(VMPATH) if test_path(os.path.join(VMPATH, dir_name), 'd')]
