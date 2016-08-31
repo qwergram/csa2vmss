@@ -5,9 +5,11 @@ import os
 try:
     from pyscripts import util
     from pyscripts import solution_parser
+    from pyscripts import cloudservicedef_parser
 except ImportError:
     import util
     import solution_parser
+    import cloudservicedef_parser
 
 
 def get_solution_data(location):
