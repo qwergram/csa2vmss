@@ -86,3 +86,10 @@ def save_json(python_object, path, filename=None):
     if filename: path = os.path.join(path, filename)
     with io.open(os.path.join(path), 'w') as context:
         context.write(json.dumps(python_object, indent=2, sort_keys=True))
+
+def mkdir(path, dir_name, silent=True):
+    try:
+        os.mkdir(os.path.join(path, dir_name))
+    except FileExistsError as e:
+        if silent:
+            raise FileExistsError(e)
