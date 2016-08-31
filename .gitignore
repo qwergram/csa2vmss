@@ -5,3 +5,4 @@ autogen.*
 bin/
 obj/
 .cache/
+test_env/
