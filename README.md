@@ -143,7 +143,7 @@ access policies to public.
 Set your password for each VMSS
 
 # Common Issues
-## `No connection could be made because the target machine actively refused it`
+## `No connection could be made ... 127.0.0.1:*`
 If you run into this issue, it means your db connection strings are using `useDevelopmentStorage=true`.
 Correct them and try re-uploading the packages.
 
