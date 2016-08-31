@@ -3,7 +3,6 @@ try:
 except ImportError:
     import util
 import io
-import os
 
 class SolutionParser(object):
 
