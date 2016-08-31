@@ -3,6 +3,7 @@ try:
 except ImportError:
     import util
 import io
+import os
 
 class SolutionParser(object):
 
@@ -39,4 +40,16 @@ class SolutionParser(object):
                 self.data['vsversion']['current'] = line_lower.split('=')[-1].strip()
             elif line_lower.startswith("project("):
                 parse = line.split('\"')
-                self.data['projects'].append(parse)
+                type_guid = parse[1]
+                name = parse[3]
+                ccproj = parse[5]
+                guid = parse[7]
+                location = util.join_path(*self.path.split("\\")[:-1])
+                self.data['projects'].append({
+                    "name": name,
+                    "type": type_guid[1:-1],
+                    "ccproj": os.path.join(location, ccproj),
+                    "guid": guid[1:-1],
+                    "location": location,
+                    "sln": self.path,
+                })
