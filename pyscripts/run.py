@@ -1,3 +1,5 @@
+import os
+
 import azure
 
 import csa_parse
@@ -23,7 +25,7 @@ DEFAULTS = {
 
 def destroy_binaries(vm_path):
     for file in ['env', 'obj', 'csx', 'ecf']:
-        util.rmtree(os.path.join(vm_path, file))
+        util.rmtree(os.path.join(vm_path, file), silent=True)
 
 
 def get_solution(vm_path):
@@ -32,8 +34,13 @@ def get_solution(vm_path):
     return solution
 
 
-def save_solution(vm_path, solution_object):
+def create_guid_directory():
     pass
+
+
+def save_solution(vm_path, solution_object):
+    util.save_json(solution_object.solution_data)
+
 
 def build_vm():
     if util.test_path(util.savefile(".confirm_a")):
@@ -43,7 +50,8 @@ def build_vm():
         for vm_name, vm_path in util.list_vms():
             destroy_binaries(vm_path)
             solution = get_solution(vm_path)
-            save_solution(vm_)
+            input(solution)
+            # save_solution(vm_path, solution)
 
 def main(params):
     if params['mode'] == 'vm':
