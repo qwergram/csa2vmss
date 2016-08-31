@@ -21,7 +21,13 @@ class SolutionParser(object):
             "csdef": None,
             "cscfg": None,
             "ccproj": None,
+            "sln": self.path
         }
+
+    def parse(self):
+        self.get_content()
+        self.parse_content()
+        self.fetch_csdef
 
     def get_content(self):
         with io.open(self.path) as context:
@@ -29,6 +35,18 @@ class SolutionParser(object):
     
     def feed(self, content):
         self.raw_content = [[line.lower().strip(), line.strip()] for line in content.split("\n") if line.strip()]
+
+    def fetch_csdef(self, ccproj):
+        directory = util.join_path(*ccproj.split("\\")[:-1])
+        for file in util.listdirpaths(directory):
+            if file.lower().endswith('.csdef'):
+                return file
+
+    def fetch_cscfg(self, ccproj):
+        directory = util.join_path(*ccproj.split("\\")[:-1])
+        for file in util.listdirpaths(directory):
+            if file.lower().endswith('local.cscfg'):
+                return file
 
     def parse_content(self):
         for line_lower, line in self.raw_content:
@@ -42,14 +60,18 @@ class SolutionParser(object):
                 parse = line.split('\"')
                 type_guid = parse[1]
                 name = parse[3]
-                ccproj = parse[5]
+                proj = parse[5]
                 guid = parse[7]
                 location = util.join_path(*self.path.split("\\")[:-1])
-                self.data['projects'].append({
+                if type_guid[1:-1] == "CC5FD16D-436D-48AD-A40C-5A424C6E3E79":
+                    self.data['cscfg'] = self.fetch_cscfg(util.join_path(location, proj))
+                    self.data['csdef'] = self.fetch_csdef(util.join_path(location, proj))
+                    self.data['ccproj'] = util.join_path(location, proj)
+                else:
+                    self.data['projects'].append({
                     "name": name,
                     "type": type_guid[1:-1],
-                    "ccproj": os.path.join(location, ccproj),
+                    "proj": util.join_path(location, proj),
                     "guid": guid[1:-1],
                     "location": location,
-                    "sln": self.path,
                 })

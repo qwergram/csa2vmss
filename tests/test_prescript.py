@@ -46,7 +46,7 @@ def test_solution_parser_feed():
     assert line in sln.raw_content
     assert len([line_lower for line_lower, line in sln.raw_content if line_lower.startswith("microsoft visual studio solution file")])
 
-
+# Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "FaceAPIWebRole", "FaceAPIWebRole\FaceAPIWebRole.pyproj", "{02BD14C6-B33A-4676-85A8-075CCF0AB7FC}"
 def test_solution_parser_feed_content():
     from pyscripts.solution_parser import SolutionParser
     sln = SolutionParser("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
@@ -55,25 +55,12 @@ def test_solution_parser_feed_content():
     assert sln.data['version'] == 12.00, sln.data
     assert sln.data['vsversion']['min'] == "10.0.40219.1"
     assert sln.data['vsversion']['current'] == "14.0.25420.1"
-    assert sln.data['projects'][0]['name'] == "FaceAPI"
-    assert sln.data['projects'][0]['type'] == "CC5FD16D-436D-48AD-A40C-5A424C6E3E79"
-    assert sln.data['projects'][0]['ccproj'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.ccproj"
-    assert sln.data['projects'][0]['guid'] == "FA30B932-2CE6-414E-B3B7-8C028448A100"
+    assert sln.data['projects'][0]['name'] == "FaceAPIWebRole"
+    assert sln.data['projects'][0]['type'] == "888888A0-9F3D-457C-B088-3A5042F75D52"
+    assert sln.data['projects'][0]['proj'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPIWebRole\\FaceAPIWebRole.pyproj"
+    assert sln.data['projects'][0]['guid'] == "02BD14C6-B33A-4676-85A8-075CCF0AB7FC"
     assert sln.data['projects'][0]['location'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI"
-    assert sln.data['projects'][0]['sln'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln"
-
-
-def test_solution_parser_get_content():
-    from pyscripts.solution_parser import SolutionParser
-    sln = SolutionParser("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
-    sln.get_content()
-    sln.parse_content()
-    assert sln.data['version'] == 12.00, sln.data
-    assert sln.data['vsversion']['min'] == "10.0.40219.1"
-    assert sln.data['vsversion']['current'] == "14.0.25420.1"
-    assert sln.data['projects'][0]['name'] == "FaceAPI"
-    assert sln.data['projects'][0]['type'] == "CC5FD16D-436D-48AD-A40C-5A424C6E3E79"
-    assert sln.data['projects'][0]['ccproj'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.ccproj"
-    assert sln.data['projects'][0]['guid'] == "FA30B932-2CE6-414E-B3B7-8C028448A100"
-    assert sln.data['projects'][0]['location'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI"
-    assert sln.data['projects'][0]['sln'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln"
+    assert sln.data['sln'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln"
+    assert sln.data['csdef'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\ServiceDefinition.csdef"
+    assert sln.data['cscfg'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\ServiceConfiguration.Local.cscfg"
+    assert sln.data['csproj'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.ccproj"
