@@ -35,3 +35,15 @@ def pyscript(file):
     path = os.path.join(PYSCRIPTS, file)
     assert test_path(path, "f")
     return path
+
+
+def psscript(file):
+    path = os.path.join(PSSCRIPTS, file)
+    assert test_path(path, "f")
+    return path
+
+
+def cmdscript(file):
+    path = os.path.join(CMDSCRIPTS, file)
+    assert test_path(path, "f")
+    return path
