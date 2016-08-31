@@ -49,7 +49,7 @@ def test_solution_parser_feed():
 
 def test_solution_parser_feed_content():
     from pyscripts.solution_parser import SolutionParser
-    sln = SolutionParser("C:\\Windows\\explorer.exe")
+    sln = SolutionParser("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
     sln.feed(python_sln)
     sln.parse_content()
     assert sln.data['version'] == 12.00, sln.data
@@ -57,7 +57,23 @@ def test_solution_parser_feed_content():
     assert sln.data['vsversion']['current'] == "14.0.25420.1"
     assert sln.data['projects'][0]['name'] == "FaceAPI"
     assert sln.data['projects'][0]['type'] == "CC5FD16D-436D-48AD-A40C-5A424C6E3E79"
-    assert sln.data['projects'][0]['ccproj'] == "C:\\Windows\\FaceAPI.ccproj"
+    assert sln.data['projects'][0]['ccproj'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.ccproj"
     assert sln.data['projects'][0]['guid'] == "FA30B932-2CE6-414E-B3B7-8C028448A100"
-    assert sln.data['projects'][0]['location'] == "C:\\Windows"
-    assert sln.data['projects'][0]['sln'] == "C:\\Windows\\explorer.exe"
+    assert sln.data['projects'][0]['location'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI"
+    assert sln.data['projects'][0]['sln'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln"
+
+
+def test_solution_parser_get_content():
+    from pyscripts.solution_parser import SolutionParser
+    sln = SolutionParser("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
+    sln.get_content()
+    sln.parse_content()
+    assert sln.data['version'] == 12.00, sln.data
+    assert sln.data['vsversion']['min'] == "10.0.40219.1"
+    assert sln.data['vsversion']['current'] == "14.0.25420.1"
+    assert sln.data['projects'][0]['name'] == "FaceAPI"
+    assert sln.data['projects'][0]['type'] == "CC5FD16D-436D-48AD-A40C-5A424C6E3E79"
+    assert sln.data['projects'][0]['ccproj'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.ccproj"
+    assert sln.data['projects'][0]['guid'] == "FA30B932-2CE6-414E-B3B7-8C028448A100"
+    assert sln.data['projects'][0]['location'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI"
+    assert sln.data['projects'][0]['sln'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln"
