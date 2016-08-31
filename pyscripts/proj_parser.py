@@ -30,21 +30,21 @@ class ProjParser(object):
             raise TypeError(type(solution_data))
         self.location = solution_data.data['projects']
         self.xml = None
-        self.data = []
+        self.data = {}
 
     def parse(self):
         for i, project in enumerate(self.location):
-            self.parse_one(i)
+            self.parse_one(i, project['name'])
 
-    def parse_one(self, i):
+    def parse_one(self, i, projectname):
         self.get_content(i)
-        self.parse_content()
+        self.parse_content(projectname)
 
     def get_content(self, i):
         self.xml = DumbXMLParser(self.location[i]['proj'])
 
-    def parse_content(self):
+    def parse_content(self, projectname):
         project_refs = self.xml.tag_search("Project>")
         for ref in project_refs:
-            self.data.append(ref[1].replace("<Project>{", '').replace('}</Project>', '').strip())
+            self.data.setdefault(projectname, []).append(ref[1].replace("<Project>{", '').replace('}</Project>', '').strip())
 
