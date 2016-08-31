@@ -1,6 +1,6 @@
 import azure
-from pyscripts import util
 
+import util
 
 DEFAULTS = {
     "solutionName": "SP55",
