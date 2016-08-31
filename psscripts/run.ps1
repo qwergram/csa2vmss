@@ -91,7 +91,7 @@ if ($MODE -eq "vmss") {
         }
 
         # Stop the VM
-        if ($thisVM.Statuses[$thisVM.Statuses.Count - 1].Code -eq "PowerState/deallocated") { } else {
+        if ($thisVM.Statuses[$thisVM.Statuses.Count - 1].Code -eq "PowerState/deallocated") { } elseif ($true) { } else {
 
             Write-Output "Stopping $vm_name"
             $stop = Stop-AzureRmVM -ResourceGroupName ($ResourcePrefix + $solutionName) -Name $vm_name -Force
@@ -117,11 +117,10 @@ if ($MODE -eq "vmss") {
 
         $dns = ("p" + $vm_name.ToLower().replace("vm", ""))
         $newrg = New-AzureRmResourceGroup -Name $vm_name -Location $Location -Force
-        New-AzureRmResourceGroupDeployment -TemplateUri "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vmss-windows-customimage/azuredeploy.json" -probeRequestPath "/" -ResourceGroupName ($vm_name) -sourceImageVhdUri $vhdurl -adminUsername $VMAdmin -dnsNamePrefix $dns
+        New-AzureRmResourceGroupDeployment -TemplateUri "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vmss-windows-customimage/azuredeploy.json" -probeRequestPath "/" -ResourceGroupName ($vm_name) -sourceImageVhdUri $vhdurl -adminUsername $VMAdmin -dnsNamePrefix $dns -vmssName $dns -instanceCount 1 -vmSize "Standard_D1"
 
-
-        # Write-Output "Deleting Seed VM"
-        # Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Force
+        Write-Output "Deleting Seed VM"
+        Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Force
         
     }
 
