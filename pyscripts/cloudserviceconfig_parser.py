@@ -22,5 +22,22 @@ class CSConfigParser(object):
     def get_content(self):
         self.xml = util.load_xml(self.location)
 
+    def mess(self, text):
+        return "{http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration}" + text
+
     def parse_content(self):
-        pass
+        xml_data = {}
+        for role in self.xml.getchildren():
+            role_items = {key: value for key, value in role.items()}
+            rolename = role_items['name']
+            del role_items['name']
+            xml_data[rolename] = role_items
+            instances = int(role.find(self.mess("Instances")).items()[0][1])
+            xml_data[rolename]['instances'] = instances
+            for setting in role.find(self.mess("ConfigurationSettings")).getchildren():
+                setting = {key: value for key, value in setting.items()}
+                try:
+                    xml_data[rolename]['configurationsettings'][setting['name']] = setting['value']
+                except KeyError:
+                    xml_data[rolename]['configurationsettings'] = {setting['name']: setting['value']}
+        self.data = xml_data
