@@ -91,7 +91,7 @@ if ($MODE -eq "vmss") {
         }
 
         # Stop the VM
-        if ($thisVM.Statuses[$thisVM.Statuses.Count - 1].Code -eq "PowerState/deallocated") { } elseif ($true) { } else {
+        if ($thisVM.Statuses[$thisVM.Statuses.Count - 1].Code -eq "PowerState/deallocated") { } else {
 
             Write-Output "Stopping $vm_name"
             $stop = Stop-AzureRmVM -ResourceGroupName ($ResourcePrefix + $solutionName) -Name $vm_name -Force
