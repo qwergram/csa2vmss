@@ -108,6 +108,8 @@ def mkdir(path, dir_name, silent=True):
     except FileExistsError as e:
         if silent:
             raise FileExistsError(e)
+    except PermissionError:
+        raise PermissionError("Invalid Permissions. Try running ad admin?")
 
 
 def copytree(source_dir, dest_dir, silent=False, override=True):

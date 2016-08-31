@@ -2,19 +2,19 @@ import io
 import shutil
 import sys
 import os
+try:
+    from pyscripts import util
+except ImportError:
+    import util
 
-OUTPUT = os.path.join(os.getcwd(), '__save', 'vms')
+OUTPUT = util.VMPATH
 
 def make_save():
     try:
-        try:
-            os.mkdir(os.path.join(os.getcwd(), '__save'))
-        except FileExistsError:
-            shutil.rmtree(os.path.join(os.getcwd(), '__save'))
-            os.mkdir(os.path.join(os.getcwd(), '__save'))
-    except PermissionError:
-        print("\n\nInvalid Permissions. Try running as an administrator?")
-        sys.exit(1)
+        util.mkdir(OUTPUT, '', silent=False)
+    except FileExistsError:
+        util.rmtree(OUTPUT)
+        util.mkdir(OUTPUT, '', silent=False)
 
 def main(solution_path):
     print("A tool to seperate the Project into seperate directories")
