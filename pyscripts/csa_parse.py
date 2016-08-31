@@ -3,7 +3,7 @@ import os
 import sys
 import json
 import shutil
-from util import debug, SAVE_DIR
+from pyscripts.util import debug, SAVE_DIR
 
 
 class VSCloudService(object):
