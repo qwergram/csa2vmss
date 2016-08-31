@@ -118,3 +118,31 @@ def test_prescript_parse_csdef():
     csdef = get_csdef_data(sln)
     assert csdef.data['FaceAPIWebRole']['vmsize'] == 'Small'
     assert csdef.data['FaceAPIWebRole']['role'] == 'webrole'
+
+
+def test_proj_parser_get_content():
+    from pyscripts.proj_parser import ProjParser
+    from pyscripts.pre_script import get_solution_data
+    sln = get_solution_data("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
+    proj = ProjParser(sln)
+    proj.get_content(0)
+    assert isinstance(proj.xml.xml, list)
+
+
+def test_proj_parser_parse_one():
+    from pyscripts.proj_parser import ProjParser
+    from pyscripts.pre_script import get_solution_data
+    sln = get_solution_data("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
+    proj = ProjParser(sln)
+    proj.parse_one(0)
+    assert isinstance(proj.xml.xml, list)
+    assert proj.data == []
+    
+def test_proj_parser_parse_one_2():
+    from pyscripts.proj_parser import ProjParser
+    from pyscripts.pre_script import get_solution_data
+    sln = get_solution_data("C:\\Users\\v-nopeng\\code\\msft2016\\Contoso\\ContosoAdsCloudService.sln")
+    proj = ProjParser(sln)
+    proj.parse_one(0)
+    assert isinstance(proj.xml.xml, list)
+    assert proj.data == ["4362fc53-98e5-4e46-98a1-1f99ad74c13b", "9c837457-68c0-4b86-8cac-69f9b560d0d8"]
