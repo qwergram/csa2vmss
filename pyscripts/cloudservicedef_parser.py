@@ -37,6 +37,7 @@ class CSDefinitionParser(object):
             projectname = attributes['name']
             del attributes['name']
             xml_data[projectname] = {key: value for key, value in role.items()}
+            xml_data[projectname]['role'] = clean_xml_tag(role.tag)
             for setting in role.getchildren():
                 if clean_xml_tag(setting.tag) == 'endpoints':
                     xml_data[projectname]['endpoints'] = {}
