@@ -35,26 +35,26 @@ def test_path(path, mode="any"):
         raise ValueError("Invalid mode {}".format(mode))
 
 
-def pyscript(file):
+def pyscript(file, silent=True):
     path = os.path.join(PYSCRIPTS, file)
-    assert test_path(path, "f")
+    assert test_path(path, "f") or silent
     return path
 
 
-def psscript(file):
+def psscript(file, silent=True):
     path = os.path.join(PSSCRIPTS, file)
-    assert test_path(path, "f")
+    assert test_path(path, "f") or silent
     return path
 
 
-def cmdscript(file):
+def cmdscript(file, silent=True):
     path = os.path.join(CMDSCRIPTS, file)
-    assert test_path(path, "f")
+    assert test_path(path, "f") or silent
     return path
 
-def savefile(file):
+def savefile(file, silent=True):
     path = os.path.join(SAVE_DIR, file)
-    assert test_path(path, "a")
+    assert test_path(path, "a") or silent
     return path
 
 
