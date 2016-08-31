@@ -39,7 +39,7 @@ def save_solution_data(project_name, solution_object):
 
 def name_to_guid(project_name, solution, silent_fail=False):
     for project in solution['projects']:
-        if project['name'] == project_name == project_name:
+        if project['name'] == project_name or project['folder'].split('\\')[-1] == project_name:
             return project['guid']
     if silent_fail: return None
     raise FileNotFoundError(project_name, "not found")
