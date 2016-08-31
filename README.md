@@ -135,10 +135,18 @@ Once you have set up your VMs and sysprepped them, you can now run
 
 This will create VMSS out of your VMs.
 
+### Set ACL to public
+When the script asks for your password, you will need to go to azure and set all container
+access policies to public.
+
+### Enter new password
+Set your password for each VMSS
+
 # Common Issues
 ## `No connection could be made because the target machine actively refused it`
-If you run into this issue, it means your db connection strings are using "useDevelopmentStorage=true".
+If you run into this issue, it means your db connection strings are using `useDevelopmentStorage=true`.
 Correct them and try re-uploading the packages.
+
 ![Issue](http://imgur.com/4Ksrpk7.png)
 
 
