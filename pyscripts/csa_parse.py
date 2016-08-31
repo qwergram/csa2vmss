@@ -3,19 +3,7 @@ import os
 import sys
 import json
 import shutil
-
-CURRENT_PATH = os.getcwd()
-
-DEBUG = True
-
-def debug(*args, **kwargs):
-    if DEBUG:
-        print("[!]", *args, **kwargs)
-
-def load_xml(location):
-    import xml.etree.ElementTree
-    root = xml.etree.ElementTree.parse(location).getroot()
-    return root
+from util import debug, SAVE_DIR
 
 
 class VSCloudService(object):

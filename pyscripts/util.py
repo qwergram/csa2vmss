@@ -10,6 +10,19 @@ PSSCRIPTS = os.path.join(os.getcwd(), "psscripts")
 CMDSCRIPTS = os.path.join(os.getcwd(), "cmdscripts")
 VMPATH = os.path.join(SAVE_DIR, "vms")
 
+DEBUG = True
+
+
+def debug(*args, **kwargs):
+    if DEBUG:
+        print("[!]", *args, **kwargs)
+
+
+def load_xml(location):
+    import xml.etree.ElementTree
+    root = xml.etree.ElementTree.parse(location).getroot()
+    return root
+
 
 def parse_input(defaults=None):
     if defaults is None: defaults = {}
