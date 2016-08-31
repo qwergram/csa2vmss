@@ -90,4 +90,25 @@ def test_prescript_parse_solution():
     sln2 = SolutionParser("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
     sln2.parse()
     sln = get_solution_data("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
-    assert sln == sln2.data
+    assert sln.data == sln2.data
+
+
+def test_csdefp_get_content():
+    from pyscripts.pre_script import get_solution_data
+    from pyscripts.cloudservicedef_parser import CSDefinitionParser
+    sln = get_solution_data("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
+    csdef = CSDefinitionParser(sln)
+    csdef.get_content()
+    assert csdef.xml
+
+
+def test_csdefp_parse_content():
+    from pyscripts.pre_script import get_solution_data
+    from pyscripts.cloudservicedef_parser import CSDefinitionParser
+    sln = get_solution_data("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
+    csdef = CSDefinitionParser(sln)
+    csdef.parse()
+    assert csdef.data['FaceAPIWebRole']['vmsize'] == 'Small'
+    assert csdef.data['FaceAPIWebRole']['role'] == 'webrole'
+
+    
