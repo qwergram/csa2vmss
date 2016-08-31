@@ -82,6 +82,7 @@ def list_vms():
     return [(dir_name, os.path.join(VMPATH, dir_name)) for dir_name in os.listdir(VMPATH) if test_path(os.path.join(VMPATH, dir_name), 'd')]
 
 
-def save_json(path, python_object):
-    with io.open(path, 'w') as context:
+def save_json(python_object, path, filename=None):
+    if filename: path = os.path.join(path, filename)
+    with io.open(os.path.join(path), 'w') as context:
         context.write(json.dumps(python_object, indent=2, sort_keys=True))
