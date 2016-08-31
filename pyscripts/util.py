@@ -6,6 +6,7 @@ SAVE_DIR = os.path.join(os.getcwd(), "__save")
 PYSCRIPTS = os.path.join(os.getcwd(), "pyscripts")
 PSSCRIPTS = os.path.join(os.getcwd(), "psscripts")
 CMDSCRIPTS = os.path.join(os.getcwd(), "cmdscripts")
+VMPATH = os.path.join(SAVE_DIR, "vms")
 
 def parse_input(defaults=None):
     if defaults is None: defaults = {}
