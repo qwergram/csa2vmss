@@ -46,8 +46,12 @@ def name_to_guid(project_name, solution, silent_fail=False):
 
 
 def name_to_role(project_name, solution, silent_fail=False):
-    for project in solution['projects']:
+    for i, project in enumerate(solution['projects']):
         if project['name'] == project_name or project['folder'].split('\\')[-1] == project_name:
+            try:
+                return project['role_type']
+            except KeyError:
+                solution['projects'][i]['role_type'] = 'workerrole'
             return project['role_type']
     if silent_fail: return None
     raise FileNotFoundError(project_name, "not found")
