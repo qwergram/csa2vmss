@@ -46,6 +46,8 @@ def clean_binaries(path, strict=False):
         except FileNotFoundError as error:
             if strict:
                 raise error
+        except OSError:
+            os.popen("rmdir /S /Q \"{}\"".format(os.path.join(path, to_clean)))
 
 def copy_sln(src, dest, required_solutions):
     required_solutions = [sln[1] for sln in required_solutions]
