@@ -23,6 +23,9 @@ DEFAULTS = {
 def build_vm():
     if util.test_path(util.savefile(".confirm_a")):
         print("Service App already packaged")
+    else:
+        util.clean()
+
 
 
 def main(params):

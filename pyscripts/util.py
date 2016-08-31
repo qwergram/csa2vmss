@@ -65,5 +65,5 @@ def rmtree(path):
 def clean():
     for directory in os.listdir(SAVE_DIR):
         path = os.path.join(SAVE_DIR, directory)
-        if (directory != "vms") and (".confirm" not in directory) and (".csv" not in directory):
+        if (directory != "vms"):
             rmtree(path)
