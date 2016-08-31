@@ -203,7 +203,10 @@ class VSCloudService(object):
 
                     for setting in role.find(mess("ConfigurationSettings")).getchildren():
                         setting = {key: value for key, value in setting.items()}
-                        self.solution_data['projects'][i]['configurationsettings'][setting['name']] = setting['value']
+                        try:
+                            self.solution_data['projects'][i]['configurationsettings'][setting['name']] = setting['value']
+                        except KeyError:
+                            self.solution_data['projects'][i]['configurationsettings'] = {setting['name']: setting['value']}
 
     def _read_assembly_infos(self):
         "Read assembly files"
