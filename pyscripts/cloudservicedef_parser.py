@@ -18,11 +18,12 @@ class CSDefinitionParser(object):
             raise TypeError(type(solution_data))
         self.location = solution_data.data['csdef']
         self.xml = None
-        self.data
+        self.data = None
 
 
     def parse(self):
-        pass
+        self.get_content()
+        self.parse_content()
 
 
     def get_content(self):
