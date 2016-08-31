@@ -32,6 +32,7 @@ def parse_input_args(defaults=None):
         if item.startswith('-') and '=' in item:
             continue
         defaults.append(item)
+    return defaults
 
 
 def parse_input(defaults=None):
