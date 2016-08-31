@@ -82,3 +82,12 @@ def test_solution_parser_parse():
     assert sln.data['csdef'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\ServiceDefinition.csdef"
     assert sln.data['cscfg'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\ServiceConfiguration.Local.cscfg"
     assert sln.data['ccproj'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.ccproj"
+
+
+def test_prescript_parse_solution():
+    from pyscripts.pre_script import get_solution_data
+    from pyscripts.solution_parser import SolutionParser
+    sln2 = SolutionParser("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
+    sln2.parse()
+    sln = get_solution_data("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
+    assert sln == sln2.data
