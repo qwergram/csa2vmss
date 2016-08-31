@@ -77,11 +77,10 @@ class SolutionParser(object):
     def update_csdef(self, csdef):
         for i, project in enumerate(self.data['projects']):
             try:
-                self.data['projects'][i]['csdef'] = {}
                 for key, value in csdef.data[project['name']].items():
-                    self.data['projects'][i]['csdef'][key] = value
+                    self.data['projects'][i][key] = value
             except KeyError:
-                self.data['projects'][i]['csdef'] = None
+                self.data['projects'][i] = None
 
     def update_cscfg(self, cscfg):
         cscfg.data
