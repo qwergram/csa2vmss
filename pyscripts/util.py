@@ -108,3 +108,17 @@ def mkdir(path, dir_name, silent=True):
     except FileExistsError as e:
         if silent:
             raise FileExistsError(e)
+
+
+def copytree(source_dir, dest_dir, silent=False, override=True):
+    source_exists = test_path(source_dir)
+    dest_exists = test_path(dest_dir)
+    if source_exists and (override or not dest_exists):
+        try:
+            shutil.copytree(source_dir, dest_dir)
+        except shutil.Error:
+            os.popen("xcopy \"{}\" \"{}\" /E".format(source_dir, dest_dir))
+    elif not silent and not source_exists:
+        raise FileNotFoundError("{} does not exist".format(source_dir))
+    elif not silent and dest_exists:
+        raise FileExistsError("{} already exists".format(dest_dir))
