@@ -156,3 +156,17 @@ def test_solution_update_csdef():
     sln.update_csdef(csdef)
     assert sln.data['projects'][0]['role'] == 'webrole'
     assert sln.data['projects'][0]['vmsize'] == 'Small'
+
+
+def test_solution_update_cscfg():
+    from pyscripts.pre_script import get_solution_data, get_cscfg_data, get_csdef_data
+    sln = get_solution_data("C:\\Users\\v-nopeng\\code\\msft2016\\Contoso\\ContosoAdsCloudService.sln")
+    csdef = get_csdef_data(sln)
+    sln.update_csdef(csdef)
+    cscfg = get_cscfg_data(sln)
+    assert cscfg.data is not None
+    sln.update_cscfg(cscfg)
+    
+    assert sln.data['projects'][0]['role'] == 'webrole'
+    assert sln.data['projects'][0]['vmsize'] == 'Small'
+    assert sln.data['projects'][0]['instances'] == 1
