@@ -68,6 +68,7 @@ def rmtree(path, silent=False):
     elif not silent:
         raise FileNotFoundError("{} not found".format(path))
 
+
 def clean():
     for directory in os.listdir(SAVE_DIR):
         path = os.path.join(SAVE_DIR, directory)

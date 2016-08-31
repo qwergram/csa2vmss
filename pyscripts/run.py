@@ -1,5 +1,6 @@
 import azure
 
+import csa_parse
 import util
 
 DEFAULTS = {
@@ -20,15 +21,29 @@ DEFAULTS = {
 }
 
 
+def destroy_binaries(vm_path):
+    for file in ['env', 'obj', 'csx', 'ecf']:
+        util.rmtree(os.path.join(vm_path, file))
+
+
+def get_solution(vm_path):
+    solution = csa_parse.VSCloudService(project_path=vm_path)
+    solution.load_solution()
+    return solution
+
+
+def save_solution(vm_path, solution_object):
+    pass
+
 def build_vm():
     if util.test_path(util.savefile(".confirm_a")):
         print("Service App already packaged")
     else:
         util.clean()
         for vm_name, vm_path in util.list_vms():
-            print(vm_name)
-
-
+            destroy_binaries(vm_path)
+            solution = get_solution(vm_path)
+            save_solution(vm_)
 
 def main(params):
     if params['mode'] == 'vm':
