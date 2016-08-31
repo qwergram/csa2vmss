@@ -60,20 +60,6 @@ $SAVEPATH = ($pwd.Path + "\__save")
 
 if ($MODE -eq "vmss") {
     Write-Output "Getting Resource Storage Context"
-    # Source:
-    # https://azure.microsoft.com/en-us/documentation/articles/virtual-machines-windows-classic-createupload-vhd/
-    # https://azure.microsoft.com/en-us/documentation/articles/virtual-machines-windows-upload-image/
-    # http://www.codeisahighway.com/how-to-capture-your-own-custom-virtual-machine-image-under-azure-resource-manager-api/
-    # http://www.codeisahighway.com/how-to-use-azure-powershell-v1-0-x-to-capture-your-own-custom-virtual-machine-image-under-azure-resource-manager/
-
-    # Getting Storage Context
-    # $key = (Get-AzureRmStorageAccountKey -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()))[0].Value
-    # $blobContext = New-AzureStorageContext -StorageAccountName ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -StorageAccountKey $key
-
-    # Upload golden_image script to server
-    # $sysprepcmd = ($CMDSCRIPTS + "\creage_gold_vhd.cmd")
-    # $upload = Set-AzureStorageBlobContent -File $sysprepcmd -Container ($containerPrefix.ToLower() + $SolutionName.ToLower()) -Blob "golden.cmd" -Context $blobContext -Force
-
     $storageAccount = Get-AzureRmStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower())
 
     # Get all the VMs built by this script
