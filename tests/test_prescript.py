@@ -147,3 +147,12 @@ def test_proj_parser_parse_one_2():
     proj.parse_one(0)
     assert isinstance(proj.xml.xml, list)
     assert proj.data == ["4362fc53-98e5-4e46-98a1-1f99ad74c13b", "9c837457-68c0-4b86-8cac-69f9b560d0d8"]
+
+
+def test_solution_update_csdef():
+    from pyscripts.pre_script import get_solution_data, get_csdef_data
+    sln = get_solution_data("C:\\Users\\v-nopeng\\code\\msft2016\\Contoso\\ContosoAdsCloudService.sln")
+    csdef = get_csdef_data(sln)
+    sln.update_csdef(csdef)
+    assert sln.data['projects'][0]['role'] == 'webrole'
+    assert sln.data['projects'][0]['vmsize'] == 'Small'
