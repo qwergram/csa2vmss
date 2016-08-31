@@ -23,7 +23,7 @@ def main(solution_path):
         path = os.path.join(solution_path, directory)
         if os.path.isdir(path) and (directory.lower() not in ['backup', '.vs', 'packages']):
             project_choices.append((path, directory))
-    project_choices.append((solution_path, '.'))
+    # project_choices.append((solution_path, '.'))
     commons = select_commons(project_choices)
     webroles = select_webroles(project_choices, commons)
     workerroles = select_workerroles(project_choices, commons + webroles)
