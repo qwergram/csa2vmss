@@ -3,8 +3,12 @@ import os
 import sys
 import json
 import shutil
-from pyscripts import util
-from pyscripts.util import debug, SAVE_DIR, load_xml
+try:
+    from pyscripts import util
+    from pyscripts.util import debug, SAVE_DIR, load_xml
+except ImportError:
+    import util
+    from util import debug, SAVE_DIR, load_xml
 
 
 class VSCloudService(object):
@@ -289,13 +293,13 @@ class VSCloudService(object):
     def _get_cloud_service_package(self):
         cspkg_location = self.solution_data['parent']['cspkg']['location']
         self.solution_data['parent']['cspkg']['contents'] = {}
-        destination = os.path.join(CURRENT_PATH, '__save', 'cspkg', '')
+        destination = os.path.join(SAVE_DIR, 'cspkg', '')
         try:
             os.mkdir(destination)
         except FileExistsError:
             shutil.rmtree(destination)
         arguments = "-target %s -destination %s" % (cspkg_location, destination)
-        execute_this = ("powershell -ExecutionPolicy Unrestricted -File \"%s\" %s" % (os.path.join(CURRENT_PATH, 'psscripts', 'unzip.ps1'), arguments))
+        execute_this = ("powershell -ExecutionPolicy Unrestricted -File \"%s\" %s" % (util.psscript("unzip.ps1"), arguments))
         os.system(execute_this)
         for file in os.listdir(destination):
             self.solution_data['parent']['cspkg'].setdefault(file.split('.')[-1], []).append(os.path.join(cspkg_location, file))

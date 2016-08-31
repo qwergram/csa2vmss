@@ -30,3 +30,6 @@ def test_csa__is_valid_solution():
     from pyscripts.util import POST_TEST_ENV
     for test_unit in get_test_units():
         sln_data = test_unit._read_sln_data()
+        assert sln_data.get('sln_version')
+        assert sln_data.get('min_vs_version')
+        assert sln_data.get('vs_version')
