@@ -58,12 +58,15 @@ def savefile(file, silent=True):
     return path
 
 
-def rmtree(path):
-    try:
-        shutil.rmtree(path)
-    except OSError:
-        os.popen("rmdir /S /Q \"{}\"".format(path))
-
+def rmtree(path, silent=False):
+    exists = test_path(path)
+    if exists:
+        try:
+            shutil.rmtree(path)
+        except OSError:
+            os.popen("rmdir /S /Q \"{}\"".format(path))
+    elif not silent:
+        raise FileNotFoundError("{} not found".format(path))
 
 def clean():
     for directory in os.listdir(SAVE_DIR):
