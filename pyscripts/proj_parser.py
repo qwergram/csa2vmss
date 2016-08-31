@@ -20,7 +20,7 @@ class DumbXMLParser(object):
         for i, line in enumerate(self.xml):
             if "<{}".format(tag.lower()) in line.strip().lower():
                 results.append((i, line))
-
+        return results
 
 
 class ProjParser(object):
