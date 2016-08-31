@@ -92,4 +92,9 @@ class SolutionParser(object):
                 self.data['projects'][i]["ignore"] = True
 
     def update_proj(self, proj):
-        proj.data
+        for i, project in enumerate(self.data['projects']):
+            try:
+                for key, value in proj.data[project['name']].items():
+                    self.data['projects'][i][key] = value
+            except KeyError:
+                self.data['projects'][i]['ignore'] = True
