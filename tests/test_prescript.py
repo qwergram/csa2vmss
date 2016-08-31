@@ -170,3 +170,18 @@ def test_solution_update_cscfg():
     assert sln.data['projects'][0]['role'] == 'webrole'
     assert sln.data['projects'][0]['vmsize'] == 'Small'
     assert sln.data['projects'][0]['instances'] == 1
+
+def test_solution_update_proj():
+    from pyscripts.pre_script import get_solution_data, get_cscfg_data, get_csdef_data, get_proj_data
+    sln = get_solution_data("C:\\Users\\v-nopeng\\code\\msft2016\\Contoso\\ContosoAdsCloudService.sln")
+    csdef = get_csdef_data(sln)
+    sln.update_csdef(csdef)
+    cscfg = get_cscfg_data(sln)
+    sln.update_cscfg(cscfg)
+    proj = get_proj_data(sln)
+    sln.update_proj(proj)
+
+    assert sln.data['projects'][0]['role'] == 'webrole'
+    assert sln.data['projects'][0]['vmsize'] == 'Small'
+    assert sln.data['projects'][0]['instances'] == 1
+    assert sln.data['projects'][0]['references'] == ['4362fc53-98e5-4e46-98a1-1f99ad74c13b', '9c837457-68c0-4b86-8cac-69f9b560d0d8']
