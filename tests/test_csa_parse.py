@@ -10,3 +10,5 @@ def test_csa_init():
             assert x.guid_dir
             assert x.solution_data == {}
             assert x.project_path == os.path.join(POST_TEST_ENV, language, test_unit)
+            assert x.write_privs
+            x.write_privs = False

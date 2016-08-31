@@ -22,6 +22,7 @@ class VSCloudService(object):
         debug("Initializing VSProject")
         self.project_path = project_path
         self.solution_data = {}
+        self.write_privs = True
 
     def _is_valid_project(self):
         "Check the validity of the project"
