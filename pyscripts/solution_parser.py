@@ -72,6 +72,7 @@ class SolutionParser(object):
                     "proj": util.join_path(location, proj),
                     "guid": guid[1:-1],
                     "location": location,
+                    "ignore": False,
                 })
 
     def update_csdef(self, csdef):
@@ -80,7 +81,7 @@ class SolutionParser(object):
                 for key, value in csdef.data[project['name']].items():
                     self.data['projects'][i][key] = value
             except KeyError:
-                pass
+                self.data['projects'][i]["ignore"] = True
 
     def update_cscfg(self, cscfg):
         for i, project in enumerate(self.data['projects']):
@@ -88,7 +89,7 @@ class SolutionParser(object):
                 for key, value in cscfg.data[project['name']].items():
                     self.data['projects'][i][key] = value
             except KeyError:
-                pass
+                self.data['projects'][i]["ignore"] = True
 
     def update_proj(self, proj):
         proj.data
