@@ -27,7 +27,6 @@ class SolutionParser(object):
     def parse(self):
         self.get_content()
         self.parse_content()
-        self.fetch_csdef
 
     def get_content(self):
         with io.open(self.path) as context:
