@@ -1,6 +1,8 @@
-import sys
+import io
+import json
 import os
 import shutil
+import sys
 
 SAVE_DIR = os.path.join(os.getcwd(), "__save")
 PYSCRIPTS = os.path.join(os.getcwd(), "pyscripts")
@@ -78,3 +80,8 @@ def clean():
 
 def list_vms():
     return [(dir_name, os.path.join(VMPATH, dir_name)) for dir_name in os.listdir(VMPATH) if test_path(os.path.join(VMPATH, dir_name), 'd')]
+
+
+def save_json(path, python_object):
+    with io.open(path, 'w') as context:
+        context.write(json.dumps(python_object, indent=2, sort_keys=True))
