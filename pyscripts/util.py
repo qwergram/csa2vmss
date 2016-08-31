@@ -1,4 +1,10 @@
 import sys
+import os
+
+SAVE_DIR = os.path.join(os.getcwd(), "__save")
+PYSCRIPTS = os.path.join(os.getcwd(), "pyscripts")
+PSSCRIPTS = os.path.join(os.getcwd(), "psscripts")
+CMDSCRIPTS = os.path.join(os.getcwd(), "cmdscripts")
 
 def parse_input(defaults=None):
     if defaults is None: defaults = {}
@@ -11,3 +17,21 @@ def parse_input(defaults=None):
             elif value.lower() == "false": value = False
             defaults[key] = value
     return defaults
+
+def test_path(path, mode="any"):
+    isdir = os.path.isdir(path)
+    isfile = os.path.isfile(path)
+    if mode[0] == "a":
+        return isdir or isfile
+    elif mode[0] == "f":
+        return isfile
+    elif mode[0] == "d":
+        return isdir
+    else:
+        raise ValueError("Invalid mode {}".format(mode))
+
+
+def pyscript(file):
+    path = os.path.join(PYSCRIPTS, file)
+    assert test_path(path, "f")
+    return path
