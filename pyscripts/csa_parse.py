@@ -21,8 +21,9 @@ class VSCloudService(object):
 
     def __init__(self, project_path):
         debug("Initializing VSProject")
+        if not util.test_path(project_path, 'd'):
+            raise FileNotFoundError("Project not found {}".format(project_path))
         self.project_path = project_path
-        assert util.test_path(self.project_path, 'd')
         self.solution_data = {}
         self.write_privs = True
 
