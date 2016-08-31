@@ -4,6 +4,7 @@ try:
 except ImportError:
     import util
     import solution_parser
+import io
 
 class DumbXMLParser(object):
 
@@ -15,9 +16,10 @@ class DumbXMLParser(object):
             self.xml = context.readlines()
 
     def tag_search(self, tag):
-        for line in self.xml:
+        results = []
+        for i, line in enumerate(self.xml):
             if "<{}".format(tag.lower()) in line.strip().lower():
-                return line
+                results.append((i, line))
 
 
 
@@ -26,19 +28,23 @@ class ProjParser(object):
     def __init__(self, solution_data):
         if not isinstance(solution_data, solution_parser.SolutionParser):
             raise TypeError(type(solution_data))
-        self.location = solution_data.data['cscfg']
+        self.location = solution_data.data['projects']
         self.xml = None
-        self.data = None
+        self.data = []
 
     def parse(self):
-        self.get_content()
+        for i, project in enumerate(self.location):
+            self.parse_one(i)
+
+    def parse_one(self, i):
+        self.get_content(i)
         self.parse_content()
 
-    def get_content(self):
-        self.xml = util.load_xml(self.location)
-
-    def mess(self, text):
-        return "{http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration}" + text
+    def get_content(self, i):
+        self.xml = DumbXMLParser(self.location[i]['proj'])
 
     def parse_content(self):
-        pass
+        project_refs = self.xml.tag_search("Project>")
+        for ref in project_refs:
+            self.data.append(ref.replace("<Project>{", '').replace('}</Project>', ''))
+
