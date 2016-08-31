@@ -124,3 +124,12 @@ def copytree(source_dir, dest_dir, silent=False, override=True):
         raise FileNotFoundError("{} does not exist".format(source_dir))
     elif not silent and dest_exists:
         raise FileExistsError("{} already exists".format(dest_dir))
+
+
+def join_path(*args):
+    to_return = []
+    for arg in args:
+        if arg.endswith(":"):
+            arg += os.sep
+        to_return.append(arg)
+    return os.path.join(*to_return)
