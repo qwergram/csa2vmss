@@ -1,5 +1,6 @@
 import sys
 import os
+import shutil
 
 SAVE_DIR = os.path.join(os.getcwd(), "__save")
 PYSCRIPTS = os.path.join(os.getcwd(), "pyscripts")
@@ -52,3 +53,17 @@ def savefile(file):
     path = os.path.join(SAVE_DIR, file)
     assert test_path(path, "a")
     return path
+
+
+def rmtree(path):
+    try:
+        shutil.rmtree(path)
+    except OSError:
+        os.popen("rmdir /S /Q \"{}\"".format(path))
+
+
+def clean():
+    for directory in os.listdir(SAVE_DIR):
+        path = os.path.join(SAVE_DIR, directory)
+        if (directory != "vms") and (".confirm" not in directory) and (".csv" not in directory):
+            rmtree(path)
