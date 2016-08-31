@@ -1,9 +1,11 @@
 import os
-
 import azure
-
-import csa_parse
-import util
+try:
+    from pyscripts import util
+    from pyscripts import csa_parse
+except ImportError:
+    import csa_parse
+    import util
 
 DEFAULTS = {
     "solutionName": "SP55",
@@ -56,9 +58,10 @@ def build_vm():
 def main(params):
     if params['mode'] == 'vm':
         print("Running in VM mode")
-        build_vm()
     elif params['mode'] == 'vmss':
         print("Running in VMss mode")
+    elif params['mode'] == 'pre':
+        print("Running pre script")
         
 
 
