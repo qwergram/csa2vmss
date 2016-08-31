@@ -133,3 +133,8 @@ def join_path(*args):
             arg += os.sep
         to_return.append(arg)
     return os.path.join(*to_return)
+
+
+def listdirpaths(path):
+    for file in os.listdir(path):
+        yield join_path(path, file)
