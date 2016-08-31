@@ -15,11 +15,18 @@ except ImportError:
 def get_solution_data(location):
     solution = solution_parser.SolutionParser(location)
     solution.parse()
-    return solution.data
+    return solution
+
+
+def get_csdef_data(solution):
+    csdef = cloudservicedef_parser.CSDefinitionParser(solution)
+    csdef.parse()
+    return csdef
 
 
 def main(location):
-    jsonblob = get_solution_data(location)
+    solution = get_solution_data(location)
+    csdef = get_csdef_data(solution)
 
 
 
