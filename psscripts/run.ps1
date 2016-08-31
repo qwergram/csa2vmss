@@ -4,7 +4,7 @@ Param(
     [string]
     $MODE,
     [string] # The new Solution Name
-    $SolutionName = "SP53",
+    $SolutionName = "SP54",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "RG",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
