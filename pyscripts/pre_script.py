@@ -39,7 +39,7 @@ def save_project_directory(path):
 
 
 def clean_binaries(path, strict=False):
-    for to_clean in ["bin", "obj", "backup", "env"]:
+    for to_clean in ["bin", "obj", "backup"]:
         print("Cleaning project of", os.path.join(path, to_clean))
         try:
             shutil.rmtree(os.path.join(path, to_clean))

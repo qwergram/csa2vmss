@@ -150,7 +150,7 @@ def clean_roots(vm_path):
         if os.path.isdir(item_path):
             for subdir in os.listdir(item_path):
                 subdir_path = os.path.join(item_path, subdir)
-                if subdir.lower() in ('env', 'obj', 'csx', 'ecf'):
+                if subdir.lower() in ('env', 'obj', 'csx', 'ecf', 'bin'):
                     try:
                         shutil.rmtree(subdir_path)
                     except OSError:
