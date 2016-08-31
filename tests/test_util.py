@@ -1,5 +1,3 @@
-
-
 def test_parse_input():
     from pyscripts.util import parse_input
     import sys
@@ -12,3 +10,17 @@ def test_parse_input():
     assert results['float'] == 234.23
     assert results['bool1'] is True
     assert results['bool2'] is False
+
+
+def test_test_path():
+    import os
+    from pyscripts.util import test_path
+    assert test_path(os.getcwd(), 'a')
+    assert test_path(os.getcwd(), 'd')
+    assert test_path(os.getcwd(), 'f') is False
+
+
+def test_pyscripts():
+    from pyscripts.util import pyscript, PYSCRIPTS
+    import os
+    assert pyscript("run.py") == os.path.join(PYSCRIPTS, "run.py") 
