@@ -35,7 +35,7 @@ def get_cscfg_data(solution):
 
 
 def get_proj_data(solution):
-    proj = proj_parser(solution)
+    proj = proj_parser.ProjParser(solution)
     proj.parse()
     return proj
 
