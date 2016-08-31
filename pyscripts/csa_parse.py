@@ -3,7 +3,8 @@ import os
 import sys
 import json
 import shutil
-from pyscripts.util import debug, SAVE_DIR
+from pyscripts import util
+from pyscripts.util import debug, SAVE_DIR, load_xml
 
 
 class VSCloudService(object):
@@ -21,6 +22,7 @@ class VSCloudService(object):
     def __init__(self, project_path):
         debug("Initializing VSProject")
         self.project_path = project_path
+        assert util.test_path(self.project_path, 'd')
         self.solution_data = {}
         self.write_privs = True
 
@@ -41,8 +43,12 @@ class VSCloudService(object):
         and grab the important data.
         """
         debug("Reading .sln file")
-        sln = [file for file in os.listdir(self.project_path) if file.endswith('.sln')][0]
+        return self.project_path
+        sln = [file for file in os.listdir(self.project_path) if file.endswith('.sln')]
+        return sln
         sln_location = os.path.join(self.project_path, sln)
+        return sln_location
+
         stats = {"projects": [], "parent": {}}
         parent_found = False
         with io.open(sln_location) as sln:
