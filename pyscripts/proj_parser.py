@@ -46,5 +46,5 @@ class ProjParser(object):
     def parse_content(self):
         project_refs = self.xml.tag_search("Project>")
         for ref in project_refs:
-            self.data.append(ref.replace("<Project>{", '').replace('}</Project>', ''))
+            self.data.append(ref[1].replace("<Project>{", '').replace('}</Project>', '').strip())
 
