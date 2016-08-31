@@ -26,6 +26,14 @@ def load_xml(location):
     return root
 
 
+def parse_input_args(defaults=None):
+    if defaults is None: defaults = []
+    for item in sys.argv[1:]:
+        if item.startswith('-') and '=' in item:
+            continue
+        defaults.append(item)
+
+
 def parse_input(defaults=None):
     if defaults is None: defaults = {}
     for item in sys.argv[1:]:
