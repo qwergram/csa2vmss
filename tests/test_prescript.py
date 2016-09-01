@@ -273,6 +273,19 @@ def test_build_project_py():
 
 def test_prescript_create_save_cs():
     from pyscripts.pre_script import create_save, parse_solution
+    from pyscripts import util
     cs_json_blob = parse_solution("C:\\Users\\v-nopeng\\code\\msft2016\\Contoso\\ContosoAdsCloudService.sln")
     assert 'projects' in cs_json_blob.keys()
     create_save(cs_json_blob)
+    assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid'], 'd')
+    assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][1]['guid'], 'd')
+
+
+def test_prescript_create_save_py():
+    from pyscripts.pre_script import create_save, parse_solution
+    from pyscripts import util
+    cs_json_blob = parse_solution("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
+    assert 'projects' in cs_json_blob.keys()
+    create_save(cs_json_blob)
+    assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid'], 'd')
+    assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][1]['guid'], 'd')
