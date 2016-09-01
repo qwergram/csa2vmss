@@ -185,3 +185,24 @@ def test_solution_update_proj():
     assert sln.data['projects'][0]['vmsize'] == 'Small'
     assert sln.data['projects'][0]['instances'] == 1
     assert sln.data['projects'][0]['references'] == ['4362fc53-98e5-4e46-98a1-1f99ad74c13b', '9c837457-68c0-4b86-8cac-69f9b560d0d8']
+
+def test_create_get_guids():
+    from pyscripts.util import test_path
+    from pyscripts.pre_script import get_guids, parse_solution
+    cs_json_blob = parse_solution("C:\\Users\\v-nopeng\\code\\msft2016\\Contoso\\ContosoAdsCloudService.sln")
+    py_json_blob = parse_solution("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
+    py_json_guids = get_guids(py_json_blob)
+    cs_json_guids = get_guids(cs_json_blob)
+
+    assert "02BD14C6-B33A-4676-85A8-075CCF0AB7FC" in py_json_guids.keys()
+    assert "3130CF5E-BA53-4129-A5C2-ECC9ACC3D73F" in py_json_guids.keys()
+    assert len(py_json_guids.keys()) == 2
+
+    assert "92A8015A-1CCC-4527-B890-F604A2E764ED" in cs_json_guids.keys()
+    assert "9C837457-68C0-4B86-8CAC-69F9B560D0D8" in cs_json_guids.keys()
+    assert len(cs_json_guids.keys())
+
+
+    
+
+    

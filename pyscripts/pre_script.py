@@ -58,12 +58,21 @@ def build_save_directory():
         util.mkdir(util.VMPATH)
 
 
-def create_save(location):
-    build_save_directory()    
+def get_guids(json_blob):
+    projects = {}
+    for project in json_blob['projects']:
+        projects[project['guid']] = project
+    return projects
+
+
+def create_save(json_blob):
+    build_save_directory()
+    guid_json = get_guids(json_blob)
 
 
 def main(location):
     json_blob = parse_solution(location)
+    get_guids(json_blob)
 
     
 
