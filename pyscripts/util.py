@@ -132,6 +132,9 @@ def copytree(source_dir, dest_dir, silent=False, override=True):
             shutil.copytree(source_dir, dest_dir)
         except shutil.Error:
             os.popen("xcopy \"{}\" \"{}\" /E".format(source_dir, dest_dir))
+        except FileExistsError:
+            rmtree(dest_dir)
+            copytree(source_dir, dest_dir, silent, override)
     elif not silent and not source_exists:
         raise FileNotFoundError("{} does not exist".format(source_dir))
     elif not silent and dest_exists:
