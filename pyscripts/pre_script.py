@@ -67,7 +67,19 @@ def get_guids(json_blob):
 
 
 def build_project(guid, project_json):
-    raise NotImplementedError
+    util.mkdir(util.SAVE_DIR, guid)
+
+    project_json = get_guids(project_json)
+    this_project = project_json[guid]
+    references = this_project['references']
+    if references:
+        util.copytree(this_project['location'], util.join_path(util.SAVE_DIR, guid, this_project['name']))
+        for reference in references:
+            util.copytree(project_json[reference]['location'], util.join_path(util.SAVE_DIR, guid, project_json[reference]['name']))
+    else:
+        util.copytree(this_project['location'], util.join_path(util.SAVE_DIR, guid))
+
+    return project_json
 
 
 def create_save(json_blob):
@@ -79,7 +91,7 @@ def create_save(json_blob):
 
 def main(location):
     json_blob = parse_solution(location)
-    get_guids(json_blob)
+    create_save(json_blob)
 
     
 
