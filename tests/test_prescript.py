@@ -118,6 +118,7 @@ def test_prescript_parse_csdef():
     csdef = get_csdef_data(sln)
     assert csdef.data['FaceAPIWebRole']['vmsize'] == 'Small'
     assert csdef.data['FaceAPIWebRole']['role'] == 'webrole'
+    
 
 
 def test_proj_parser_get_content():
@@ -156,6 +157,7 @@ def test_solution_update_csdef():
     sln.update_csdef(csdef)
     assert sln.data['projects'][0]['role'] == 'webrole'
     assert sln.data['projects'][0]['vmsize'] == 'Small'
+    assert sln.data['projects'][0]['ignore'] is False, sln.data['projects'][0]['name'] 
 
 
 def test_solution_update_csdef_py():
@@ -165,7 +167,7 @@ def test_solution_update_csdef_py():
     sln.update_csdef(csdef)
     assert sln.data['projects'][0]['role'] == 'webrole'
     assert sln.data['projects'][0]['vmsize'] == 'Small'
-    assert not sln.data['projects'][0].get("ignore")
+    assert sln.data['projects'][0]['ignore'] is False, sln.data['projects'][0]['name'] 
     assert len(sln.data['projects']) == 2
 
 
@@ -181,21 +183,32 @@ def test_solution_update_cscfg():
     assert sln.data['projects'][0]['role'] == 'webrole'
     assert sln.data['projects'][0]['vmsize'] == 'Small'
     assert sln.data['projects'][0]['instances'] == 1
+    assert sln.data['projects'][0]['ignore'] is False, sln.data['projects'][0]['name'] 
 
 def test_solution_update_proj():
     from pyscripts.pre_script import get_solution_data, get_cscfg_data, get_csdef_data, get_proj_data
     sln = get_solution_data("C:\\Users\\v-nopeng\\code\\msft2016\\Contoso\\ContosoAdsCloudService.sln")
     csdef = get_csdef_data(sln)
     sln.update_csdef(csdef)
+    assert sln.data['projects'][0]['ignore'] is False, sln.data['projects'][0]['name'] 
+    assert sln.data['projects'][1]['ignore'] is False, sln.data['projects'][1]['name'] 
+    assert sln.data['projects'][2]['ignore'], sln.data['projects'][2]['name'] 
     cscfg = get_cscfg_data(sln)
     sln.update_cscfg(cscfg)
+    assert sln.data['projects'][0]['ignore'] is False, sln.data['projects'][0]['name'] 
+    assert sln.data['projects'][1]['ignore'] is False, sln.data['projects'][1]['name'] 
+    assert sln.data['projects'][2]['ignore'], sln.data['projects'][2]['name']
     proj = get_proj_data(sln)
     sln.update_proj(proj)
+    assert sln.data['projects'][0]['ignore'] is False, sln.data['projects'][0]['name'] 
+    assert sln.data['projects'][1]['ignore'] is False, sln.data['projects'][1]['name'] 
+    assert sln.data['projects'][2]['ignore'], sln.data['projects'][2]['name'] 
 
     assert sln.data['projects'][0]['role'] == 'webrole'
     assert sln.data['projects'][0]['vmsize'] == 'Small'
     assert sln.data['projects'][0]['instances'] == 1
     assert sln.data['projects'][0]['references'] == ['4362fc53-98e5-4e46-98a1-1f99ad74c13b', '9c837457-68c0-4b86-8cac-69f9b560d0d8']
+    assert len(sln.data['projects']) == 3
 
 
 def test_solution_update_proj_py():
@@ -213,8 +226,8 @@ def test_solution_update_proj_py():
     assert sln.data['projects'][0]['instances'] == 1
     assert sln.data['projects'][0].get('references') is None
     assert len(sln.data['projects']) == 2
-    assert sln.data['projects'][0]['ignore'] is False
-    assert sln.data['projects'][1]['ignore'] is False
+    assert sln.data['projects'][0]['ignore'] is False, sln.data['projects'][0]['name'] 
+    assert sln.data['projects'][1]['ignore'] is False, sln.data['projects'][1]['name'] 
 
 
 def test_create_get_guids_py():
