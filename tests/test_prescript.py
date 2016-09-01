@@ -253,10 +253,19 @@ def test_get_guids_cs():
 
 
 def test_build_project_cs():
-    from pyscripts.pre_script import build_project, get_guids, parse_solution
+    from pyscripts.pre_script import build_project, parse_solution
     from pyscripts import util
     cs_json_blob = parse_solution("C:\\Users\\v-nopeng\\code\\msft2016\\Contoso\\ContosoAdsCloudService.sln")
-    result = build_project(cs_json_blob['projects'][0]['guid'], cs_json_blob)
+    build_project(cs_json_blob['projects'][0]['guid'], cs_json_blob)
     assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid'] + "\\ContosoAdsWeb", 'd')
     assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid'] + "\\ContosoAdsCommon", 'd')
-    assert len(list(util.listdirpaths("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid']))) == 3  
+    assert len(list(util.listdirpaths("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid']))) == 3
+
+
+def test_build_project_py():
+    from pyscripts.pre_script import build_project, parse_solution
+    from pyscripts import util
+    cs_json_blob = parse_solution("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
+    build_project(cs_json_blob['projects'][0]['guid'], cs_json_blob)
+    assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid'], 'd')
+    assert len(list(util.listdirpaths("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid']))) > 1
