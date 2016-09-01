@@ -118,7 +118,7 @@ def mkdir(path, dir_name=None, silent=True):
         else:
             os.mkdir(path)
     except FileExistsError as e:
-        if silent:
+        if not silent:
             raise FileExistsError(e)
     except PermissionError:
         raise PermissionError("Invalid Permissions. Try running ad admin?")
