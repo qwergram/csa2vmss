@@ -58,10 +58,10 @@ def build_save_directory():
         util.mkdir(util.VMPATH)
 
 
-def get_guids(json_blob):
+def get_guids(json_blob, all=False):
     projects = {}
     for project in json_blob['projects']:
-        if project['ignore'] is False:
+        if (project['ignore'] is False) or all:
             projects[project['guid']] = project
     return projects
 
@@ -69,7 +69,7 @@ def get_guids(json_blob):
 def build_project(guid, project_json):
     util.mkdir(util.SAVE_DIR, guid)
 
-    project_json = get_guids(project_json)
+    project_json = get_guids(project_json, all=True)
     this_project = project_json[guid]
     references = this_project['references']
     if references:
