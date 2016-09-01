@@ -3,9 +3,11 @@ import azure
 try:
     from pyscripts import util
     from pyscripts import csa_parse
+    from pyscripts import pre_script
 except ImportError:
     import csa_parse
     import util
+    import pre_script
 
 DEFAULTS = {
     "solutionName": "SP55",
@@ -69,5 +71,5 @@ def main(params):
 
 if __name__ == "__main__":
     PARAMS = util.parse_input(DEFAULTS)
-    assert PARAMS['mode'] in ['vmss', 'vm'], "Invalid Mode!"
+    assert PARAMS['mode'] in ['vmss', 'vm', 'pre'], "Invalid Mode!"
     main(PARAMS)
