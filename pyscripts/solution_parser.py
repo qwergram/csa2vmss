@@ -97,6 +97,6 @@ class SolutionParser(object):
     def update_proj(self, proj):
         for i, project in enumerate(self.data['projects']):
             try:
-                self.data['projects'][i]['references'] = proj.data[project['name']]
+                self.data['projects'][i]['references'] = [ref.upper() for ref in proj.data[project['name']]]
             except KeyError:
                 self.data['projects'][i]['references'] = []
