@@ -51,8 +51,20 @@ def parse_solution(location):
     return solution.data
 
 
+def build_save_directory():
+    if not util.test_path(util.SAVE_DIR, 'd'):
+        util.mkdir(util.SAVE_DIR)
+    if not util.test_path(util.VMPATH):
+        util.mkdir(util.VMPATH)
+
+
+def create_save(location):
+    build_save_directory()    
+
+
 def main(location):
-    json_blob = parse_solution
+    json_blob = parse_solution(location)
+
     
 
 
