@@ -40,7 +40,7 @@ def get_proj_data(solution):
     return proj
 
 
-def main(location):
+def parse_solution(location):
     solution = get_solution_data(location)
     csdef = get_csdef_data(solution)
     cscfg = get_cscfg_data(solution)
@@ -48,7 +48,11 @@ def main(location):
     solution.update_csdef(csdef)
     solution.update_cscfg(cscfg)
     solution.update_proj(proj)
-    jsonblob = solution.data
+    return solution.data
+
+
+def main(location):
+    json_blob = parse_solution
     
 
 
