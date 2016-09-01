@@ -66,20 +66,24 @@ def get_guids(json_blob, all=False):
     return projects
 
 
+def create_properties(guid, project_json):
+    util.save_json(project_json, util.join_path(util.SAVE_DIR, guid), 'ctv.properties')
+
+
 def build_project(guid, project_json):
     util.mkdir(util.SAVE_DIR, guid)
 
-    project_json = get_guids(project_json, all=True)
-    this_project = project_json[guid]
+    project_guid_json = get_guids(project_json, all=True)
+    this_project = project_guid_json[guid]
     references = this_project['references']
     if references:
         util.copytree(this_project['location'], util.join_path(util.SAVE_DIR, guid, this_project['name']))
         for reference in references:
-            util.copytree(project_json[reference]['location'], util.join_path(util.SAVE_DIR, guid, project_json[reference]['name']))
+            util.copytree(project_guid_json[reference]['location'], util.join_path(util.SAVE_DIR, guid, project_guid_json[reference]['name']))
     else:
         util.copytree(this_project['location'], util.join_path(util.SAVE_DIR, guid))
 
-    return project_json
+    return project_guid_json
 
 
 def create_save(json_blob):
@@ -87,7 +91,7 @@ def create_save(json_blob):
     guid_json = get_guids(json_blob)
     for guid, project in guid_json.items():
         build_project(guid, json_blob)
-
+        create_properties(guid, project)
 
 def main(location):
     json_blob = parse_solution(location)
