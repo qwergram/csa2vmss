@@ -61,13 +61,20 @@ def build_save_directory():
 def get_guids(json_blob):
     projects = {}
     for project in json_blob['projects']:
-        projects[project['guid']] = project
+        if project['ignore'] is False:
+            projects[project['guid']] = project
     return projects
+
+
+def build_project(guid, project_json):
+    raise NotImplementedError
 
 
 def create_save(json_blob):
     build_save_directory()
     guid_json = get_guids(json_blob)
+    for guid, project in guid_json.items():
+        build_project(guid, project)
 
 
 def main(location):
