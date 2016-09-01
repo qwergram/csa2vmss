@@ -61,6 +61,9 @@ class SolutionParser(object):
                 proj = parse[5]
                 guid = parse[7]
                 location = util.join_path(*self.path.split("\\")[:-1])
+                proj_dir = proj.split("\\")[:-1] if len(proj.split("\\")) > 1 else proj
+                proj_location = util.join_path(location, util.join_path(*proj_dir))
+                self.data['location'] = location
                 if type_guid[1:-1] == "CC5FD16D-436D-48AD-A40C-5A424C6E3E79":
                     self.data['cscfg'] = self.fetch_cscfg(util.join_path(location, proj))
                     self.data['csdef'] = self.fetch_csdef(util.join_path(location, proj))
@@ -71,7 +74,7 @@ class SolutionParser(object):
                     "type": type_guid[1:-1],
                     "proj": util.join_path(location, proj),
                     "guid": guid[1:-1],
-                    "location": location,
+                    "location": proj_location,
                     "ignore": False,
                 })
 

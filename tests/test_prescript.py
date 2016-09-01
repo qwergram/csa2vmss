@@ -58,8 +58,9 @@ def test_solution_parser_feed_content():
     assert sln.data['projects'][0]['name'] == "FaceAPIWebRole"
     assert sln.data['projects'][0]['type'] == "888888A0-9F3D-457C-B088-3A5042F75D52"
     assert sln.data['projects'][0]['proj'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPIWebRole\\FaceAPIWebRole.pyproj"
+    assert sln.data['projects'][0]['location'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPIWebRole"
     assert sln.data['projects'][0]['guid'] == "02BD14C6-B33A-4676-85A8-075CCF0AB7FC"
-    assert sln.data['projects'][0]['location'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI"
+    assert sln.data['location'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI"
     assert sln.data['sln'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln"
     assert sln.data['csdef'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\ServiceDefinition.csdef"
     assert sln.data['cscfg'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\ServiceConfiguration.Local.cscfg"
@@ -76,8 +77,9 @@ def test_solution_parser_parse():
     assert sln.data['projects'][0]['name'] == "FaceAPIWebRole"
     assert sln.data['projects'][0]['type'] == "888888A0-9F3D-457C-B088-3A5042F75D52"
     assert sln.data['projects'][0]['proj'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPIWebRole\\FaceAPIWebRole.pyproj"
+    assert sln.data['projects'][0]['location'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPIWebRole"
     assert sln.data['projects'][0]['guid'] == "02BD14C6-B33A-4676-85A8-075CCF0AB7FC"
-    assert sln.data['projects'][0]['location'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI"
+    assert sln.data['location'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI"
     assert sln.data['sln'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln"
     assert sln.data['csdef'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\ServiceDefinition.csdef"
     assert sln.data['cscfg'] == "C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\ServiceConfiguration.Local.cscfg"
@@ -253,7 +255,7 @@ def test_get_guids_cs():
 def test_build_project_cs():
     from pyscripts.pre_script import build_project, get_guids, parse_solution
     cs_json_blob = parse_solution("C:\\Users\\v-nopeng\\code\\msft2016\\Contoso\\ContosoAdsCloudService.sln")
-    result = build_project(cs_json_blob['projects'][0]['guid'], cs_json_blob['projects'])
+    result = build_project(cs_json_blob['projects'][0]['guid'], cs_json_blob)
     assert result == []
 
     
