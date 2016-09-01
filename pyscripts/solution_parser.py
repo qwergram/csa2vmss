@@ -96,4 +96,4 @@ class SolutionParser(object):
             try:
                 self.data['projects'][i]['references'] = proj.data[project['name']]
             except KeyError:
-                self.data['projects'][i]['ignore'] = True
+                continue
