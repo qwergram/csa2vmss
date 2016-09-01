@@ -86,7 +86,7 @@ def create_save(json_blob):
     build_save_directory()
     guid_json = get_guids(json_blob)
     for guid, project in guid_json.items():
-        build_project(guid, project)
+        build_project(guid, json_blob)
 
 
 def main(location):
