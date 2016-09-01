@@ -259,7 +259,7 @@ def test_build_project_cs():
     build_project(cs_json_blob['projects'][0]['guid'], cs_json_blob)
     assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid'] + "\\ContosoAdsWeb", 'd')
     assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid'] + "\\ContosoAdsCommon", 'd')
-    assert len(list(util.listdirpaths("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid']))) == 3
+    assert len(list(util.listdirpaths("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid']))) >= 3
 
 
 def test_build_project_py():
@@ -279,6 +279,8 @@ def test_prescript_create_save_cs():
     create_save(cs_json_blob)
     assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid'], 'd')
     assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][1]['guid'], 'd')
+    assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid'] + "\\ctv.properties", 'f')
+    assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][1]['guid'] + "\\ctv.properties", 'f')
 
 
 def test_prescript_create_save_py():
@@ -289,3 +291,5 @@ def test_prescript_create_save_py():
     create_save(cs_json_blob)
     assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid'], 'd')
     assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][1]['guid'], 'd')
+    assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid'] + "\\ctv.properties", 'f')
+    assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][1]['guid'] + "\\ctv.properties", 'f')
