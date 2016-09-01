@@ -209,7 +209,7 @@ def test_solution_update_proj():
     assert sln.data['projects'][0]['role'] == 'webrole'
     assert sln.data['projects'][0]['vmsize'] == 'Small'
     assert sln.data['projects'][0]['instances'] == 1
-    assert sln.data['projects'][0]['references'] == ['4362fc53-98e5-4e46-98a1-1f99ad74c13b', '9c837457-68c0-4b86-8cac-69f9b560d0d8']
+    assert sln.data['projects'][0]['references'] == ['4362fc53-98e5-4e46-98a1-1f99ad74c13b'.upper(), '9c837457-68c0-4b86-8cac-69f9b560d0d8'.upper()]
     assert len(sln.data['projects']) == 3
 
 
@@ -254,8 +254,9 @@ def test_get_guids_cs():
 
 def test_build_project_cs():
     from pyscripts.pre_script import build_project, get_guids, parse_solution
+    from pyscripts import util
     cs_json_blob = parse_solution("C:\\Users\\v-nopeng\\code\\msft2016\\Contoso\\ContosoAdsCloudService.sln")
     result = build_project(cs_json_blob['projects'][0]['guid'], cs_json_blob)
-    assert result == []
-
-    
+    assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid'] + "\\ContosoAdsWeb", 'd')
+    assert util.test_path("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid'] + "\\ContosoAdsCommon", 'd')
+    assert len(list(util.listdirpaths("C:\\Users\\v-nopeng\\code\\msft2016\\cstvmss\\__save\\" + cs_json_blob['projects'][0]['guid']))) == 3  
