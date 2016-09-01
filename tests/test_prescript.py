@@ -224,7 +224,7 @@ def test_solution_update_proj_py():
     assert sln.data['projects'][0]['role'] == 'webrole'
     assert sln.data['projects'][0]['vmsize'] == 'Small'
     assert sln.data['projects'][0]['instances'] == 1
-    assert sln.data['projects'][0].get('references') is None
+    assert sln.data['projects'][0]['references'] == []
     assert len(sln.data['projects']) == 2
     assert sln.data['projects'][0]['ignore'] is False, sln.data['projects'][0]['name'] 
     assert sln.data['projects'][1]['ignore'] is False, sln.data['projects'][1]['name'] 
@@ -250,8 +250,10 @@ def test_get_guids_cs():
     assert len(cs_json_guids.keys()) == 2
 
 
-def test_build_project():
+def test_build_project_cs():
     from pyscripts.pre_script import build_project, get_guids, parse_solution
-
+    cs_json_blob = parse_solution("C:\\Users\\v-nopeng\\code\\msft2016\\Contoso\\ContosoAdsCloudService.sln")
+    result = build_project(cs_json_blob['projects'][0]['guid'], cs_json_blob['projects'])
+    assert result == []
 
     
