@@ -158,6 +158,17 @@ def test_solution_update_csdef():
     assert sln.data['projects'][0]['vmsize'] == 'Small'
 
 
+def test_solution_update_csdef_py():
+    from pyscripts.pre_script import get_solution_data, get_csdef_data
+    sln = get_solution_data("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
+    csdef = get_csdef_data(sln)
+    sln.update_csdef(csdef)
+    assert sln.data['projects'][0]['role'] == 'webrole'
+    assert sln.data['projects'][0]['vmsize'] == 'Small'
+    assert not sln.data['projects'][0].get("ignore")
+    assert len(sln.data['projects']) == 2
+
+
 def test_solution_update_cscfg():
     from pyscripts.pre_script import get_solution_data, get_cscfg_data, get_csdef_data
     sln = get_solution_data("C:\\Users\\v-nopeng\\code\\msft2016\\Contoso\\ContosoAdsCloudService.sln")
@@ -186,23 +197,48 @@ def test_solution_update_proj():
     assert sln.data['projects'][0]['instances'] == 1
     assert sln.data['projects'][0]['references'] == ['4362fc53-98e5-4e46-98a1-1f99ad74c13b', '9c837457-68c0-4b86-8cac-69f9b560d0d8']
 
-def test_create_get_guids():
-    from pyscripts.util import test_path
+
+def test_solution_update_proj_py():
+    from pyscripts.pre_script import get_solution_data, get_cscfg_data, get_csdef_data, get_proj_data
+    sln = get_solution_data("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
+    csdef = get_csdef_data(sln)
+    sln.update_csdef(csdef)
+    cscfg = get_cscfg_data(sln)
+    sln.update_cscfg(cscfg)
+    proj = get_proj_data(sln)
+    sln.update_proj(proj)
+
+    assert sln.data['projects'][0]['role'] == 'webrole'
+    assert sln.data['projects'][0]['vmsize'] == 'Small'
+    assert sln.data['projects'][0]['instances'] == 1
+    assert sln.data['projects'][0].get('references') is None
+    assert len(sln.data['projects']) == 2
+    assert sln.data['projects'][0]['ignore'] is False
+    assert sln.data['projects'][1]['ignore'] is False
+
+
+def test_create_get_guids_py():
     from pyscripts.pre_script import get_guids, parse_solution
-    cs_json_blob = parse_solution("C:\\Users\\v-nopeng\\code\\msft2016\\Contoso\\ContosoAdsCloudService.sln")
     py_json_blob = parse_solution("C:\\Users\\v-nopeng\\code\\msft2016\\FaceAPI\\FaceAPI.sln")
     py_json_guids = get_guids(py_json_blob)
-    cs_json_guids = get_guids(cs_json_blob)
 
     assert "02BD14C6-B33A-4676-85A8-075CCF0AB7FC" in py_json_guids.keys()
     assert "3130CF5E-BA53-4129-A5C2-ECC9ACC3D73F" in py_json_guids.keys()
     assert len(py_json_guids.keys()) == 2
 
+
+def test_get_guids_cs():
+    from pyscripts.pre_script import get_guids, parse_solution
+    cs_json_blob = parse_solution("C:\\Users\\v-nopeng\\code\\msft2016\\Contoso\\ContosoAdsCloudService.sln")
+    cs_json_guids = get_guids(cs_json_blob)
+
     assert "92A8015A-1CCC-4527-B890-F604A2E764ED" in cs_json_guids.keys()
     assert "9C837457-68C0-4B86-8CAC-69F9B560D0D8" in cs_json_guids.keys()
-    assert len(cs_json_guids.keys())
+    assert len(cs_json_guids.keys()) == 2
 
 
-    
+def test_build_project():
+    from pyscripts.pre_script import build_project, get_guids, parse_solution
+
 
     
