@@ -66,8 +66,19 @@ def get_guids(json_blob, all=False):
     return projects
 
 
-def create_properties(guid, project_json):
-    util.save_json(project_json, util.join_path(util.SAVE_DIR, guid), 'ctv.properties')
+def create_properties(guid, all_json):
+    projects = []
+    for project in all_json['projects']:
+        if project['guid'] == guid:
+            projects.append(project)
+            references = project['references'] + [guid]
+            i = 0
+            while i < len(all_json['projects']):
+                if project['guid'] in references:
+                    projects.append(all_json['projects'][i])
+                i += 1
+            all_json['projects'] = projects
+            util.save_json(all_json, util.join_path(util.SAVE_DIR, guid), 'ctv.properties')
 
 
 def build_project(guid, project_json):
@@ -91,7 +102,7 @@ def create_save(json_blob):
     guid_json = get_guids(json_blob)
     for guid, project in guid_json.items():
         build_project(guid, json_blob)
-        create_properties(guid, project)
+        create_properties(guid, json_blob)
 
 def main(location):
     json_blob = parse_solution(location)
