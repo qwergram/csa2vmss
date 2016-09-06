@@ -8,6 +8,6 @@ def test_location(location):
 
 
 def test_solution(solution):
-    from pyscripts.solution_parser import SolutionParser
+    from solution_parser import SolutionParser
     assert type(solution) == SolutionParser
     import pdb; pdb.set_trace()
