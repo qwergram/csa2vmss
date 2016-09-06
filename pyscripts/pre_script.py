@@ -2,45 +2,39 @@ import io
 import shutil
 import sys
 import os
-try:
-    from pyscripts import util
-    from pyscripts import solution_parser
-    from pyscripts import cloudservicedef_parser
-    from pyscripts import cloudserviceconfig_parser
-    from pyscripts import proj_parser
-except ImportError:
-    import util
-    import solution_parser
-    import cloudservicedef_parser
-    import cloudserviceconfig_parser
-    import proj_parser
-
+from pyscripts import util, solution_parser, cloudserviceconfig_parser, cloudservicedef_parser, proj_parser
+from pyscripts.runtime_tests import check_prescript
 
 def get_solution_data(location):
+    check_prescript.test_location(location)
     solution = solution_parser.SolutionParser(location)
     solution.parse()
     return solution
 
 
 def get_csdef_data(solution):
+    check_prescript.test_solution(solution)
     csdef = cloudservicedef_parser.CSDefinitionParser(solution)
     csdef.parse()
     return csdef
 
 
 def get_cscfg_data(solution):
+    check_prescript.test_solution(solution)
     cscfg = cloudserviceconfig_parser.CSConfigParser(solution)
     cscfg.parse()
     return cscfg
 
 
 def get_proj_data(solution):
+    check_prescript.test_solution(solution)
     proj = proj_parser.ProjParser(solution)
     proj.parse()
     return proj
 
 
 def parse_solution(location):
+    check_prescript.test_location(location)
     solution = get_solution_data(location)
     csdef = get_csdef_data(solution)
     cscfg = get_cscfg_data(solution)
