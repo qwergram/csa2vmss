@@ -15,6 +15,18 @@ PRE_TEST_ENV = os.path.join(os.getcwd(), 'test', 'test_env', 'pre')
 DEBUG = True
 
 
+class BatchTest(object):
+
+    def __init__(self, test_functions, input_values, results, messages):
+        assert isinstance(input_values, list)
+        assert isinstance(test_functions, list)
+        for i, test_function in enumerate(test_functions):
+            self.test(test_function, input_values[i], results[i], messages[i])
+
+    def test(self, test_function, args, result, message):
+        assert test_function(*args) == result, message
+
+
 def debug(*args, **kwargs):
     if DEBUG:
         print("[!]", *args, **kwargs)
