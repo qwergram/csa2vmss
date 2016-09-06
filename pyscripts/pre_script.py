@@ -100,6 +100,7 @@ def create_save(json_blob):
         create_properties(guid, json_blob)
 
 def main(location):
+    check_prescript.test_location(location)
     json_blob = parse_solution(location)
     create_save(json_blob)
 
@@ -108,5 +109,5 @@ if __name__ == "__main__":
     params = util.parse_input()
     location = util.parse_input_args()
     if location:
-        main(location)
+        main(location[0])
     

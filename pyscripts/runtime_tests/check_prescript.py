@@ -2,8 +2,8 @@ import util
 from util import BatchTest
 
 def test_location(location):
-    assert type(location) == str
-    assert util.test_path(location)
+    assert type(location) == str, location
+    assert util.test_path(location, 'f')
     assert ":" in location or location.startswith("/")
 
 
