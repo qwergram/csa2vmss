@@ -10,4 +10,19 @@ def test_location(location):
 def test_solution(solution):
     from solution_parser import SolutionParser
     assert type(solution) == SolutionParser
-    import pdb; pdb.set_trace()
+    data = solution.data
+    assert type(data) == dict
+    for key in ["vsversion", "projects", "cscfg", "csdef", "sln", "version"]:
+        assert key in data.keys()
+    assert type(data['vsversion']) == dict
+    assert type(data['projects']) == list
+    assert type(data['csdef']) == str
+    assert type(data['cscfg']) == str
+    assert type(data['sln']) == str
+    assert type(data['version']) == float
+    assert type(data['location']) == str
+    for project in data['projects']:
+        assert type(project) == dict
+        for key, data_type in [("proj", str), ("name", str), ("type", str), ("location", str), ("guid", str), ("ignore", bool)]:
+            assert key in project
+            assert type(project[key]) == data_type
