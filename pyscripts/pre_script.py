@@ -108,9 +108,6 @@ def main(location):
     json_blob = parse_solution(location)
     create_save(json_blob)
 
-    
-
-
 
 if __name__ == "__main__":
     params = util.parse_input()
