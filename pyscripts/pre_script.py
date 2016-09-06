@@ -2,13 +2,14 @@ import io
 import shutil
 import sys
 import os
-from pyscripts import util, solution_parser, cloudserviceconfig_parser, cloudservicedef_parser, proj_parser
-from pyscripts.runtime_tests import check_prescript
+import util, solution_parser, cloudserviceconfig_parser, cloudservicedef_parser, proj_parser
+from runtime_tests import check_prescript
 
 def get_solution_data(location):
     check_prescript.test_location(location)
     solution = solution_parser.SolutionParser(location)
     solution.parse()
+    check_prescript.test_solution(solution)
     return solution
 
 

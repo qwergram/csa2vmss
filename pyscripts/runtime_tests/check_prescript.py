@@ -1,5 +1,5 @@
-from pyscripts import util
-from pyscripts.util import BatchTest
+import util
+from util import BatchTest
 
 def test_location(location):
     assert type(location) == str
@@ -10,4 +10,4 @@ def test_location(location):
 def test_solution(solution):
     from pyscripts.solution_parser import SolutionParser
     assert type(solution) == SolutionParser
-    
+    import pdb; pdb.set_trace()
