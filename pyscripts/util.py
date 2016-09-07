@@ -26,6 +26,20 @@ class BatchTest(object):
         assert test_function(*args) == result, message
 
 
+def save_test_results(total):
+    testresults = savefile(".testresults")
+    results = total
+    if test_path(testresults):
+        with io.open(testresults) as context:
+            try:
+                results = int(context.read().strip())
+            except ValueError:
+                results = total
+    with io.open(testresults, 'w') as context:
+        context.write(testresults)
+    return [total, results]
+
+
 def debug(*args, **kwargs):
     if DEBUG:
         print("[!]", *args, **kwargs)
