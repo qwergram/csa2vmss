@@ -1,9 +1,5 @@
-try:
-    from pyscripts import util
-    from pyscripts import solution_parser
-except ImportError:
-    import util
-    import solution_parser
+import util
+import solution_parser
 import io
 
 class DumbXMLParser(object):

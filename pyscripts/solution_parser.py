@@ -1,7 +1,4 @@
-try:
-    from pyscripts import util
-except ImportError:
-    import util
+import util
 import io
 
 class SolutionParser(object):
