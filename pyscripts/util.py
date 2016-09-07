@@ -9,6 +9,7 @@ SAVE_DIR = os.path.join(os.getcwd(), "__save")
 PYSCRIPTS = os.path.join(os.getcwd(), "pyscripts")
 PSSCRIPTS = os.path.join(os.getcwd(), "psscripts")
 CMDSCRIPTS = os.path.join(os.getcwd(), "cmdscripts")
+TEMPLATES = os.path.join(os.getcwd(), "templates")
 POST_TEST_ENV = os.path.join(os.getcwd(), 'tests', 'test_env', 'post')
 PRE_TEST_ENV = os.path.join(os.getcwd(), 'test', 'test_env', 'pre')
 
@@ -101,6 +102,11 @@ def psscript(file, silent=True):
 
 def cmdscript(file, silent=True):
     path = os.path.join(CMDSCRIPTS, file)
+    assert test_path(path, "f") or silent
+    return path
+
+def templates(file, silent=True):
+    path = join_path(TEMPLATES, file)
     assert test_path(path, "f") or silent
     return path
 
