@@ -97,7 +97,7 @@ def create_properties(guid, all_json):
 
 
 def build_project(guid, project_json):
-    
+    # Tests Included (9/6/16)
     check_prescript.test_guid(guid)
     check_prescript.test_solution_json(project_json)
     check_prescript.test_guid_exists(guid, project_json)
@@ -119,6 +119,9 @@ def build_project(guid, project_json):
 
 
 def create_save(json_blob):
+    # Tests Included (9/6/16)
+    check_prescript.test_solution_json(json_blob)
+
     build_save_directory()
     guid_json = get_guids(json_blob)
     for guid, project in guid_json.items():
@@ -126,6 +129,8 @@ def create_save(json_blob):
         create_properties(guid, json_blob)
 
 def main(location):
+    # Tests Included (9/6/16)
+    check_prescript.test_location(location)
     check_prescript.test_location(location)
     json_blob = parse_solution(location)
     create_save(json_blob)
