@@ -79,6 +79,7 @@ def create_properties(guid, all_json):
     # Tests Included (9/6/16)
     check_prescript.test_guid(guid)
     check_prescript.test_solution_json(all_json)
+    all_json = all_json.copy()
     projects = []
     for project in all_json['projects']:
         if project['guid'] == guid:
@@ -96,8 +97,12 @@ def create_properties(guid, all_json):
 
 
 def build_project(guid, project_json):
-    util.mkdir(util.SAVE_DIR, guid)
+    
+    check_prescript.test_guid(guid)
+    check_prescript.test_solution_json(project_json)
+    check_prescript.test_guid_exists(guid, project_json)
 
+    util.mkdir(util.SAVE_DIR, guid)
     project_guid_json = get_guids(project_json, all=True)
     this_project = project_guid_json[guid]
     references = this_project['references']
@@ -108,6 +113,8 @@ def build_project(guid, project_json):
     else:
         util.copytree(this_project['location'], util.join_path(util.SAVE_DIR, guid))
 
+
+    check_prescript.test_dir_exists(util.join_path(util.SAVE_DIR, guid))
     return project_guid_json
 
 
