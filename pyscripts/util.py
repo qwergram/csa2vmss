@@ -121,10 +121,8 @@ def rmtree(path, silent=False):
 
 
 def clean():
-    for directory in os.listdir(SAVE_DIR):
-        path = os.path.join(SAVE_DIR, directory)
-        if (directory != "vms"):
-            rmtree(path)
+    for directory in listdirpaths(SAVE_DIR):
+        rmtree(directory)
 
 def save_json(python_object, path, filename=None):
     if filename: path = os.path.join(path, filename)
