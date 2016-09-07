@@ -25,9 +25,9 @@ def test_solution(solution):
         assert key in data.keys()
     assert type(data['vsversion']) == dict
     assert type(data['projects']) == list
-    assert type(data['csdef']) == str
-    assert type(data['cscfg']) == str
-    assert type(data['sln']) == str
+    assert type(data['csdef']) == str and len(data['csdef']) > 1
+    assert type(data['cscfg']) == str and len(data['cscfg']) > 1
+    assert type(data['sln']) == str and data['sln']
     assert type(data['version']) == float
     assert type(data['location']) == str
     for project in data['projects']:
@@ -42,6 +42,7 @@ def test_csdef_data(csdef):
     assert type(csdef) == CSDefinitionParser
     data = csdef.data
     assert type(data) == dict
+    assert len(data.keys())
     for key, value in data.items():
         assert type(key) == str
         assert type(value) == dict
@@ -75,11 +76,17 @@ def test_dir_exists(location):
 @test
 def test_solution_json(data):
     for project in data['projects']:
-        for key in ["role", "vmsize", "ignore", "proj", "guid", "references", "name", "ignore"]:
-            assert key in project.keys()
-        if project['role'].lower() == "webrole":
-            for key in ["sites", "endpoints"]:
-                assert key in project.keys()
+        assert "ignore" in project.keys()
+        if project['ignore']:
+            required = ["references", "name", "guid", "proj"]
+        else:
+            required = ["role", "vmsize", "ignore", "proj", "guid", "references", "name"]
+            if project['role'].lower() == "webrole":
+                for key in ["sites", "endpoints"]:
+                    assert key in project.keys()
+        for key in required:
+            assert key in project.keys(), "{0} {1}".format(key, project.keys())
+       
 
 @test
 def test_solution_post(solution):
