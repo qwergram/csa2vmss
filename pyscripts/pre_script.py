@@ -83,7 +83,7 @@ def create_properties(guid, all_json):
     for project in all_json['projects']:
         if project['guid'] == guid:
             projects.append(project)
-            references = project['references'] + [guid]
+            references = project['references']
             i = 0
             while i < len(all_json['projects']):
                 if project['guid'] in references:
