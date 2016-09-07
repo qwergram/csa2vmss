@@ -61,7 +61,6 @@ class SolutionParser(object):
                 parse = line.split('\"')
                 guid = parse[7][1:-1]
                 if not self._guid_exists(guid):
-                    import pdb; pdb.set_trace()
                     type_guid = parse[1]
                     name = parse[3]
                     proj = parse[5]
