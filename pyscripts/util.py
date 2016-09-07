@@ -173,3 +173,11 @@ def join_path(*args):
 def listdirpaths(path):
     for file in os.listdir(path):
         yield join_path(path, file)
+
+
+def load_solution_from_json(directory):
+    assert test_path(directory, 'd')
+    for file_path in listdirpaths(directory):
+        if file_path.endswith("ctv.properties"):
+            with io.open(file_path) as context:
+                return json.loads(context.read())
