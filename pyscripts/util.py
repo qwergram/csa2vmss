@@ -185,3 +185,11 @@ def run_powershell(name, arguments):
     arguments = " ".join(["-%s \"%s\"" % (key, value) for key, value in arguments.items()])
     execute_this = "powershell -ExecutionPolicy Unrestricted -File \"%s\" %s" % (os.path.join(PSSCRIPTS, name), arguments)
     os.system(execute_this)
+
+
+def walk_tree(path):
+    for path in listdirpaths(path):
+        if test_path(path, 'd'):
+            yield from walk_tree(path)
+        elif test_path(path, 'f'):
+            yield path
