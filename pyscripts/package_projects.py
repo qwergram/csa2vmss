@@ -23,7 +23,6 @@ def clean_package(vm_name):
         for path in util.listdirpaths(location):
             for ignore in ignores:
                 if ignore in path:
-                    print(path)
                     util.rmtree(path)
 
 
@@ -35,7 +34,7 @@ def build_vms():
             vm_name = vm_path.split("\\")[-1]
             check_pkproj.test_guid(vm_name)
             clean_package(vm_name)
-            # util.run_powershell("zip.ps1", {"ZipFileName": util.join_path(vm_path, util.get_zip_guid(vm_name)), "SourceDir": vm_path})
+            util.run_powershell("zip.ps1", {"ZipFileName": util.join_path(vm_path, util.get_zip_guid(vm_name)), "SourceDir": vm_path})
             check_pkproj.check_zip_exists(util.join_path(vm_path, util.get_zip_guid(vm_name)))
         create_confirm_file()
     check_pkproj.check_confirm_file()
