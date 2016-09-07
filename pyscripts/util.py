@@ -181,3 +181,9 @@ def load_solution_from_json(directory):
         if file_path.endswith("ctv.properties"):
             with io.open(file_path) as context:
                 return json.loads(context.read())
+
+
+def run_powershell(name, arguments):
+    arguments = " ".join(["-%s \"%s\"" % (key, value) for key, value in arguments.items()])
+    execute_this = "powershell -ExecutionPolicy Unrestricted -File \"%s\" %s" % (os.path.join(PSSCRIPTS, name), arguments)
+    os.system(execute_this)
