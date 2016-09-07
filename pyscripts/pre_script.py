@@ -107,14 +107,14 @@ def build_project(guid, project_json):
             util.copytree(project_guid_json[reference]['location'], util.join_path(util.SAVE_DIR, guid, project_guid_json[reference]['name']))
     else:
         util.copytree(this_project['location'], util.join_path(util.SAVE_DIR, guid))
-    create_sln([guid] + references, project_guid_json)
+    create_sln([guid] + references, project_guid_json, next=len(references))
 
     check_prescript.test_dir_exists(util.join_path(util.SAVE_DIR, guid))
     check_prescript.test_file_exists(util.join_path(util.SAVE_DIR, guid, "{0}.sln".format(guid)))
     return project_guid_json
 
 
-def create_sln(guids, json_blob):
+def create_sln(guids, json_blob, nest):
     # Tests Included (9/7/16)
     assert type(guids) == list, guids
     assert len(guids) > 0, guids
@@ -129,7 +129,10 @@ def create_sln(guids, json_blob):
         type_guid = json_blob[guid]['type']
         name = json_blob[guid]['name']
         proj = json_blob[guid]['proj'].split("\\")[-1]
-        initial_string += template.format("{" + type_guid + "}", name, util.join_path(name, proj), "{" + guid + "}")
+        if nest:
+            initial_string += template.format("{" + type_guid + "}", name, util.join_path(name, proj), "{" + guid + "}")
+        else:
+            initial_string += template.format("{" + type_guid + "}", name, proj, "{" + guid + "}")
     with io.open(util.join_path(util.SAVE_DIR, guids[0], "{0}.sln".format(guids[0])), 'w') as context:
         context.write(initial_string)
     check_prescript.test_sln(util.join_path(util.SAVE_DIR, guids[0], "{0}.sln".format(guids[0])), guids)
