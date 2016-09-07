@@ -4,10 +4,10 @@ from util import BatchTest
 TEST_COUNTER = 0
 
 def test_object(func):
-    print("Loading Test ID: {0}".format(func))
+    # print("Loading Test ID: {0}".format(func))
     def wrapper(func, *args):
         global TEST_COUNTER
-        print("Calling Test #{0}".format(TEST_COUNTER))
+        print("Running Test #{0}".format(TEST_COUNTER))
         TEST_COUNTER += 1
         return func
     return wrapper
