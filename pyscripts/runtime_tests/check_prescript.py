@@ -147,3 +147,17 @@ def test_guid_exists(guid, project_json):
             break
     else:
         assert False, guid + " not in project_json"
+
+
+@test_object
+def test_sln(sln_location, guids):
+    import io
+    from proj_parser import ProjParser
+    assert util.test_path(sln_location, "f")
+    assert sln_location.endswith(".sln")
+    assert type(guids) == list
+    [test_guid(guid) for guid in guids]
+    x = ProjParser(sln_location)
+    x.parse()
+    import pdb; pdb.set_trace()
+    
