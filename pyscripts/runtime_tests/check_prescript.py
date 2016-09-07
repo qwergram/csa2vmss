@@ -50,3 +50,11 @@ def test_cscfg_data(cscfg):
         assert type(value) == dict
         assert "instances" in value.keys()
         assert type(value['instances']) == int
+
+
+def test_proj_data(proj):
+    from proj_parser import ProjParser
+    assert type(proj) == ProjParser
+    data = proj.data
+    assert type(data) == dict
+    print("REQUIRES MORE PROJ TESTS")
