@@ -114,7 +114,10 @@ def rmtree(path, silent=False):
     exists = test_path(path)
     if exists:
         try:
-            shutil.rmtree(path)
+            if os.path.isdir(path):
+                shutil.rmtree(path)
+            else:
+                os.remove(path)
         except OSError:
             os.popen("rmdir /S /Q \"{}\"".format(path))
     elif not silent:
@@ -234,5 +237,5 @@ def load_properties(guid):
 
 def get_ignores(language):
     if language == "888888A0-9F3D-457C-B088-3A5042F75D52":
-        return ["__pycache__", "env", "obj"]
+        return ["__pycache__", "env", "obj", ".sln"]
     return []
