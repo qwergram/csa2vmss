@@ -1,4 +1,5 @@
 import os
+import io
 import azure
 import util
 import pre_script
@@ -16,10 +17,11 @@ def build_vms():
         for vm_path in util.listdirpaths(util.SAVE_DIR):
             vm_name = vm_path.split("\\")[-1]
             check_pkproj.test_guid(vm_name)
-            util.run_powershell("zip.ps1", {"ZipFileName": util.join_path(vm_path, util.get_zip_guid(vm_name)), "sourcedir": vm_path})
+            util.run_powershell("zip.ps1", {"ZipFileName": util.join_path(vm_path, util.get_zip_guid(vm_name)), "SourceDir": vm_path})
+            check_pkproj.check_zip_exists(util.join_path(vm_path, util.get_zip_guid(vm_name)))
         create_confirm_file()
     check_pkproj.check_confirm_file()
-    check_pkproj.check_zip_exists(util.join_path(vm_path, util.get_zip_guid(vm_name)))
+        
 
 
 def main(params):
@@ -36,6 +38,6 @@ def main(params):
 
 
 if __name__ == "__main__":
-    PARAMS = util.parse_input(DEFAULTS)
+    PARAMS = util.parse_input({"mode": "vm"})
     assert PARAMS['mode'] in ['vmss', 'vm', 'pre'], "Invalid Mode!"
     main(PARAMS)
