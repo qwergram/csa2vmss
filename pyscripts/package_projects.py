@@ -25,8 +25,6 @@ def clean_package(vm_name):
                 if ignore in path:
                     print(path)
                     util.rmtree(path)
-    import pdb; pdb.set_trace()
-
 
 
 def build_vms():
