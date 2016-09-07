@@ -1,6 +1,4 @@
-import os
 import io
-import azure
 import util
 import pre_script
 from runtime_tests import check_pkproj
@@ -22,6 +20,16 @@ def build_vms():
         create_confirm_file()
     check_pkproj.check_confirm_file()
         
+
+def build_arm_templates():
+    if util.test_path(util.savefile(".confirm_d")):
+        print("ARM templates already created")
+    else:
+        for vm_path in util.listdirpaths(util.SAVE_DIR):
+            guid = vm_path.split("\\")[-1]
+            check_pkproj.test_guid(guid)
+            properties = util.load_properties(guid)
+
 
 
 def main(params):

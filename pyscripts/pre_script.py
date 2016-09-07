@@ -1,7 +1,4 @@
 import io
-import shutil
-import sys
-import os
 import util, solution_parser, cloudserviceconfig_parser, cloudservicedef_parser, proj_parser
 from runtime_tests import check_prescript
 
@@ -142,7 +139,7 @@ def create_save(json_blob):
     check_prescript.test_solution_json(json_blob)
     util.mkdir(util.SAVE_DIR)
     guid_json = get_guids(json_blob)
-    for guid, project in guid_json.items():
+    for guid in guid_json.keys():
         build_project(guid, json_blob)
         create_properties(guid, json_blob)
 
