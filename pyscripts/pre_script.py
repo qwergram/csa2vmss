@@ -2,12 +2,12 @@ import io
 import util, solution_parser, cloudserviceconfig_parser, cloudservicedef_parser, proj_parser
 from runtime_tests import check_prescript
 
-def get_solution_data(location):
+def get_solution_data(location, tests=True):
     # Tests Included (9/6/16)
-    check_prescript.test_location(location)
+    if tests: check_prescript.test_location(location)
     solution = solution_parser.SolutionParser(location)
     solution.parse()
-    check_prescript.test_solution(solution)
+    if tests: check_prescript.test_solution(solution)
     return solution
 
 
