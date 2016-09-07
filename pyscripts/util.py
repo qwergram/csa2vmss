@@ -221,3 +221,13 @@ def is_binary(path, silent=True):
 
 def get_zip_guid(project_guid):
     return "zip_" + project_guid[:4] + "_package.zip"
+
+
+def load_properties(guid):
+    from runtime_tests.check_prescript import test_solution_json
+    ctv_path = join_path(SAVE_DIR, guid, "ctv.properties")
+    with io.open(ctv_path) as context:
+        json_blob = json.loads(context.read())
+    test_solution_json(json_blob)
+    return json_blob
+        
