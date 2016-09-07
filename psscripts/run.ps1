@@ -103,7 +103,7 @@ if ($MODE -eq "vmss") {
 
         $dns = ("p" + $vm_name.ToLower().replace("vm", ""))
         $newrg = New-AzureRmResourceGroup -Name $vm_name -Location $Location -Force
-        $results = New-AzureRmResourceGroupDeployment -TemplateUri "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vmss-windows-customimage/azuredeploy.json" -probeRequestPath "/" -ResourceGroupName ($vm_name) -sourceImageVhdUri $vhdurl -adminUsername $VMAdmin -dnsNamePrefix $dns -vmssName $dns -instanceCount 1 -vmSize "Standard_D1"
+        $results = New-AzureRmResourceGroupDeployment -TemplateUri "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vmss-windows-customimage/azuredeploy.json" -probeRequestPath "/" -ResourceGroupName ($vm_name) -sourceImageVhdUri $vhdurl -adminUsername $VMAdmin -dnsNamePrefix $dns -vmssName $dns -instanceCount 1 -vmSize "Standard_A1"
 
         Write-Output "Deleting Seed VM"
         Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Force
@@ -117,21 +117,17 @@ if ($MODE -eq "vmss") {
 
     # This script parses the Visual Studio Solution and zips it
 
-    if (Test-Path ".\__save\.confirm_a") { Write-Output "Service App already packaged" } else {
-        Write-Output "Reading Cloud Service App and Packaging it"
-
-        if ($singleWindow) {
-            python ($PYSCRIPTS + "\main.py")
+    if ($singleWindow) {
+            python ($PYSCRIPTS + "\package_projects.py")
             if ($? -eq $false) {
                 Exit
             } 
         } else {
-            $result = start-process python -argument ($PYSCRIPTS + '\main.py') -Wait -PassThru
+            $result = start-process python -argument ($PYSCRIPTS + '\package_projects.py') -Wait -PassThru
             if ($result.ExitCode -eq 1) {
                 Exit
             }
         }
-    }
 
 
     # Check to see if the specified ResourceGroup exists.
