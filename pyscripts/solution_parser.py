@@ -43,6 +43,12 @@ class SolutionParser(object):
             if file.lower().endswith('local.cscfg'):
                 return file
 
+    def _guid_exists(self, guid):
+        for project in self.data['projects']:
+            if project['guid'] == guid:
+                return True
+        return False
+
     def parse_content(self):
         for line_lower, line in self.raw_content:
             if line_lower.startswith("microsoft visual studio solution file"):
@@ -53,30 +59,32 @@ class SolutionParser(object):
                 self.data['vsversion']['current'] = line_lower.split('=')[-1].strip()
             elif line_lower.startswith("project("):
                 parse = line.split('\"')
-                type_guid = parse[1]
-                name = parse[3]
-                proj = parse[5]
-                guid = parse[7]
-                location = util.join_path(*self.path.split("\\")[:-1])
-                proj_dir = proj.split("\\")[:-1] if len(proj.split("\\")) > 1 else proj
-                if type(proj_dir) == str:
-                    proj_location = util.join_path(location, util.join_path(proj_dir))
-                else:
-                    proj_location = util.join_path(location, util.join_path(*proj_dir))
-                self.data['location'] = location
-                if type_guid[1:-1] == "CC5FD16D-436D-48AD-A40C-5A424C6E3E79":
-                    self.data['cscfg'] = self.fetch_cscfg(util.join_path(location, proj))
-                    self.data['csdef'] = self.fetch_csdef(util.join_path(location, proj))
-                    self.data['ccproj'] = util.join_path(location, proj)
-                else:
-                    self.data['projects'].append({
-                    "name": name,
-                    "type": type_guid[1:-1],
-                    "proj": util.join_path(location, proj),
-                    "guid": guid[1:-1],
-                    "location": proj_location,
-                    "ignore": False,
-                })
+                guid = parse[7][1:-1]
+                if not self._guid_exists(guid):
+                    import pdb; pdb.set_trace()
+                    type_guid = parse[1]
+                    name = parse[3]
+                    proj = parse[5]
+                    location = util.join_path(*self.path.split("\\")[:-1])
+                    proj_dir = proj.split("\\")[:-1] if len(proj.split("\\")) > 1 else proj
+                    if type(proj_dir) == str:
+                        proj_location = util.join_path(location, util.join_path(proj_dir))
+                    else:
+                        proj_location = util.join_path(location, util.join_path(*proj_dir))
+                    self.data['location'] = location
+                    if type_guid[1:-1] == "CC5FD16D-436D-48AD-A40C-5A424C6E3E79":
+                        self.data['cscfg'] = self.fetch_cscfg(util.join_path(location, proj))
+                        self.data['csdef'] = self.fetch_csdef(util.join_path(location, proj))
+                        self.data['ccproj'] = util.join_path(location, proj)
+                    else:
+                        self.data['projects'].append({
+                        "name": name,
+                        "type": type_guid[1:-1],
+                        "proj": util.join_path(location, proj),
+                        "guid": guid,
+                        "location": proj_location,
+                        "ignore": False,
+                    })
 
     def update_csdef(self, csdef):
         for i, project in enumerate(self.data['projects']):
