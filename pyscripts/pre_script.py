@@ -116,7 +116,7 @@ def build_project(guid, project_json):
 def create_save(json_blob):
     # Tests Included (9/6/16)
     check_prescript.test_solution_json(json_blob)
-
+    util.mkdir(util.SAVE_DIR)
     guid_json = get_guids(json_blob)
     for guid, project in guid_json.items():
         build_project(guid, json_blob)
