@@ -6,6 +6,7 @@ import util, solution_parser, cloudserviceconfig_parser, cloudservicedef_parser,
 from runtime_tests import check_prescript
 
 def get_solution_data(location):
+    # Tests Included (9/6/16)
     check_prescript.test_location(location)
     solution = solution_parser.SolutionParser(location)
     solution.parse()
@@ -14,27 +15,34 @@ def get_solution_data(location):
 
 
 def get_csdef_data(solution):
+    # Tests Included (9/6/16)
     check_prescript.test_solution(solution)
     csdef = cloudservicedef_parser.CSDefinitionParser(solution)
     csdef.parse()
+    check_prescript.test_csdef_data(csdef)
     return csdef
 
 
 def get_cscfg_data(solution):
+    # Tests Included (9/6/16)
     check_prescript.test_solution(solution)
     cscfg = cloudserviceconfig_parser.CSConfigParser(solution)
     cscfg.parse()
+    check_prescript.test_cscfg_data(cscfg)
     return cscfg
 
 
 def get_proj_data(solution):
+    # Tests Included (9/6/16)
     check_prescript.test_solution(solution)
     proj = proj_parser.ProjParser(solution)
     proj.parse()
+    check_prescript.test_proj_data(proj)
     return proj
 
 
 def parse_solution(location):
+    # Tests Included (9/6/16)
     check_prescript.test_location(location)
     solution = get_solution_data(location)
     csdef = get_csdef_data(solution)
@@ -43,14 +51,17 @@ def parse_solution(location):
     solution.update_csdef(csdef)
     solution.update_cscfg(cscfg)
     solution.update_proj(proj)
+    check_prescript.test_solution_post(solution)
     return solution.data
 
 
 def build_save_directory():
+    # Tests Included (9/6/16)
     if not util.test_path(util.SAVE_DIR, 'd'):
         util.mkdir(util.SAVE_DIR)
     if not util.test_path(util.VMPATH):
         util.mkdir(util.VMPATH)
+    check_prescript.test_dir_exists(util.VMPATH)
 
 
 def get_guids(json_blob, all=False):
