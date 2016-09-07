@@ -115,6 +115,7 @@ def build_project(guid, project_json):
 
 
 def create_sln(guids, json_blob):
+    # Tests Included (9/7/16)
     assert type(guids) == list, guids
     assert len(guids) > 0, guids
     check_prescript.test_dir_exists(util.join_path(util.SAVE_DIR, guids[0]))

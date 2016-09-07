@@ -71,7 +71,11 @@ def test_proj_data(proj):
     assert type(proj) == ProjParser
     data = proj.data
     assert type(data) == dict
-    print("REQUIRES MORE PROJ TESTS")
+    if data.keys():
+        for key, value in data.items():
+            assert type(value) == list
+            [test_guid(value.upper()) for value in value]
+            assert type(key) == str
 
 #@test_object
 def test_dir_exists(location):
