@@ -105,5 +105,8 @@ def test_properties_exists(all_json, path):
         blob = json.loads(context.read())
     assert type(blob) == dict
     assert len(all_json['projects']) >= len(blob['projects'])
+    assert len(blob['projects'])
     assert path.split("\\")[-1] == blob['projects'][0]['guid']
+    if blob['projects'][0]['references'] == []:
+        assert len(blob['projects']) == 1
     import pdb; pdb.set_trace()
