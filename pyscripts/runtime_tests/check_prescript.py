@@ -83,8 +83,7 @@ def test_dir_exists(location):
 
 
 #@test_object
-def test_file_exists(location):
-    assert util.test_path(location, 'f')
+test_file_exists = test_location
 
 
 #@test_object
