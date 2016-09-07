@@ -41,17 +41,17 @@ Param(
 Write-Output "Cloud Service 2 VMss"
 Write-Output "(Send suggestions to v-nopeng@microsoft.com)"
 
-Try {
-    $RmSubscription = Get-AzureRmSubscription -ErrorAction Stop
-} Catch {
-    Write-Output "Please Login"
-    Try {
-        $login = Login-AzureRmAccount -ErrorAction Stop
-    } Catch {
-        Write-Output "You must have an azure subscription"
-        Exit
-    }
-}
+# Try {
+#     $RmSubscription = Get-AzureRmSubscription -ErrorAction Stop
+# } Catch {
+#     Write-Output "Please Login"
+#     Try {
+#         $login = Login-AzureRmAccount -ErrorAction Stop
+#     } Catch {
+#         Write-Output "You must have an azure subscription"
+#         Exit
+#     }
+# }
 
 $PYSCRIPTS = ($pwd.Path + "\pyscripts")
 $PSSCRIPTS = ($pwd.Path + "\psscripts")
@@ -118,16 +118,18 @@ if ($MODE -eq "vmss") {
     # This script parses the Visual Studio Solution and zips it
 
     if ($singleWindow) {
-            python ($PYSCRIPTS + "\package_projects.py")
-            if ($? -eq $false) {
-                Exit
-            } 
-        } else {
-            $result = start-process python -argument ($PYSCRIPTS + '\package_projects.py') -Wait -PassThru
-            if ($result.ExitCode -eq 1) {
-                Exit
-            }
+        python ($PYSCRIPTS + "\package_projects.py")
+        if ($? -eq $false) {
+            Exit
+        } 
+    } else {
+        $result = start-process python -argument ($PYSCRIPTS + '\package_projects.py') -Wait -PassThru
+        if ($result.ExitCode -eq 1) {
+            Exit
         }
+    }
+
+    Exit
 
 
     # Check to see if the specified ResourceGroup exists.
