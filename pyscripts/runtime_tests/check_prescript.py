@@ -4,6 +4,7 @@ from util import BatchTest
 TEST_COUNTER = 0
 
 def test(func):
+    global TEST_COUNTER
     TEST_COUNTER += 1
     print("Testing (#{0}) ID: {1}".format(TEST_COUNTER, func))
     return func
