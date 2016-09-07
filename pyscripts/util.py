@@ -217,3 +217,7 @@ def is_binary(path, silent=True):
         return (mimetypes.guess_type(path)[0] in binaries) or (path.split("\\")[-1] in extensions) or isbinary
     else:
         raise FileNotFoundError(path, "not found")
+
+
+def get_zip_guid(project_guid):
+    return "zip_" + project_guid[:4] + "_package.zip"
