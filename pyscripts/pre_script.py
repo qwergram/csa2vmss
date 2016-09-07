@@ -107,11 +107,31 @@ def build_project(guid, project_json):
             util.copytree(project_guid_json[reference]['location'], util.join_path(util.SAVE_DIR, guid, project_guid_json[reference]['name']))
     else:
         util.copytree(this_project['location'], util.join_path(util.SAVE_DIR, guid))
-
+    create_sln([guid] + references, project_guid_json)
 
     check_prescript.test_dir_exists(util.join_path(util.SAVE_DIR, guid))
+    check_prescript.test_dir_exists(util.join_path(util.SAVE_DIR, guid, "{0}.sln".format(guid)))
     return project_guid_json
 
+
+def create_sln(guids, json_blob):
+    assert type(guids) == list, guids
+    assert len(guids) > 0, guids
+    check_prescript.test_dir_exists(util.join_path(util.SAVE_DIR, guids[0]))
+
+    [check_prescript.test_guid(guid) for guid in guids]
+    check_prescript.test_guid_json(json_blob)
+    template = """Project("{0}") = "{1}", "{2}", "{3}"\nEndProject\n"""""
+    initial_string = """Microsoft Visual Studio Solution File, Format Version 12.00\n# Visual Studio 14\nVisualStudioVersion = 14.0.25420.1\nMinimumVisualStudioVersion = 10.0.40219.1\n"""
+    for guid in guids:
+        assert guid == json_blob[guid]['guid']
+        type_guid = json_blob[guid]['type']
+        name = json_blob[guid]['name']
+        initial_string += template.format("{" + type_guid + "}", name, None, "{" + guid + "}")
+    with io.open(util.join_path(util.SAVE_DIR, guids[0], "{0}.sln".format(guids[0])), 'w') as context:
+        context.write(initial_string)
+    print("what")
+    check_prescript.test_sln(util.join_path(util.SAVE_DIR, guid, "{0}.sln".format(guids[0])))
 
 def create_save(json_blob):
     # Tests Included (9/6/16)
