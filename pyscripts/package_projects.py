@@ -3,10 +3,9 @@ import azure
 import util
 import pre_script
 
-def destroy_binaries(vm_path):
-    for file in ['env', 'obj', 'csx', 'ecf']:
-        util.rmtree(os.path.join(vm_path, file), silent=True)
-
+def create_confirm_file():
+    with io.open(util.savefile(".confirm_a"), 'w') as context:
+        context.write("true")
 
 def build_vms():
     if util.test_path(util.savefile(".confirm_a")):
@@ -14,7 +13,7 @@ def build_vms():
     else:
         for vm_path in util.listdirpaths(util.SAVE_DIR):
             vm_name = vm_path.split("\\")[-1]
-            destroy_binaries(vm_path)
+        create_confirm_file()
 
 def main(params):
     if params['mode'] == 'vm':
