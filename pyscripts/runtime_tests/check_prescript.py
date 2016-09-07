@@ -32,9 +32,21 @@ def test_csdef_data(csdef):
     from cloudservicedef_parser import CSDefinitionParser
     assert type(csdef) == CSDefinitionParser
     data = csdef.data
-    assert type(csdef) == dict
+    assert type(data) == dict
     for key, value in data.items():
         assert type(key) == str
         assert type(value) == dict
         for secondary_key in ["vmsize", "role", "configurationsettings"]:
             assert secondary_key in value.keys()
+
+
+def test_cscfg_data(cscfg):
+    from cloudserviceconfig_parser import CSConfigParser
+    assert type(cscfg) == CSConfigParser
+    data = cscfg.data
+    assert type(data) == dict
+    for key, value in data.items():
+        assert type(key) == str
+        assert type(value) == dict
+        assert "instances" in value.keys()
+        assert type(value['instances']) == int
