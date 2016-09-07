@@ -26,3 +26,15 @@ def test_solution(solution):
         for key, data_type in [("proj", str), ("name", str), ("type", str), ("location", str), ("guid", str), ("ignore", bool)]:
             assert key in project
             assert type(project[key]) == data_type
+
+
+def test_csdef_data(csdef):
+    from cloudservicedef_parser import CSDefinitionParser
+    assert type(csdef) == CSDefinitionParser
+    data = csdef.data
+    assert type(csdef) == dict
+    for key, value in data.items():
+        assert type(key) == str
+        assert type(value) == dict
+        for secondary_key in ["vmsize", "role", "configurationsettings"]:
+            assert secondary_key in value.keys()
