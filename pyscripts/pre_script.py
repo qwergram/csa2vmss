@@ -127,11 +127,11 @@ def create_sln(guids, json_blob):
         assert guid == json_blob[guid]['guid']
         type_guid = json_blob[guid]['type']
         name = json_blob[guid]['name']
-        initial_string += template.format("{" + type_guid + "}", name, None, "{" + guid + "}")
+        proj = json_blob[guid]['proj'].split("\\")[-1]
+        initial_string += template.format("{" + type_guid + "}", name, util.join_path(name, proj), "{" + guid + "}")
     with io.open(util.join_path(util.SAVE_DIR, guids[0], "{0}.sln".format(guids[0])), 'w') as context:
         context.write(initial_string)
-    print("what")
-    check_prescript.test_sln(util.join_path(util.SAVE_DIR, guid, "{0}.sln".format(guids[0])))
+    check_prescript.test_sln(util.join_path(util.SAVE_DIR, guids[0], "{0}.sln".format(guids[0])), guids)
 
 def create_save(json_blob):
     # Tests Included (9/6/16)
