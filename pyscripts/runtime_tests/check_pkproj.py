@@ -1,4 +1,4 @@
-from runtime_tests.check_prescript import test_location, test_dir_exists, test_file_exists, test_solution_json, test_guid
+from runtime_tests.check_prescript import test_location, test_dir_exists, test_file_exists, test_solution_json, test_guid, test_solution
 import util
 
 def check_confirm_file():
