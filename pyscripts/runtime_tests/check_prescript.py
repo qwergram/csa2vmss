@@ -119,3 +119,14 @@ def test_properties_exists(all_json, path):
     assert path.split("\\")[-1] == blob['projects'][0]['guid']
     if blob['projects'][0]['references'] == []:
         assert len(blob['projects']) == 1
+
+
+@test
+def test_guid_exists(guid, project_json):
+    test_guid(guid)
+    test_solution_json(project_json)
+    for item in project_json['projects']:
+        if item['guid'] == guid:
+            break
+    else:
+        assert False, guid + " not in project_json"
