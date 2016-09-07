@@ -8,6 +8,15 @@ def create_confirm_file():
         context.write("true")
 
 
+def clean_package(vm_name):
+    check_pkproj.test_guid(vm_name)
+    solution = pre_script.get_solution_data(util.join_path(util.SAVE_DIR, vm_name, "{0}.sln".format(vm_name)), False)
+    solution.parse()
+    check_pkproj.test_solution(solution)
+    import pdb; pdb.set_trace()
+
+
+
 def build_vms():
     if util.test_path(util.savefile(".confirm_a")):
         print("Service App already packaged")
@@ -15,7 +24,8 @@ def build_vms():
         for vm_path in util.listdirpaths(util.SAVE_DIR):
             vm_name = vm_path.split("\\")[-1]
             check_pkproj.test_guid(vm_name)
-            util.run_powershell("zip.ps1", {"ZipFileName": util.join_path(vm_path, util.get_zip_guid(vm_name)), "SourceDir": vm_path})
+            clean_package(vm_name)
+            # util.run_powershell("zip.ps1", {"ZipFileName": util.join_path(vm_path, util.get_zip_guid(vm_name)), "SourceDir": vm_path})
             check_pkproj.check_zip_exists(util.join_path(vm_path, util.get_zip_guid(vm_name)))
         create_confirm_file()
     check_pkproj.check_confirm_file()
@@ -29,9 +39,6 @@ def main(params):
         print("Running in VMss mode")
     elif params['mode'] == 'pre':
         print("Running pre script")
-        
-
-
 
 
 if __name__ == "__main__":
