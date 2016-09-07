@@ -20,7 +20,7 @@ def test_location(location):
     assert ":" in location or location.startswith("/")
 
 #@test_object
-def test_solution(solution):
+def test_solution(solution, cs_required=False):
     from solution_parser import SolutionParser
     assert type(solution) == SolutionParser
     data = solution.data
@@ -29,8 +29,8 @@ def test_solution(solution):
         assert key in data.keys()
     assert type(data['vsversion']) == dict
     assert type(data['projects']) == list
-    assert type(data['csdef']) == str and len(data['csdef']) > 1
-    assert type(data['cscfg']) == str and len(data['cscfg']) > 1
+    assert type(data['csdef']) == str and (not cs_required or len(data['csdef']) > 1), data['csdef']
+    assert type(data['cscfg']) == str and (not cs_required or len(data['cscfg']) > 1), data['cscfg']
     assert type(data['sln']) == str and data['sln']
     assert type(data['version']) == float
     assert type(data['location']) == str
