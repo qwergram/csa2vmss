@@ -110,6 +110,7 @@ def templates(file, silent=True):
     assert test_path(path, "f") or silent
     return path
 
+
 def savefile(file, silent=True):
     path = os.path.join(SAVE_DIR, file)
     assert test_path(path, "a") or silent

@@ -246,10 +246,10 @@ if ($MODE -eq "vmss") {
             } elseif ($_.Name.Endswith('.zip')) {
                 $projectid = $_.Name.Split('_')[1]
                 $zipfile = $_.FullName
-            } elseif ($_.Name -eq "meta.json") {
+            } elseif ($_.Name -eq "ctv.properties") {
                 $metadata = $_.FullName
                 $currentProjectMeta = Get-Content $metadata | ConvertFrom-Json
-                $currentVmRole = $currentProjectMeta.role_type.ToLower()
+                $currentVmRole = $currentProjectMeta.projects[0].type.ToLower()
             }
         }
 
