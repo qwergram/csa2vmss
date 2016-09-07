@@ -19,17 +19,6 @@ def build_vms():
             check_pkproj.check_zip_exists(util.join_path(vm_path, util.get_zip_guid(vm_name)))
         create_confirm_file()
     check_pkproj.check_confirm_file()
-        
-
-def build_arm_templates():
-    if util.test_path(util.savefile(".confirm_d")):
-        print("ARM templates already created")
-    else:
-        for vm_path in util.listdirpaths(util.SAVE_DIR):
-            guid = vm_path.split("\\")[-1]
-            check_pkproj.test_guid(guid)
-            properties = util.load_properties(guid)
-
 
 
 def main(params):
