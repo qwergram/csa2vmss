@@ -77,6 +77,12 @@ def test_proj_data(proj):
 def test_dir_exists(location):
     assert util.test_path(location, 'd')
 
+
+#@test_object
+def test_file_exists(location):
+    assert util.test_path(location, 'f')
+
+
 #@test_object
 def test_solution_json(data):
     for project in data['projects']:
@@ -160,8 +166,10 @@ def test_sln(sln_location, guids):
     [test_guid(guid) for guid in guids]
     y = SolutionParser(sln_location)
     y.parse()
+    y.data['csdef'] = "somestring"
+    y.data['cscfg'] = "somestring"
+    y.data['ccproj'] = "somestring"
     test_solution(y)
     x = ProjParser(y)
     x.parse()
-    test_proj_data(x.data)
-    import pdb; pdb.set_trace()
+    test_proj_data(x)

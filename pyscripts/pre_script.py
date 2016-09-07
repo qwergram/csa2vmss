@@ -110,7 +110,7 @@ def build_project(guid, project_json):
     create_sln([guid] + references, project_guid_json)
 
     check_prescript.test_dir_exists(util.join_path(util.SAVE_DIR, guid))
-    check_prescript.test_dir_exists(util.join_path(util.SAVE_DIR, guid, "{0}.sln".format(guid)))
+    check_prescript.test_file_exists(util.join_path(util.SAVE_DIR, guid, "{0}.sln".format(guid)))
     return project_guid_json
 
 
