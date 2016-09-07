@@ -51,6 +51,10 @@ def parse_solution(location):
     solution.update_csdef(csdef)
     solution.update_cscfg(cscfg)
     solution.update_proj(proj)
+
+    check_prescript.test_csdef_data(csdef)
+    check_prescript.test_cscfg_data(cscfg)
+    check_prescript.test_proj_data(proj)
     check_prescript.test_solution_post(solution)
     return solution.data
 
