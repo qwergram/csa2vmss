@@ -15,9 +15,16 @@ def clean_package(vm_name):
     solution.data['csdef'] = "somestring"
     solution.data['ccproj'] = "somestring"
     solution.data['cscfg'] = "somestring"
-
     check_pkproj.test_solution(solution)
-    
+    for project in solution.data['projects']:
+        location = project['location']
+        lang = project['type']
+        ignores = util.get_ignores(lang)
+        for path in util.listdirpaths(location):
+            for ignore in ignores:
+                if ignore in path:
+                    print(path)
+                    util.rmtree(path)
     import pdb; pdb.set_trace()
 
 
