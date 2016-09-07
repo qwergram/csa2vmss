@@ -94,16 +94,22 @@ def test_solution_post(solution):
     data = solution.data
     test_solution_json(data)
 
+
 @test
 def test_guid_json(projects):
     assert type(projects) == dict
     for key, project in projects.items():
         test_guid(key)
-        for subkey in ["role", "vmsize", "ignore", "proj", "guid", "references", "name", "ignore"]:
-            assert subkey in project.keys()
-        if project['role'].lower() == "webrole":
-            for subkey in ["sites", "endpoints"]:
-                assert subkey in project.keys()
+        assert "ignore" in project.keys()
+        if project['ignore']:
+            required = ["references", "name", "guid", "proj"]
+        else:
+            required = ["role", "vmsize", "ignore", "proj", "guid", "references", "name"]
+            if project['role'].lower() == "webrole":
+                for subkey in ["sites", "endpoints"]:
+                    assert subkey in project.keys()
+        for subkey in required:
+            assert subkey in project.keys(), subkey
 
 @test
 def test_guid(guid):
