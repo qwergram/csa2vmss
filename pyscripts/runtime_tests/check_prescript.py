@@ -20,7 +20,7 @@ def test_location(location):
     assert ":" in location or location.startswith("/")
 
 #@test_object
-def test_solution(solution, cs_required=False):
+def test_solution(solution, cs_required=True):
     from solution_parser import SolutionParser
     assert type(solution) == SolutionParser
     data = solution.data
