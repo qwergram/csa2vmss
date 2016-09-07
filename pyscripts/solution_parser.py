@@ -68,7 +68,7 @@ class SolutionParser(object):
                     location = util.join_path(*self.path.split("\\")[:-1])
                     proj_dir = proj.split("\\")[:-1] if len(proj.split("\\")) > 1 else proj
                     if type(proj_dir) == str:
-                        proj_location = util.join_path(location, util.join_path(proj_dir))
+                        proj_location = location
                     else:
                         proj_location = util.join_path(location, util.join_path(*proj_dir))
                     self.data['location'] = location
