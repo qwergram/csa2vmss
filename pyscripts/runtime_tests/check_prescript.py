@@ -62,3 +62,14 @@ def test_proj_data(proj):
 
 def test_dir_exists(location):
     assert util.test_path(location, 'd')
+
+
+def test_solution_post(solution):
+    test_solution(solution)
+    data = solution.data
+    for project in data['projects']:
+        for key in ["role", "vmsize", "ignore", "proj", "guid", "references", "name", "ignore"]:
+            assert key in project.keys()
+        if project['role'].lower() == "webrole":
+            for key in ["sites", "endpoints"]:
+                assert key in project.keys()
