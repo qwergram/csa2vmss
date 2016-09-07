@@ -8,7 +8,6 @@ SAVE_DIR = os.path.join(os.getcwd(), "__save")
 PYSCRIPTS = os.path.join(os.getcwd(), "pyscripts")
 PSSCRIPTS = os.path.join(os.getcwd(), "psscripts")
 CMDSCRIPTS = os.path.join(os.getcwd(), "cmdscripts")
-VMPATH = os.path.join(SAVE_DIR, "vms")
 POST_TEST_ENV = os.path.join(os.getcwd(), 'tests', 'test_env', 'post')
 PRE_TEST_ENV = os.path.join(os.getcwd(), 'test', 'test_env', 'pre')
 
@@ -112,11 +111,6 @@ def clean():
         path = os.path.join(SAVE_DIR, directory)
         if (directory != "vms"):
             rmtree(path)
-
-
-def list_vms():
-    return [(dir_name, os.path.join(VMPATH, dir_name)) for dir_name in os.listdir(VMPATH) if test_path(os.path.join(VMPATH, dir_name), 'd')]
-
 
 def save_json(python_object, path, filename=None):
     if filename: path = os.path.join(path, filename)

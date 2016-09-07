@@ -55,15 +55,6 @@ def parse_solution(location):
     return solution.data
 
 
-def build_save_directory():
-    # Tests Included (9/6/16)
-    if not util.test_path(util.SAVE_DIR, 'd'):
-        util.mkdir(util.SAVE_DIR)
-    if not util.test_path(util.VMPATH):
-        util.mkdir(util.VMPATH)
-    check_prescript.test_dir_exists(util.VMPATH)
-
-
 def get_guids(json_blob, all=False):
     # Tests Included (9/6/16)
     check_prescript.test_solution_json(json_blob)
@@ -122,7 +113,6 @@ def create_save(json_blob):
     # Tests Included (9/6/16)
     check_prescript.test_solution_json(json_blob)
 
-    build_save_directory()
     guid_json = get_guids(json_blob)
     for guid, project in guid_json.items():
         build_project(guid, json_blob)
