@@ -107,7 +107,7 @@ def build_project(guid, project_json):
             util.copytree(project_guid_json[reference]['location'], util.join_path(util.SAVE_DIR, guid, project_guid_json[reference]['name']))
     else:
         util.copytree(this_project['location'], util.join_path(util.SAVE_DIR, guid))
-    create_sln([guid] + references, project_guid_json, next=len(references))
+    create_sln([guid] + references, project_guid_json, nest=len(references))
 
     check_prescript.test_dir_exists(util.join_path(util.SAVE_DIR, guid))
     check_prescript.test_file_exists(util.join_path(util.SAVE_DIR, guid, "{0}.sln".format(guid)))
