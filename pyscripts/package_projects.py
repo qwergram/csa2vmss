@@ -8,33 +8,17 @@ def destroy_binaries(vm_path):
         util.rmtree(os.path.join(vm_path, file), silent=True)
 
 
-def get_solution(vm_path):
-    solution = csa_parse.VSCloudService(project_path=vm_path)
-    solution.load_solution()
-    return solution
-
-
-def create_guid_directory():
-    pass
-
-
-def save_solution(vm_path, solution_object):
-    util.save_json(solution_object.solution_data)
-
-
-def build_vm():
+def build_vms():
     if util.test_path(util.savefile(".confirm_a")):
         print("Service App already packaged")
     else:
-        util.clean()
-        for vm_name, vm_path in util.list_vms():
+        for vm_path in util.listdirpaths(util.SAVE_DIR):
+            vm_name = vm_path.split("\\")[-1]
             destroy_binaries(vm_path)
-            solution = get_solution(vm_path)
-            input(solution)
-            # save_solution(vm_path, solution)
 
 def main(params):
     if params['mode'] == 'vm':
+        build_vms()
         print("Running in VM mode")
     elif params['mode'] == 'vmss':
         print("Running in VMss mode")
