@@ -77,8 +77,8 @@ def get_guids(json_blob, all=False):
 
 def create_properties(guid, all_json):
     # Tests Included (9/6/16)
-    check_prescript.test_project_guid_json(guid)
-    check_prescript.test_solution_post(all_json)
+    check_prescript.test_guid(guid)
+    check_prescript.test_solution_json(all_json)
     projects = []
     for project in all_json['projects']:
         if project['guid'] == guid:

@@ -64,9 +64,7 @@ def test_dir_exists(location):
     assert util.test_path(location, 'd')
 
 
-def test_solution_post(solution):
-    test_solution(solution)
-    data = solution.data
+def test_solution_json(data):
     for project in data['projects']:
         for key in ["role", "vmsize", "ignore", "proj", "guid", "references", "name", "ignore"]:
             assert key in project.keys()
@@ -75,23 +73,26 @@ def test_solution_post(solution):
                 assert key in project.keys()
 
 
-def test_solution_json(solution_json):
-    from solution_parser import SolutionParser
-    assert type(solution_json) == dict
-    assert 'sln' in solution_json.keys()
-    x = SolutionParser(solution_json['sln'])
-    x.data = solution_json
-    test_solution_post(x)
+def test_solution_post(solution):
+    test_solution(solution)
+    data = solution.data
+    test_solution_json(data)
 
 
 def test_guid_json(projects):
     assert type(projects) == dict
-    for key, value in projects.items():
-        print(key, value)
-    import pdb; pdb.set_trace()
+    for key, project in projects.items():
+        test_guid(key)
+        for subkey in ["role", "vmsize", "ignore", "proj", "guid", "references", "name", "ignore"]:
+            assert subkey in project.keys()
+        if project['role'].lower() == "webrole":
+            for subkey in ["sites", "endpoints"]:
+                assert subkey in project.keys()
 
 def test_guid(guid):
     assert type(guid) == str
+    assert guid.replace('-', '').isalnum()
+    assert guid.upper() == guid
 
 
 def test_properties_exists(all_json, path):
