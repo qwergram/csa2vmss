@@ -58,3 +58,7 @@ def test_proj_data(proj):
     data = proj.data
     assert type(data) == dict
     print("REQUIRES MORE PROJ TESTS")
+
+
+def test_dir_exists(location):
+    assert util.test_path(location, 'd')
