@@ -205,7 +205,9 @@ def is_binary(path, silent=True):
         '.pdb'
     ]
     locations = [
-        'env'
+        'env',
+        'obj',
+        'bin'
     ]
     if test_path(path, 'f') or silent:
         isbinary = False
