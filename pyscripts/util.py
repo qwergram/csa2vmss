@@ -201,7 +201,8 @@ def is_binary(path, silent=True):
         'application/x-msdownload'
     ]
     extensions = [
-        '.nupkg'
+        '.nupkg',
+        '.pdb'
     ]
     if test_path(path, 'f') or silent:
         return (mimetypes.guess_type(path)[0] in binaries) or (path.split("\\")[-1] in extensions)
