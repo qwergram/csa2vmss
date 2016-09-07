@@ -1,12 +1,20 @@
 import util
 from util import BatchTest
 
+TEST_COUNTER = 0
+
+def test(func):
+    TEST_COUNTER += 1
+    print("Testing (#{0}) ID: {1}".format(TEST_COUNTER, func))
+    return func
+
+@test
 def test_location(location):
     assert type(location) == str, location
     assert util.test_path(location, 'f')
     assert ":" in location or location.startswith("/")
 
-
+@test
 def test_solution(solution):
     from solution_parser import SolutionParser
     assert type(solution) == SolutionParser
@@ -27,7 +35,7 @@ def test_solution(solution):
             assert key in project
             assert type(project[key]) == data_type
 
-
+@test
 def test_csdef_data(csdef):
     from cloudservicedef_parser import CSDefinitionParser
     assert type(csdef) == CSDefinitionParser
@@ -39,7 +47,7 @@ def test_csdef_data(csdef):
         for secondary_key in ["vmsize", "role", "configurationsettings"]:
             assert secondary_key in value.keys()
 
-
+@test
 def test_cscfg_data(cscfg):
     from cloudserviceconfig_parser import CSConfigParser
     assert type(cscfg) == CSConfigParser
@@ -51,7 +59,7 @@ def test_cscfg_data(cscfg):
         assert "instances" in value.keys()
         assert type(value['instances']) == int
 
-
+@test
 def test_proj_data(proj):
     from proj_parser import ProjParser
     assert type(proj) == ProjParser
@@ -59,11 +67,11 @@ def test_proj_data(proj):
     assert type(data) == dict
     print("REQUIRES MORE PROJ TESTS")
 
-
+@test
 def test_dir_exists(location):
     assert util.test_path(location, 'd')
 
-
+@test
 def test_solution_json(data):
     for project in data['projects']:
         for key in ["role", "vmsize", "ignore", "proj", "guid", "references", "name", "ignore"]:
@@ -72,13 +80,13 @@ def test_solution_json(data):
             for key in ["sites", "endpoints"]:
                 assert key in project.keys()
 
-
+@test
 def test_solution_post(solution):
     test_solution(solution)
     data = solution.data
     test_solution_json(data)
 
-
+@test
 def test_guid_json(projects):
     assert type(projects) == dict
     for key, project in projects.items():
@@ -89,12 +97,13 @@ def test_guid_json(projects):
             for subkey in ["sites", "endpoints"]:
                 assert subkey in project.keys()
 
+@test
 def test_guid(guid):
     assert type(guid) == str
     assert guid.replace('-', '').isalnum()
     assert guid.upper() == guid
 
-
+@test
 def test_properties_exists(all_json, path):
     import io, json
     assert type(path) == str
@@ -109,4 +118,3 @@ def test_properties_exists(all_json, path):
     assert path.split("\\")[-1] == blob['projects'][0]['guid']
     if blob['projects'][0]['references'] == []:
         assert len(blob['projects']) == 1
-    import pdb; pdb.set_trace()
