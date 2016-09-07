@@ -204,7 +204,14 @@ def is_binary(path, silent=True):
         '.nupkg',
         '.pdb'
     ]
+    locations = [
+        'env'
+    ]
     if test_path(path, 'f') or silent:
-        return (mimetypes.guess_type(path)[0] in binaries) or (path.split("\\")[-1] in extensions)
+        isbinary = False
+        for location in locations:
+            if location in path:
+                isbinary = True
+        return (mimetypes.guess_type(path)[0] in binaries) or (path.split("\\")[-1] in extensions) or isbinary
     else:
         raise FileNotFoundError(path, "not found")
