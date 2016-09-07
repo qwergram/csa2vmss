@@ -249,7 +249,7 @@ if ($MODE -eq "vmss") {
             } elseif ($_.Name -eq "ctv.properties") {
                 $metadata = $_.FullName
                 $currentProjectMeta = Get-Content $metadata | ConvertFrom-Json
-                $currentVmRole = $currentProjectMeta.projects[0].type.ToLower()
+                $currentVmRole = $currentProjectMeta.projects[0].role.ToLower()
             }
         }
 
