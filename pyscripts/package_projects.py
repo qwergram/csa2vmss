@@ -12,7 +12,12 @@ def clean_package(vm_name):
     check_pkproj.test_guid(vm_name)
     solution = pre_script.get_solution_data(util.join_path(util.SAVE_DIR, vm_name, "{0}.sln".format(vm_name)), False)
     solution.parse()
+    solution.data['csdef'] = "somestring"
+    solution.data['ccproj'] = "somestring"
+    solution.data['cscfg'] = "somestring"
+
     check_pkproj.test_solution(solution)
+    
     import pdb; pdb.set_trace()
 
 
