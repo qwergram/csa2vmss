@@ -73,3 +73,34 @@ def test_solution_post(solution):
         if project['role'].lower() == "webrole":
             for key in ["sites", "endpoints"]:
                 assert key in project.keys()
+
+
+def test_solution_json(solution_json):
+    from solution_parser import SolutionParser
+    assert type(solution_json) == dict
+    assert 'sln' in solution_json.keys()
+    x = SolutionParser(solution_json['sln'])
+    x.data = solution_json
+    test_solution_post(x)
+
+
+def test_guid_json(projects):
+    assert type(projects) == dict
+    for key, value in projects.items():
+        print(key, value)
+    import pdb; pdb.set_trace()
+
+def test_guid(guid):
+    assert type(guid) == str
+
+
+def test_properties_exists(all_json, path):
+    import io, json
+    assert type(path) == str
+    assert type(all_json) == dict
+    properties = util.join_path(path, 'ctv.properties')
+    assert util.test_path(properties, 'f')
+    with io.open(properties) as context:
+        blob = json.loads(context.read())
+    assert type(blob) == dict
+    import pdb; pdb.set_trace()

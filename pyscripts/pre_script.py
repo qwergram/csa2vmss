@@ -65,14 +65,20 @@ def build_save_directory():
 
 
 def get_guids(json_blob, all=False):
+    # Tests Included (9/6/16)
+    check_prescript.test_solution_json(json_blob)
     projects = {}
     for project in json_blob['projects']:
         if (project['ignore'] is False) or all:
             projects[project['guid']] = project
+    check_prescript.test_guid_json(projects)
     return projects
 
 
 def create_properties(guid, all_json):
+    # Tests Included (9/6/16)
+    check_prescript.test_project_guid_json(guid)
+    check_prescript.test_solution_post(all_json)
     projects = []
     for project in all_json['projects']:
         if project['guid'] == guid:
@@ -85,6 +91,8 @@ def create_properties(guid, all_json):
                 i += 1
             all_json['projects'] = projects
             util.save_json(all_json, util.join_path(util.SAVE_DIR, guid), 'ctv.properties')
+            break
+    check_prescript.test_properties_exists(all_json, util.join_path(util.SAVE_DIR, guid))
 
 
 def build_project(guid, project_json):
