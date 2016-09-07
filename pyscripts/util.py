@@ -230,4 +230,9 @@ def load_properties(guid):
         json_blob = json.loads(context.read())
     test_solution_json(json_blob)
     return json_blob
-        
+
+
+def get_ignores(language):
+    if language == "888888A0-9F3D-457C-B088-3A5042F75D52":
+        return ["__pycache__", "env", "obj"]
+    return []
