@@ -1,31 +1,7 @@
 import os
 import azure
-try:
-    from pyscripts import util
-    from pyscripts import csa_parse
-    from pyscripts import pre_script
-except ImportError:
-    import csa_parse
-    import util
-    import pre_script
-
-DEFAULTS = {
-    "solutionName": "SP55",
-    "resourcePrefix": "RG",
-    "storagePrefix": "stg",
-    "VMPrefix": "VM",
-    "Location": "West US",
-    "SkuName": "Standard_LRS",
-    "containerPrefix": "container",
-    "DNSPrefix": "dns",
-    "DeploymentPrefix": "deploy",
-    "scriptPrefix": "scrpt",
-    "VMVHDSize": 100,
-    "VMSize": "Standard_D1",
-    "VMAdmin": "Norton",
-    "VMPassword": "SecurePassword123!"
-}
-
+import util
+import pre_script
 
 def destroy_binaries(vm_path):
     for file in ['env', 'obj', 'csx', 'ecf']:
