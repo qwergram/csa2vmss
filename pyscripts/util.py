@@ -3,6 +3,7 @@ import json
 import os
 import shutil
 import sys
+import mimetypes
 
 SAVE_DIR = os.path.join(os.getcwd(), "__save")
 PYSCRIPTS = os.path.join(os.getcwd(), "pyscripts")
@@ -193,3 +194,16 @@ def walk_tree(path):
             yield from walk_tree(path)
         elif test_path(path, 'f'):
             yield path
+
+
+def is_binary(path, silent=True):
+    binaries = [
+        'application/x-msdownload'
+    ]
+    extensions = [
+        '.nupkg'
+    ]
+    if test_path(path, 'f') or silent:
+        return (mimetypes.guess_type(path)[0] in binaries) or (path.split("\\")[-1] in extensions)
+    else:
+        raise FileNotFoundError(path, "not found")
