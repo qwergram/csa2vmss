@@ -243,7 +243,7 @@ def load_properties(guid):
 
 
 def get_ignores(language):
-    default = [".sln", ".vs"]
+    default = [".vs"]
     if language == "888888A0-9F3D-457C-B088-3A5042F75D52":
         return ["__pycache__", "env", "obj"] + default
     elif language == "FAE04EC0-301F-11D3-BF4B-00C04F79EFBC":
