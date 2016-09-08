@@ -4,7 +4,7 @@ Param(
     [string]
     $MODE,
     [string] # The new Solution Name
-    $SolutionName = "SP54",
+    $SolutionName = "SP57",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "RG",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
@@ -103,7 +103,7 @@ if ($MODE -eq "vmss") {
 
         $dns = ("p" + $vm_name.ToLower().replace("vm", ""))
         $newrg = New-AzureRmResourceGroup -Name $vm_name -Location $Location -Force
-        $results = New-AzureRmResourceGroupDeployment -TemplateUri "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vmss-windows-customimage/azuredeploy.json" -probeRequestPath "/" -ResourceGroupName ($vm_name) -sourceImageVhdUri $vhdurl -adminUsername $VMAdmin -dnsNamePrefix $dns -vmssName $dns -instanceCount 1 -vmSize "Standard_D1"
+        $results = New-AzureRmResourceGroupDeployment -TemplateUri "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vmss-windows-customimage/azuredeploy.json" -probeRequestPath "/" -ResourceGroupName ($vm_name) -sourceImageVhdUri $vhdurl -adminUsername $VMAdmin -dnsNamePrefix $dns -vmssName $dns -instanceCount 1 -vmSize "Standard_A1"
 
         Write-Output "Deleting Seed VM"
         Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Force
@@ -117,19 +117,15 @@ if ($MODE -eq "vmss") {
 
     # This script parses the Visual Studio Solution and zips it
 
-    if (Test-Path ".\__save\.confirm_a") { Write-Output "Service App already packaged" } else {
-        Write-Output "Reading Cloud Service App and Packaging it"
-
-        if ($singleWindow) {
-            python ($PYSCRIPTS + "\main.py")
-            if ($? -eq $false) {
-                Exit
-            } 
-        } else {
-            $result = start-process python -argument ($PYSCRIPTS + '\main.py') -Wait -PassThru
-            if ($result.ExitCode -eq 1) {
-                Exit
-            }
+    if ($singleWindow) {
+        python ($PYSCRIPTS + "\package_projects.py")
+        if ($? -eq $false) {
+            Exit
+        } 
+    } else {
+        $result = start-process python -argument ($PYSCRIPTS + '\package_projects.py') -Wait -PassThru
+        if ($result.ExitCode -eq 1) {
+            Exit
         }
     }
 
@@ -153,7 +149,12 @@ if ($MODE -eq "vmss") {
     } Catch {
         # Built it
         Write-Output "Storage Account doesn't exist! Building it."
-        $newstorage = New-AzureRmStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -SkuName $SkuName -Location $Location
+        try {
+            $newstorage = New-AzureRmStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -SkuName $SkuName -Location $Location -ErrorAction Stop
+        } catch {
+            Write-Output "Unable to create Storage!"
+            Exit
+        }
         $AzureStorage = Get-AzureRmStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower())
     }
 
@@ -250,10 +251,10 @@ if ($MODE -eq "vmss") {
             } elseif ($_.Name.Endswith('.zip')) {
                 $projectid = $_.Name.Split('_')[1]
                 $zipfile = $_.FullName
-            } elseif ($_.Name -eq "meta.json") {
+            } elseif ($_.Name -eq "ctv.properties") {
                 $metadata = $_.FullName
                 $currentProjectMeta = Get-Content $metadata | ConvertFrom-Json
-                $currentVmRole = $currentProjectMeta.role_type.ToLower()
+                $currentVmRole = $currentProjectMeta.projects[0].role.ToLower()
             }
         }
 

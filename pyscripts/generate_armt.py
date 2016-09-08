@@ -2,8 +2,7 @@ import sys
 import os
 import io
 import json
-
-CURRENT_PATH = os.getcwd()
+import util
 
 PARAMETERS = {
     "adminUsername": {
@@ -67,7 +66,7 @@ PARAM_TEMPLATE = {}
 PUBLIC_IP = VARIABLES['publicIPAddressName']
 
 def load_arm_vars():
-    with io.open(os.path.join(CURRENT_PATH, '__save', 'arm_vars.csv')) as content:
+    with io.open(util.join_path(util.SAVE_DIR, 'arm_vars.csv')) as content:
         new_dict = {}
         for line in content.readlines():
             if not line.strip().startswith('#'):
@@ -75,7 +74,7 @@ def load_arm_vars():
                 VARIABLES[key] = value
 
 def save_params_to_solution(project_name):
-    with io.open(os.path.join(CURRENT_PATH, "__save", project_name, "save.json")) as context:
+    with io.open(util.join_path(util.SAVE_DIR, project_name, "ctv.properties")) as context:
         solution = json.loads(context.read())
 
     solution['vmparams'] = {
@@ -84,12 +83,12 @@ def save_params_to_solution(project_name):
         "dnslabel": sys.argv[3]
     }
 
-    with io.open(os.path.join(CURRENT_PATH, "__save", project_name, "save.json"), 'w') as context:
+    with io.open(util.join_path(util.SAVE_DIR, project_name, "ctv.properties"), 'w') as context:
         context.write(json.dumps(solution, indent=2, sort_keys=True))
 
 def load_arm_params(project_name):
     global PARAM_TEMPLATE
-    with io.open(os.path.join(CURRENT_PATH, 'templates', 'iis-vm.params.json')) as content:
+    with io.open(util.templates('iis-vm.params.json')) as content:
         PARAM_TEMPLATE = json.loads(content.read())
 
     PARAM_TEMPLATE['parameters']['adminUsername']['value'] = sys.argv[1]
@@ -98,12 +97,12 @@ def load_arm_params(project_name):
     save_params_to_solution(project_name)
 
 def create_armt_from_meta():
-    with io.open(os.path.join(CURRENT_PATH, "templates", "iis-vm.json")) as content:
+    with io.open(util.templates("iis-vm.json")) as content:
         content = json.loads(content.read())
     content['variables'] = VARIABLES
 
-    for project in os.listdir(os.path.join(CURRENT_PATH, "__save")):
-        project_path = os.path.join(CURRENT_PATH, '__save', project)
+    for project in os.listdir(util.SAVE_DIR):
+        project_path = util.join_path(util.SAVE_DIR, project)
         if os.path.isdir(project_path) and project not in ["cspkg", "vms"]:
             load_arm_vars()
             load_arm_params(project)
@@ -117,7 +116,7 @@ def create_armt_from_meta():
             PARAM_TEMPLATE['parameters']['dnsLabelPrefix']['value'] = 'd' + project_id + PARAM_TEMPLATE['parameters']['dnsLabelPrefix']['value']
 
             try:
-                with io.open(os.path.join(project_path, 'blob_location.txt')) as location:
+                with io.open(util.join_path(project_path, 'blob_location.txt')) as location:
                     blob_location = location.read().strip()
             except FileNotFoundError:
                 continue
@@ -129,10 +128,10 @@ def create_armt_from_meta():
                     content['resources'][i]['properties']['settings']['commandToExecute'] = resource['properties']['settings']['commandToExecute'].format(*CUSTOM_SCRIPT_PARAMS)
                     break
 
-            with io.open(os.path.join(project_path, 'armtemplate.json'), 'w') as template:
+            with io.open(util.join_path(project_path, 'armtemplate.json'), 'w') as template:
                 template.write(json.dumps(content, indent=2))
 
-            with io.open(os.path.join(project_path, 'armtemplate.params.json'), 'w') as paramtemplate:
+            with io.open(util.join_path(project_path, 'armtemplate.params.json'), 'w') as paramtemplate:
                 paramtemplate.write(json.dumps(PARAM_TEMPLATE, indent=2))
 
 
