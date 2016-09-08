@@ -4,7 +4,7 @@ Param(
     [string]
     $MODE,
     [string] # The new Solution Name
-    $SolutionName = "SP54",
+    $SolutionName = "SP57",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "RG",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
@@ -149,7 +149,12 @@ if ($MODE -eq "vmss") {
     } Catch {
         # Built it
         Write-Output "Storage Account doesn't exist! Building it."
-        $newstorage = New-AzureRmStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -SkuName $SkuName -Location $Location
+        try {
+            $newstorage = New-AzureRmStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower()) -SkuName $SkuName -Location $Location -ErrorAction Stop
+        } catch {
+            Write-Output "Unable to create Storage!"
+            Exit
+        }
         $AzureStorage = Get-AzureRmStorageAccount -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name ($StoragePrefix.ToLower() + $SolutionName.ToLower())
     }
 
