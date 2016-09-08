@@ -3,8 +3,9 @@ Param(
     [Parameter(Mandatory=$true)]
     [string]
     $MODE,
+    [Parameter(Mandatory=$true)]
     [string] # The new Solution Name
-    $SolutionName = "SP57",
+    $SolutionName,
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "RG",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
@@ -13,8 +14,6 @@ Param(
     $VMPrefix = "VM",
     [string] # Location for servers
     $Location = "West US",
-    [string] # Size of VM
-    $SkuName = "Standard_LRS",
     [string] # container name = $containerPrefix + $SolutionName.ToLower()
     $containerPrefix = "container",
     [string] # DNS prefix to mark dns related resources
@@ -23,16 +22,16 @@ Param(
     $DeploymentPrefix = "dply",
     [string] # script resource name
     $scriptPrefix = "scrpt",
-    [string] # Which subscription to use
-    $AzureProfile = "Free Trial",
     [int] # Size in GB of VM VHD
     $VMVHDSize = 100,
     [string] # VM Size
-    $VMSize = "Standard_D1",
+    $VMSize = "Standard_A1",
+    [Parameter(Mandatory=$true)]
     [string] # VM Admin username
-    $VMAdmin = "Norton",
+    $VMAdmin,
     [string] # VM Password
-    $VMPassword = "SecurePassword123!",
+    [Parameter(Mandatory=$true)]
+    $VMPassword,
     [bool] # run app in single window?
     $singleWindow = $true
 )
