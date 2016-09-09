@@ -1,5 +1,6 @@
 import util
 from util import BatchTest
+import requests
 
 TEST_COUNTER = 0
 
@@ -12,6 +13,21 @@ def test_object(func):
         return func
     return wrapper
 
+
+def report(id, func, args):
+
+    def send(status, id):
+        try:
+            requests.post("http://localost:5335/report/{1}/{0}/".format(status, id))
+        except requests.exceptions.ConnectionError:
+            pass
+
+    try:
+        func(*args)
+        send("pass", id)
+    except Exception as e:
+        send("fail", id)
+        raise e
 
 #@test_object
 def test_location(location):
