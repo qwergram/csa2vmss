@@ -4,15 +4,6 @@ import requests
 
 TEST_COUNTER = 0
 
-def test_object(func):
-    # print("Loading Test ID: {0}".format(func))
-    def wrapper(func, *args):
-        global TEST_COUNTER
-        print("Running Test #{0}".format(TEST_COUNTER))
-        TEST_COUNTER += 1
-        return func
-    return wrapper
-
 
 def report(id, func, args):
 
@@ -29,13 +20,21 @@ def report(id, func, args):
         send("fail", id)
         raise e
 
-#@test_object
+def test_object(func):
+    # print("Loading Test ID: {0}".format(func))
+    def wrapper(func, *args):
+        report(str(func), func, args)
+        return func
+    return wrapper
+
+
+@test_object
 def test_location(location):
     assert type(location) == str, location
     assert util.test_path(location, 'f')
     assert ":" in location or location.startswith("/")
 
-#@test_object
+@test_object
 def test_solution(solution, cs_required=True):
     from solution_parser import SolutionParser
     assert type(solution) == SolutionParser
@@ -56,7 +55,7 @@ def test_solution(solution, cs_required=True):
             assert key in project
             assert type(project[key]) == data_type
 
-#@test_object
+@test_object
 def test_csdef_data(csdef):
     from cloudservicedef_parser import CSDefinitionParser
     assert type(csdef) == CSDefinitionParser
@@ -69,7 +68,7 @@ def test_csdef_data(csdef):
         for secondary_key in ["vmsize", "role", "configurationsettings"]:
             assert secondary_key in value.keys()
 
-#@test_object
+@test_object
 def test_cscfg_data(cscfg):
     from cloudserviceconfig_parser import CSConfigParser
     assert type(cscfg) == CSConfigParser
@@ -81,7 +80,7 @@ def test_cscfg_data(cscfg):
         assert "instances" in value.keys()
         assert type(value['instances']) == int
 
-#@test_object
+@test_object
 def test_proj_data(proj):
     from proj_parser import ProjParser
     assert type(proj) == ProjParser
@@ -93,16 +92,16 @@ def test_proj_data(proj):
             [test_guid(value.upper()) for value in value]
             assert type(key) == str
 
-#@test_object
+@test_object
 def test_dir_exists(location):
     assert util.test_path(location, 'd')
 
 
-#@test_object
+@test_object
 test_file_exists = test_location
 
 
-#@test_object
+@test_object
 def test_solution_json(data):
     for project in data['projects']:
         assert "ignore" in project.keys()
@@ -117,14 +116,14 @@ def test_solution_json(data):
             assert key in project.keys(), "{0} {1}".format(key, project.keys())
        
 
-#@test_object
+@test_object
 def test_solution_post(solution):
     test_solution(solution)
     data = solution.data
     test_solution_json(data)
 
 
-#@test_object
+@test_object
 def test_guid_json(projects):
     assert type(projects) == dict
     for key, project in projects.items():
@@ -140,13 +139,13 @@ def test_guid_json(projects):
         for subkey in required:
             assert subkey in project.keys(), subkey
 
-#@test_object
+@test_object
 def test_guid(guid):
     assert type(guid) == str
     assert guid.replace('-', '').isalnum()
     assert guid.upper() == guid
 
-#@test_object
+@test_object
 def test_properties_exists(all_json, path):
     import io, json
     assert type(path) == str
@@ -163,7 +162,7 @@ def test_properties_exists(all_json, path):
         assert len(blob['projects']) == 1
 
 
-#@test_object
+@test_object
 def test_guid_exists(guid, project_json):
     test_guid(guid)
     test_solution_json(project_json)
@@ -174,7 +173,7 @@ def test_guid_exists(guid, project_json):
         assert False, guid + " not in project_json"
 
 
-#@test_object
+@test_object
 def test_sln(sln_location, guids):
     import io
     from proj_parser import ProjParser
