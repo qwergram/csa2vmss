@@ -9,7 +9,7 @@ def report(id, func, args):
 
     def send(status, id):
         try:
-            requests.post("http://localost:5335/report/{1}/{0}/".format(status, id))
+            requests.post("http://localhost:5335/report/{1}/{0}/".format(status, id))
         except requests.exceptions.ConnectionError:
             pass
 
@@ -97,7 +97,6 @@ def test_dir_exists(location):
     assert util.test_path(location, 'd')
 
 
-@test_object
 test_file_exists = test_location
 
 
