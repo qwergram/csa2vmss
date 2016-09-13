@@ -65,6 +65,16 @@ if ($MODE -eq "vmss") {
     Get-ChildItem -Path $SAVEPATH -Filter (".confirm_*VM" + $SolutionName) |
     ForEach-Object {
         $vm_name = $_.Name.Replace(".confirm_", "")
+        $guid_start = $vm_name.Replace("VM" + $SolutionName, "")
+
+        try {
+            $children = Get-ChildItem -Path $SAVEPATH -Filter ($guid_start.ToUpper() + "*") -ErrorAction Stop
+            $vm_directory = $SAVEPATH + "\" + ($children)[0].Name 
+        } catch [InvalidOperation] {
+            Write-Output "Unable to find VM project directory"
+            Exit
+        }
+
         if ($vm_name.Contains("ext_")) { continue }
         Write-Output "Processing $vm_name"
 
