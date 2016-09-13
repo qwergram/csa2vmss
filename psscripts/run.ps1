@@ -77,6 +77,18 @@ if ($MODE -eq "vmss") {
             Exit
         }
 
+        $vm_size = (Get-Content ($ctvlocation) | ConvertFrom-Json).projects[0].vmsize
+        $vm_count = (Get-Content ($ctvlocation) | ConvertFrom-Json).projects[0].instances
+
+        $conversion = @{
+            "ExtraSmall"="Standard_A0";
+            "Small"="Standard_A1";
+            "Medium"="Standard_A2";
+            "Large"="Standard_A3";
+            "ExtraLarge"="Standard_A4";
+        }
+
+        $vm_size = $conversion.Get_Item($vm_size)
 
         if ($vm_name.Contains("ext_")) { continue }
         Write-Output "Processing $vm_name"
