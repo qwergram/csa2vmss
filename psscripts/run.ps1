@@ -127,7 +127,7 @@ if ($MODE -eq "vmss") {
 
         $dns = ("p" + $vm_name.ToLower().replace("vm", ""))
         $newrg = New-AzureRmResourceGroup -Name $vm_name -Location $Location -Force
-        $results = New-AzureRmResourceGroupDeployment -TemplateUri "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vmss-windows-customimage/azuredeploy.json" -probeRequestPath "/" -ResourceGroupName ($vm_name) -sourceImageVhdUri $vhdurl -adminUsername $VMAdmin -dnsNamePrefix $dns -vmssName $dns -instanceCount 1 -vmSize "Standard_A1"
+        $results = New-AzureRmResourceGroupDeployment -TemplateUri "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vmss-windows-customimage/azuredeploy.json" -probeRequestPath "/" -ResourceGroupName ($vm_name) -sourceImageVhdUri $vhdurl -adminUsername $VMAdmin -dnsNamePrefix $dns -vmssName $dns -instanceCount $vm_count -vmSize $vm_size
 
         Write-Output "Deleting Seed VM"
         Remove-AzureRmVM -ResourceGroupName ($ResourcePrefix + $SolutionName) -Name $vm_name -Force
