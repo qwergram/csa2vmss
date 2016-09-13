@@ -69,11 +69,14 @@ if ($MODE -eq "vmss") {
 
         try {
             $children = Get-ChildItem -Path $SAVEPATH -Filter ($guid_start.ToUpper() + "*") -ErrorAction Stop
-            $vm_directory = $SAVEPATH + "\" + ($children)[0].Name 
+            $vm_directory = $SAVEPATH + "\" + ($children)[0].Name
+            $ctvlocation = $vm_directory + "\ctv.properties"
+            if (Test-Path -Path $ctvlocation) { continue } else { throw [System.IO.FileNotFoundException] "Properties file not found!" }
         } catch [InvalidOperation] {
             Write-Output "Unable to find VM project directory"
             Exit
         }
+
 
         if ($vm_name.Contains("ext_")) { continue }
         Write-Output "Processing $vm_name"
