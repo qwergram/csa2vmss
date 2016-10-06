@@ -3,9 +3,8 @@ Param(
     [Parameter(Mandatory=$true)]
     [string]
     $MODE,
-    [Parameter(Mandatory=$true)]
     [string] # The new Solution Name
-    $SolutionName,
+    $SolutionName = "pr3",
     [string] # Resource name = $ResourcePrefix + $SolutionName
     $ResourcePrefix = "RG",
     [string] # storage name = $StoragePrefix + $SolutionName.ToLower()
@@ -26,14 +25,14 @@ Param(
     $VMVHDSize = 100,
     [string] # VM Size
     $VMSize = "Standard_A1",
-    [Parameter(Mandatory=$true)]
     [string] # VM Admin username
-    $VMAdmin,
+    $VMAdmin = "Norton",
     [string] # VM Password
-    [Parameter(Mandatory=$true)]
-    $VMPassword,
+    $VMPassword = "SecurePassword123!",
     [bool] # run app in single window?
-    $singleWindow = $true
+    $singleWindow = $true,
+    [string]
+    $SkuName = "Standard_LRS"
 )
 
 # Have the User Login
@@ -64,6 +63,8 @@ if ($MODE -eq "vmss") {
     # Get all the VMs built by this script
     Get-ChildItem -Path $SAVEPATH -Filter (".confirm_*VM" + $SolutionName) |
     ForEach-Object {
+        Write-Output $_.Name
+        
         $vm_name = $_.Name.Replace(".confirm_", "")
         $guid_start = $vm_name.Replace("VM" + $SolutionName, "")
 
@@ -71,7 +72,10 @@ if ($MODE -eq "vmss") {
             $children = Get-ChildItem -Path $SAVEPATH -Filter ($guid_start.ToUpper() + "*") -ErrorAction Stop
             $vm_directory = $SAVEPATH + "\" + ($children)[0].Name
             $ctvlocation = $vm_directory + "\ctv.properties"
-            if (Test-Path -Path $ctvlocation) { continue } else { throw [System.IO.FileNotFoundException] "Properties file not found!" }
+            if (Test-Path -Path $ctvlocation) { } else { 
+                Write-Output "Properties not Found!"
+                Exit 
+            }
         } catch [InvalidOperation] {
             Write-Output "Unable to find VM project directory"
             Exit
@@ -156,6 +160,7 @@ if ($MODE -eq "vmss") {
 
     # Check to see if the specified ResourceGroup exists.
     Write-Output "Getting Resource Group"
+    Write-Output $Location
     Try {
         # Get it
         $resource = Get-AzureRmResourceGroup -Name ($ResourcePrefix + $SolutionName) -Location $Location -ErrorAction Stop

@@ -5,25 +5,25 @@ import requests
 TEST_COUNTER = 0
 
 
-def report(id, func, args):
+# def report(id, func, args):
 
-    def send(status, id):
-        try:
-            requests.post("http://localhost:5335/report/{1}/{0}/".format(status, id))
-        except requests.exceptions.ConnectionError:
-            pass
+#     def send(status, id):
+#         try:
+#             requests.post("http://localhost:5335/report/{1}/{0}/".format(status, id))
+#         except requests.exceptions.ConnectionError:
+#             pass
 
-    try:
-        func(*args)
-        send("pass", id)
-    except Exception as e:
-        send("fail", id)
-        raise e
+#     try:
+#         func(*args)
+#         send("pass", id)
+#     except Exception as e:
+#         send("fail", id)
+#         raise e
 
 def test_object(func):
     # print("Loading Test ID: {0}".format(func))
     def wrapper(func, *args):
-        report(str(func), func, args)
+        # report(str(func), func, args)
         return func
     return wrapper
 
