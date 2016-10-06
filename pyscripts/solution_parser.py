@@ -4,6 +4,7 @@ import io
 class SolutionParser(object):
 
     def __init__(self, sln_path):
+        # Initialize SolutionParser Object
         assert util.test_path(sln_path, 'f'), sln_path
         self.path = sln_path
         self.raw_content = []
